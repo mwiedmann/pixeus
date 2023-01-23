@@ -16,7 +16,7 @@
 #define VMEM_SPRITE_ENABLE_MASK 0b10111111
 #define SPRITE_MEM_START 0xFC00
 #define SPRCOL_MASK 4
- 
+
 enum ZDepth { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 };
 enum SpriteSize { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 };
 
@@ -145,5 +145,14 @@ void spriteCollisionsDisable();
  * These give the overlap of which collision masks collided.
 */
 unsigned char spriteCollisionBitsGet();
+
+/**
+ * Use this function as the "irq_handler f" param for "set_irq" (6502.h) to handle IRQ for collisions.
+ * It will handle the IRQ when there is a collision and clear the flag
+ * You can check the collision bits (spriteCollisionBitsGet) in your game loop to see if there were collisions.
+ * Make sure to enable collisions (spriteCollisionsEnable).
+ * Make sure to disable collisions (spriteCollisionsDisable) on program exit.
+*/
+unsigned char spriteCollisionIRQHandler();
 
 #endif

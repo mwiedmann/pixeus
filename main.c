@@ -3,25 +3,9 @@
 #include "x16graphics.h"
 #include "waitforjiffy.h"
 
-#define STACK_SIZE 8
-unsigned char TempStack[STACK_SIZE];
-
-// IRQ handler
-unsigned char spriteCollisionIRQHandler(void)
-{
-    // See if the SPRCOL flag (bit 2) is set on the IEN register
-    unsigned char collision = PEEK(0x9F26) & 0b100;
-    
-    if (collision > 0) {
-        // Clear the collision IRQ by writing to the SPRCOL (bit 2) in the ISR
-        // NOTE: It appears that ISR is special read-only in a way
-        // We just write the bit and the other data seems to stay untouched
-        POKE(0x9F27,  4); 
-        return IRQ_HANDLED;
-    }
-
-    return IRQ_NOT_HANDLED;
-}
+// Not sure how big the stack needs to be. Unclear how this works.
+#define IRQ_HANDLER_STACK_SIZE 8
+unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
 void main() {
     unsigned short x;
@@ -49,7 +33,7 @@ void main() {
     spriteSetGlobalOn();
 
     // Setup the IRQ handler for sprite collisions and enable global sprite collisions
-    set_irq(&spriteCollisionIRQHandler, TempStack, STACK_SIZE);
+    set_irq(&spriteCollisionIRQHandler, IRQHandlerStack, IRQ_HANDLER_STACK_SIZE);
     spriteCollisionsEnable();
 
     // Let's do a sprite collision test
@@ -88,12 +72,5 @@ void main() {
 
     // Disable sprite collisions before quitting
     // or the UI hangs if sprites are still touching.
-    // POKE(0x9F26, 1);
     spriteCollisionsDisable();
 }
-
-// To build and run
-/*
-cl65 -o test.prg -t cx16 x16graphics.c main.c waitforjiffy.s
-../emu/x16emu -prg test.prg -run
-*/

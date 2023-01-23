@@ -1,4 +1,5 @@
 #include <peekpoke.h>
+#include <6502.h>
 #include "x16graphics.h"
 
 struct MemSplit splitMem(unsigned short addr) {
@@ -143,4 +144,20 @@ void spriteCollisionsDisable() {
 unsigned char spriteCollisionBitsGet() {
     // Get the Collision bits and shift them down
     return (PEEK(ISR_REG) & 0b11110000)>>4;
+}
+
+unsigned char spriteCollisionIRQHandler()
+{
+    // See if the SPRCOL flag (bit 2) is set on the IEN register
+    unsigned char collision = PEEK(IEN_REG) & SPRCOL_MASK;
+    
+    if (collision > 0) {
+        // Clear the collision IRQ by writing to the SPRCOL (bit 2) in the ISR
+        // NOTE: It appears that ISR is special read-only in a way
+        // We just write the bit and the other data seems to stay untouched
+        POKE(ISR_REG,  SPRCOL_MASK); 
+        return IRQ_HANDLED;
+    }
+
+    return IRQ_NOT_HANDLED;
 }
