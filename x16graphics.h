@@ -9,10 +9,14 @@
 #define VMEM_DATA_1 0x9F24
 #define VMEM_VIDEO 0x9F29
 
+#define IEN_REG 0x9F26
+#define ISR_REG 0x9F27
+
 #define VMEM_ADDR_INC_MASK 0b00001111
 #define VMEM_SPRITE_ENABLE_MASK 0b10111111
 #define SPRITE_MEM_START 0xFC00
-
+#define SPRCOL_MASK 4
+ 
 enum ZDepth { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 };
 enum SpriteSize { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 };
 
@@ -106,6 +110,12 @@ void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned 
 void spriteSetZDepth(enum ZDepth zDepth);
 
 /**
+ * Sets the Z-depth and collision mask on a sprite (they share the same byte)
+ * Assumes the Video Memory address is pointing at the correct sprite ZDepth position (Offset 6)
+*/
+void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask);
+
+/**
  * Sets the width and height on a sprite
  * Assumes the Video Memory address is pointing at the correct sprite Width/Height position (Offset 7)
 */
@@ -118,6 +128,22 @@ void spriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height);
 */
 void spriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
-    enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height);
+    unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height);
+
+/**
+ * Enable global sprite collision detection
+*/
+void spriteCollisionsEnable();
+
+/**
+ * Disable global sprite collision detection
+*/
+void spriteCollisionsDisable();
+
+/**
+ * Get the sprite collision bits (shifted down)
+ * These give the overlap of which collision masks collided.
+*/
+unsigned char spriteCollisionBitsGet();
 
 #endif

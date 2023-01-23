@@ -1,13 +1,35 @@
 #include <peekpoke.h>
+#include <6502.h>
 #include "x16graphics.h"
 #include "waitforjiffy.h"
 
+#define STACK_SIZE 8
+unsigned char TempStack[STACK_SIZE];
+
+// IRQ handler
+unsigned char spriteCollisionIRQHandler(void)
+{
+    // See if the SPRCOL flag (bit 2) is set on the IEN register
+    unsigned char collision = PEEK(0x9F26) & 0b100;
+    
+    if (collision > 0) {
+        // Clear the collision IRQ by writing to the SPRCOL (bit 2) in the ISR
+        // NOTE: It appears that ISR is special read-only in a way
+        // We just write the bit and the other data seems to stay untouched
+        POKE(0x9F27,  4); 
+        return IRQ_HANDLED;
+    }
+
+    return IRQ_NOT_HANDLED;
+}
 
 void main() {
     unsigned short x;
     unsigned short y;
     unsigned char d;
     unsigned short spriteGraphicsAddr = 0x4000;
+    unsigned char collision;
+    unsigned char count;
 
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
@@ -26,21 +48,48 @@ void main() {
     // Turn on sprites
     spriteSetGlobalOn();
 
-    spriteInit(1, 0, 1, 0, spriteGraphicsAddr, InFrontOfL1, PX16, PX16);
+    // Setup the IRQ handler for sprite collisions and enable global sprite collisions
+    set_irq(&spriteCollisionIRQHandler, TempStack, STACK_SIZE);
+    spriteCollisionsEnable();
 
-    for (y=0; y<479; y+=8) {
-        for (x=0; x<639; x+=8) {
-            waitforjiffy();
-            // Set new video address
-            POKE(0x9F20, 0x02);
-            POKE(0x9F21, 0xFC);
+    // Let's do a sprite collision test
+    spriteInit(1, 0, 1, 0, spriteGraphicsAddr, 3, InFrontOfL1, PX16, PX16);
+    spriteInit(1, 1, 1, 0, spriteGraphicsAddr, 6, InFrontOfL1, PX16, PX16);
 
-            POKE(0x9F23, x & 0xFF);
-            POKE(0x9F23, x/256);
-            POKE(0x9F23, y & 0xFF);
-            POKE(0x9F23, y/256);
+    spriteIdxSetXY(1, 0, 320, 240);
+    spriteIdxSetXY(1, 1, 380, 235);
+
+    // Collide 5 times then quit
+    count = 5;
+
+    for (x=380; x>0; x--) {
+        waitforjiffy();
+        spriteIdxSetXY(1, 1, x, 235);
+
+        // Get the Collision bits and shift them down
+        collision = spriteCollisionBitsGet();
+
+        // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
+        // We can then look at all the sprites that have that bit in their mask
+        if (collision == 2) {
+            // Quit after a certain number of collisions
+            count--;
+            if (count == 0) {
+                break;
+            }
+
+            // Move the sprite back
+            // This will cause repeated collisions
+            // Want to make sure that works
+            x = 380;
+            spriteIdxSetXY(1, 1, x, 235);
         }
     }
+
+    // Disable sprite collisions before quitting
+    // or the UI hangs if sprites are still touching.
+    // POKE(0x9F26, 1);
+    spriteCollisionsDisable();
 }
 
 // To build and run

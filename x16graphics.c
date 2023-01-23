@@ -100,13 +100,18 @@ void spriteSetZDepth(enum ZDepth zDepth) {
     POKE(VMEM_DATA_0, zDepth<<2);
 }
 
+void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {
+    // Set together because they are in the same byte
+    POKE(VMEM_DATA_0, zDepth<<2 | collisionMask<<4);
+}
+
 void spriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height) {
     POKE(VMEM_DATA_0, height<<6 | width<<4);
 }
 
 void spriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
-    enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height) {
+    unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height) {
     
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8));
@@ -121,6 +126,21 @@ void spriteInit(unsigned char spriteBank, unsigned char spriteIdx,
 
     // Set X/Y, ZDepth, and width/height
     spriteSetXY(0, 0);
-    spriteSetZDepth(zDepth);
+
+    // Set together because they are in the same byte
+    spriteSetZDepthAndCollisionMask(zDepth, collisionMask);
     spriteSetWidthHeight(width, height);
+}
+
+void spriteCollisionsEnable() {
+    POKE(IEN_REG, PEEK(IEN_REG) | SPRCOL_MASK);
+}
+
+void spriteCollisionsDisable() {
+    POKE(IEN_REG, PEEK(IEN_REG) & (255 - SPRCOL_MASK));
+}
+
+unsigned char spriteCollisionBitsGet() {
+    // Get the Collision bits and shift them down
+    return (PEEK(ISR_REG) & 0b11110000)>>4;
 }
