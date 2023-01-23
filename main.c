@@ -2,6 +2,7 @@
 #include <6502.h>
 #include <cx16.h>
 #include <joystick.h>
+#include <conio.h>
 #include "x16graphics.h"
 #include "waitforjiffy.h"
 
@@ -16,6 +17,9 @@ void main() {
     unsigned short spriteGraphicsAddr = 0x4000;
     unsigned char collision;
     unsigned char joy;
+
+    // clear the screen to start
+    clrscr();
 
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
