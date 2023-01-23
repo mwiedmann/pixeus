@@ -1,5 +1,7 @@
 #include <peekpoke.h>
 #include <6502.h>
+#include <cx16.h>
+#include <joystick.h>
 #include "x16graphics.h"
 #include "waitforjiffy.h"
 
@@ -13,7 +15,7 @@ void main() {
     unsigned char d;
     unsigned short spriteGraphicsAddr = 0x4000;
     unsigned char collision;
-    unsigned char count;
+    unsigned char joy;
 
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
@@ -41,14 +43,34 @@ void main() {
     spriteInit(1, 1, 1, 0, spriteGraphicsAddr, 6, InFrontOfL1, PX16, PX16);
 
     spriteIdxSetXY(1, 0, 320, 240);
-    spriteIdxSetXY(1, 1, 380, 235);
 
-    // Collide 5 times then quit
-    count = 5;
+    x = 380;
+    y = 235;
+    spriteIdxSetXY(1, 1, x, y);
 
-    for (x=380; x>0; x--) {
+    joy_install(cx16_std_joy);
+    
+    while (1) {
         waitforjiffy();
-        spriteIdxSetXY(1, 1, x, 235);
+        
+        joy = joy_read(0);
+        if (JOY_UP(joy)) {
+            y--;
+        } else if (JOY_DOWN(joy)) {
+            y++;
+        }
+
+        if (JOY_LEFT(joy)) {
+            x--;
+        } else if (JOY_RIGHT(joy)) {
+            x++;
+        }
+
+        if (JOY_BTN_1(joy)) {
+            break;
+        }
+
+        spriteIdxSetXY(1, 1, x, y);
 
         // Get the Collision bits and shift them down
         collision = spriteCollisionBitsGet();
@@ -56,17 +78,12 @@ void main() {
         // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
         // We can then look at all the sprites that have that bit in their mask
         if (collision == 2) {
-            // Quit after a certain number of collisions
-            count--;
-            if (count == 0) {
-                break;
-            }
-
             // Move the sprite back
             // This will cause repeated collisions
             // Want to make sure that works
             x = 380;
-            spriteIdxSetXY(1, 1, x, 235);
+            y = 235;
+            spriteIdxSetXY(1, 1, x, y);
         }
     }
 
