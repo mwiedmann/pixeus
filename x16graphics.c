@@ -48,9 +48,7 @@ void vMemSetData1(unsigned char val) {
 }
 
 void spriteSetGlobalOn() {
-    unsigned char currentCleared = PEEK(VMEM_VIDEO) & VMEM_SPRITE_ENABLE_MASK;
-    unsigned char newVal = 0b01000000 | currentCleared;
-    POKE(VMEM_VIDEO, newVal);
+    POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) | 0b01000000);
 }
 
 void spriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
@@ -160,4 +158,14 @@ unsigned char spriteCollisionIRQHandler()
     }
 
     return IRQ_NOT_HANDLED;
+}
+
+unsigned char memoryToMapMemoryAddress(unsigned char bank, unsigned short mem) {
+    unsigned char mapMem = bank << 7 | mem >> 9;
+    return mapMem;
+}
+
+unsigned char tileBaseConfig(unsigned char bank, unsigned short mem, unsigned char height, unsigned char width) {
+    unsigned char tileConfig = bank << 7 | ((mem >> 11) << 2) | height << 1 | width;
+    return tileConfig;
 }

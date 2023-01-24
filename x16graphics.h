@@ -17,6 +17,14 @@
 #define SPRITE_MEM_START 0xFC00
 #define SPRCOL_MASK 4
 
+#define LAYER_0_CONFIG 0x9F2D
+#define LAYER_0_MAPBASE 0x9F2E
+#define LAYER_0_TILEBASE 0x9F2F
+
+#define LAYER_1_CONFIG 0x9F34
+#define LAYER_1_MAPBASE 0x9F35
+#define LAYER_1_TILEBASE 0x9F36
+
 enum ZDepth { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 };
 enum SpriteSize { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 };
 
@@ -154,5 +162,18 @@ unsigned char spriteCollisionBitsGet();
  * Make sure to disable collisions (spriteCollisionsDisable) on program exit.
 */
 unsigned char spriteCollisionIRQHandler();
+
+/**
+ * Convert a bank and memory address into a Map memory address.
+ * Map memory uses bytes 9-16 (with 16 being the bank).
+ * This means you can only address in 512 byte increments.
+*/
+unsigned char memoryToMapMemoryAddress(unsigned char bank, unsigned short mem);
+
+/**
+ * Convert a bank and memory address into a tile memory address.
+ * Also add the heigh/width bits
+*/
+unsigned char tileBaseConfig(unsigned char bank, unsigned short mem, unsigned char height, unsigned char width);
 
 #endif
