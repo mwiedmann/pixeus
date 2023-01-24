@@ -70,7 +70,7 @@ void tilesConfig() {
     // Make a dashed tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
-            if (y % 3 == 0) {
+            if (y % 2 == 0 && x % 2 == 0) {
                 vMemSetData0(115);
             } else {
                 vMemSetData0(0);
@@ -90,32 +90,28 @@ void layerMapsAddSomeStuff() {
     unsigned short x;
     unsigned short y;
 
-    // Set some tiles in the map for Layer 0
+    // Set some tiles in the map for Layer 0 (background)
+    // All tiles filled in with tile 1
     vMemSetBank0();
     vMemSetAddr(LAYER0_MAP_MEM);
     vMemSetIncMode(1);
-
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
-            if (x!=0 && y !=0 & x!=63 && y!=31 && x % 2 == 0 && y % 2 == 0) {
-                vMemSetData0(0);
-                vMemSetData0(0);
-            } else {
-                vMemSetData0(2);
-                vMemSetData0(0);
-            }
+            vMemSetData0(1);
+            vMemSetData0(0);
         }
     }
 
 
-    // Set some tiles in the map for Layer 1
+    // Set some tiles in the map for Layer 1 (foreground)
+    // Add a grid of tiles using tile 0 and tile 2 (empty)
     vMemSetAddr(LAYER1_MAP_MEM);
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
             // vMemSetData0(2);
             // vMemSetData0(0);
             if (x!=0 && y !=0 & x!=63 && y!=31 && x % 3 == 0 && y % 3 == 0) {
-                vMemSetData0(1);
+                vMemSetData0(0);
                 vMemSetData0(0);
             } else {
                 vMemSetData0(2);
@@ -136,9 +132,9 @@ void spritesCreate() {
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
     
-    // Poke a block of solid data into vmem
-    // use as sprite data
-    for (i=0; i<256; i++) {
+    // Poke a block of solid data into vmem to use as sprite data
+    // Big enough for 32x32 sprites
+    for (i=0; i<32*32; i++) {
         vMemSetData0(199);
     }
 
@@ -155,6 +151,7 @@ void main() {
     unsigned short y;
     unsigned char collision;
     unsigned char joy;
+    unsigned char speed = 2;
 
     videoConfig();
     tilesConfig();
@@ -163,7 +160,7 @@ void main() {
 
     // Let's do a sprite collision test
     spriteInit(1, 0, 1, 0, SPRITE_MEM, 3, BetweenL0L1, PX16, PX16);
-    spriteInit(1, 1, 1, 0, SPRITE_MEM, 6, BetweenL0L1, PX16, PX16);
+    spriteInit(1, 1, 1, 0, SPRITE_MEM, 6, BetweenL0L1, PX32, PX32);
 
     spriteIdxSetXY(1, 0, 320, 240);
 
@@ -178,15 +175,15 @@ void main() {
         
         joy = joy_read(0);
         if (JOY_UP(joy)) {
-            y--;
+            y-=speed;
         } else if (JOY_DOWN(joy)) {
-            y++;
+            y+=speed;
         }
 
         if (JOY_LEFT(joy)) {
-            x--;
+            x-=speed;
         } else if (JOY_RIGHT(joy)) {
-            x++;
+            x+=speed;
         }
 
         if (JOY_BTN_1(joy)) {
