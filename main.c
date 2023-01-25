@@ -152,6 +152,9 @@ void main() {
     unsigned char collision;
     unsigned char joy;
     unsigned char speed = 2;
+    short bulletX = 520;
+    short bulletY = 240;
+    unsigned char bulletActive = 0;
 
     videoConfig();
     tilesConfig();
@@ -159,15 +162,18 @@ void main() {
     spritesCreate();
 
     // Let's do a sprite collision test
-    spriteInit(1, 0, 1, 0, SPRITE_MEM, 3, BetweenL0L1, PX16, PX16);
-    spriteInit(1, 1, 1, 0, SPRITE_MEM, 6, BetweenL0L1, PX32, PX32);
-
+    spriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX16, PX16); // bad guy
     spriteIdxSetXY(1, 0, 320, 240);
 
+    spriteInit(1, 1, 1, 0, SPRITE_MEM, 0b1101, BetweenL0L1, PX32, PX32); // player
     x = 380;
     y = 235;
     spriteIdxSetXY(1, 1, x, y);
 
+    spriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, BetweenL0L1, PX16, PX8); // bullet
+    spriteIdxSetXY(1, 2, bulletX, bulletY);
+    
+    // Configure the joysticks
     joy_install(cx16_std_joy);
     
     while (1) {
@@ -186,8 +192,22 @@ void main() {
             x+=speed;
         }
 
+        // Quit
         if (JOY_BTN_1(joy)) {
             break;
+        }
+
+        if (bulletActive == 1) {
+            bulletX-= 4;
+            spriteIdxSetXY(1, 2, bulletX, bulletY);
+        }
+
+        if (JOY_BTN_2(joy) && bulletActive==0) {
+            bulletActive = 1;
+            bulletX = x;
+            bulletY = y;
+            spriteIdxSetZDepth(1, 2, BetweenL0L1);
+            spriteIdxSetXY(1, 2, bulletX, bulletY);
         }
 
         spriteIdxSetXY(1, 1, x, y);
@@ -197,13 +217,24 @@ void main() {
 
         // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
         // We can then look at all the sprites that have that bit in their mask
-        if (collision == 2) {
+
+        // Player and Enemy collisions
+        if (collision == 0b1001) {
             // Move the sprite back
             // This will cause repeated collisions
             // Want to make sure that works
             x = 380;
             y = 235;
             spriteIdxSetXY(1, 1, x, y);
+        } else if (collision == 0b1010) {
+            bulletActive = 0;
+            spriteIdxSetZDepth(1, 2, Disabled);
+        }
+
+        // Bullet is off screen
+        if (bulletX < 0) {
+            bulletActive = 0;
+            spriteIdxSetZDepth(1, 2, Disabled);
         }
     }
 

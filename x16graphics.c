@@ -81,7 +81,7 @@ void spriteSetXY(unsigned short x, unsigned short y) {
     // Each position is spread across 2 registers
     // First one takes the 1st 8 bits
     // Second one takes the next 2 bits (hence the /256)
-    // Assumes Inc mode 1
+    vMemSetIncMode(1);
     POKE(VMEM_DATA_0, x & 0xFF);
     POKE(VMEM_DATA_0, x/256);
     POKE(VMEM_DATA_0, y & 0xFF);
@@ -91,12 +91,14 @@ void spriteSetXY(unsigned short x, unsigned short y) {
 void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 2); // +2 to point to the X Position Offset
-    vMemSetIncMode(1);
     spriteSetXY(x, y);
 }
 
-void spriteSetZDepth(enum ZDepth zDepth) {
-    POKE(VMEM_DATA_0, zDepth<<2);
+void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth) {
+    vMemSetBank(spriteBank);
+    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
+    vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
+    POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11110011) | zDepth<<2);
 }
 
 void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {

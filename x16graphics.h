@@ -113,9 +113,8 @@ void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned 
 
 /**
  * Sets the Z-depth on a sprite
- * Assumes the Video Memory address is pointing at the correct sprite ZDepth position (Offset 6)
 */
-void spriteSetZDepth(enum ZDepth zDepth);
+void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth);
 
 /**
  * Sets the Z-depth and collision mask on a sprite (they share the same byte)
