@@ -28,6 +28,8 @@
 enum ZDepth { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 };
 enum SpriteSize { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 };
 
+unsigned char pixelSizes[];
+
 struct MemSplit {
     unsigned char low; 
     unsigned char high;
@@ -84,19 +86,19 @@ void vMemSetData1(unsigned char val);
  * Turn on the global sprites flag
  * Sets the "Video" $9F29 bit 6 to 1
 */
-void spriteSetGlobalOn();
+void x16SpriteSetGlobalOn();
 
 /**
  * Sets the graphic address on a sprite
  * Assumes the bank and sprite address have already been set (see vMemSetBank and vMemSetAddr)
  * and Inc Mode is 1 (1 byte)
 */
-void spriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr);
+void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr);
 
 /**
  * Sets the graphic address on a sprite
 */
-void spriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
+void x16SpriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr);
 
 /**
@@ -104,59 +106,59 @@ void spriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteI
  * Assumes the Video Memory address is pointing at the correct sprite X Position (Offset 2)
  * and Inc Mode is 1 (1 byte)
 */
-void spriteSetXY(unsigned short x, unsigned short y);
+void x16SpriteSetXY(unsigned short x, unsigned short y);
 
 /**
  * Sets the X,Y values on a sprite
 */
-void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y);
+void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y);
 
 /**
  * Sets the Z-depth on a sprite
 */
-void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth);
+void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth);
 
 /**
  * Set the H-Flip on a sprite
 */
-void spriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip);
+void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip);
 
 /**
  * Sets the Z-depth and collision mask on a sprite (they share the same byte)
  * Assumes the Video Memory address is pointing at the correct sprite ZDepth position (Offset 6)
 */
-void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask);
+void x16SpriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask);
 
 /**
  * Sets the width and height on a sprite
  * Assumes the Video Memory address is pointing at the correct sprite Width/Height position (Offset 7)
 */
-void spriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height);
+void x16SpriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height);
 
 /**
  * Initialize a sprite.
  * Includes assigning the graphics and setting most of the required fields
  * like color mode, zDepth, width, height
 */
-void spriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
+void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
     unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height);
 
 /**
  * Enable global sprite collision detection
 */
-void spriteCollisionsEnable();
+void x16SpriteCollisionsEnable();
 
 /**
  * Disable global sprite collision detection
 */
-void spriteCollisionsDisable();
+void x16SpriteCollisionsDisable();
 
 /**
  * Get the sprite collision bits (shifted down)
  * These give the overlap of which collision masks collided.
 */
-unsigned char spriteCollisionBitsGet();
+unsigned char x16SpriteCollisionBitsGet();
 
 /**
  * Use this function as the "irq_handler f" param for "set_irq" (6502.h) to handle IRQ for collisions.
@@ -165,7 +167,7 @@ unsigned char spriteCollisionBitsGet();
  * Make sure to enable collisions (spriteCollisionsEnable).
  * Make sure to disable collisions (spriteCollisionsDisable) on program exit.
 */
-unsigned char spriteCollisionIRQHandler();
+unsigned char x16SpriteCollisionIRQHandler();
 
 /**
  * Convert a bank and memory address into a Map memory address.

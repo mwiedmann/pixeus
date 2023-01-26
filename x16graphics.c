@@ -2,6 +2,8 @@
 #include <6502.h>
 #include "x16graphics.h"
 
+unsigned char pixelSizes[4] = {8, 16, 32, 64};
+
 struct MemSplit splitMem(unsigned short addr) {
     struct MemSplit ms;
     ms.low = addr & 255;
@@ -47,11 +49,11 @@ void vMemSetData1(unsigned char val) {
     POKE(VMEM_DATA_1, val);
 }
 
-void spriteSetGlobalOn() {
+void x16SpriteSetGlobalOn() {
     POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) | 0b01000000);
 }
 
-void spriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
+void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
     // This is a little wonky but stay with me
     // Video Memory addresses at 17bits (1 for the "bank" and 16 for the address)
     // The Sprite "Pointer to sprite graphics" is only 12 bits
@@ -69,15 +71,15 @@ void spriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graph
     POKE(VMEM_DATA_0, addr1 | mode | graphicsBankVal);
 }
 
-void spriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
+void x16SpriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8));
     vMemSetIncMode(1);
-    spriteSetGraphicsPointer(use256ColorMode, graphicsBank, graphicsAddr);
+    x16SpriteSetGraphicsPointer(use256ColorMode, graphicsBank, graphicsAddr);
 }
 
-void spriteSetXY(unsigned short x, unsigned short y) {
+void x16SpriteSetXY(unsigned short x, unsigned short y) {
     // Each position is spread across 2 registers
     // First one takes the 1st 8 bits
     // Second one takes the next 2 bits (hence the /256)
@@ -88,36 +90,36 @@ void spriteSetXY(unsigned short x, unsigned short y) {
     POKE(VMEM_DATA_0, y/256);
 }
 
-void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y) {
+void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 2); // +2 to point to the X Position Offset
-    spriteSetXY(x, y);
+    x16SpriteSetXY(x, y);
 }
 
-void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth) {
+void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11110011) | zDepth<<2);
 }
 
-void spriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip) {
+void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11111110) | hflip);
 }
 
-void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {
+void x16SpriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {
     // Set together because they are in the same byte
     POKE(VMEM_DATA_0, zDepth<<2 | collisionMask<<4);
 }
 
-void spriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height) {
+void x16SpriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height) {
     POKE(VMEM_DATA_0, height<<6 | width<<4);
 }
 
-void spriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
+void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
     unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height) {
     
@@ -130,30 +132,30 @@ void spriteInit(unsigned char spriteBank, unsigned char spriteIdx,
 
     // Point our sprite at the graphics block
     // This also handles setting color color mode (usually 256)
-    spriteSetGraphicsPointer(use256ColorMode, graphicsBank, graphicsAddr);
+    x16SpriteSetGraphicsPointer(use256ColorMode, graphicsBank, graphicsAddr);
 
     // Set X/Y, ZDepth, and width/height
-    spriteSetXY(0, 0);
+    x16SpriteSetXY(0, 0);
 
     // Set together because they are in the same byte
-    spriteSetZDepthAndCollisionMask(zDepth, collisionMask);
-    spriteSetWidthHeight(width, height);
+    x16SpriteSetZDepthAndCollisionMask(zDepth, collisionMask);
+    x16SpriteSetWidthHeight(width, height);
 }
 
-void spriteCollisionsEnable() {
+void x16SpriteCollisionsEnable() {
     POKE(IEN_REG, PEEK(IEN_REG) | SPRCOL_MASK);
 }
 
-void spriteCollisionsDisable() {
+void x16SpriteCollisionsDisable() {
     POKE(IEN_REG, PEEK(IEN_REG) & (255 - SPRCOL_MASK));
 }
 
-unsigned char spriteCollisionBitsGet() {
+unsigned char x16SpriteCollisionBitsGet() {
     // Get the Collision bits and shift them down
     return (PEEK(ISR_REG) & 0b11110000)>>4;
 }
 
-unsigned char spriteCollisionIRQHandler()
+unsigned char x16SpriteCollisionIRQHandler()
 {
     // See if the SPRCOL flag (bit 2) is set on the IEN register
     unsigned char collision = PEEK(IEN_REG) & SPRCOL_MASK;

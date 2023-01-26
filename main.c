@@ -4,6 +4,7 @@
 #include <joystick.h>
 #include <conio.h>
 #include "x16graphics.h"
+#include "sprites.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -151,11 +152,11 @@ void spritesCreate() {
         }
     }
     // Turn on sprites
-    spriteSetGlobalOn();
+    x16SpriteSetGlobalOn();
 
     // Setup the IRQ handler for sprite collisions and enable global sprite collisions
-    set_irq(&spriteCollisionIRQHandler, IRQHandlerStack, IRQ_HANDLER_STACK_SIZE);
-    spriteCollisionsEnable();
+    set_irq(&x16SpriteCollisionIRQHandler, IRQHandlerStack, IRQ_HANDLER_STACK_SIZE);
+    x16SpriteCollisionsEnable();
 }
 
 void main() {
@@ -172,22 +173,41 @@ void main() {
     unsigned char guyAnimGo = 0;
     unsigned char guyAnimDir = 0;
 
+    Sprite player;
+    player.index = 1;
+    player.spriteBank = 1;
+    player.clrMode = 1;
+    player.collisionMask = 0b1101;
+    player.zDepth = BetweenL0L1;
+    player.width = PX32;
+    player.height = PX32;
+    player.graphicsBank = 0;
+    player.graphicsAddress = SPRITE_MEM+1024;
+    player.frames = 8;
+    player.frameSize = 1024; // Calculated as width * height
+    player.animationCount = 0;
+    player.animationSpeed = 6;
+    player.animationStopFrame = 4;
+    player.animationDirection = 0;
+    player.x = 380;
+    player.y = 235;
+
     videoConfig();
     tilesConfig();
     layerMapsAddSomeStuff();
     spritesCreate();
 
     // Let's do a sprite collision test
-    spriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX32, PX32); // bad guy
-    spriteIdxSetXY(1, 0, 320, 240);
+    x16SpriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX32, PX32); // bad guy
+    x16SpriteIdxSetXY(1, 0, 320, 240);
 
-    spriteInit(1, 1, 1, 0, SPRITE_MEM+1024, 0b1101, BetweenL0L1, PX32, PX32); // player
+    spriteInit(&player); // player
     x = 380;
     y = 235;
-    spriteIdxSetXY(1, 1, x, y);
+    x16SpriteIdxSetXY(1, 1, x, y);
 
-    spriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, Disabled, PX16, PX8); // bullet
-    spriteIdxSetXY(1, 2, bulletX, bulletY);
+    x16SpriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, Disabled, PX16, PX8); // bullet
+    x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -219,7 +239,7 @@ void main() {
             // We also flip the animation depending on direction
             if (guyAnimDir != 1) {
                 guyAnimDir=1;
-                spriteIdxSetHFlip(1, 1, guyAnimDir);
+                x16SpriteIdxSetHFlip(1, 1, guyAnimDir);
             }
             x-=speed;
         } else if (JOY_RIGHT(joy)) {
@@ -227,7 +247,7 @@ void main() {
             // Maybe flip animation
             if (guyAnimDir != 0) {
                 guyAnimDir=0;
-                spriteIdxSetHFlip(1, 1, guyAnimDir);
+                x16SpriteIdxSetHFlip(1, 1, guyAnimDir);
             }
             x+=speed;
         }
@@ -239,13 +259,13 @@ void main() {
             if (guyAnimFrame == 8) {
                 guyAnimFrame = 0;
             }
-            spriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
+            x16SpriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
         } else if (guyAnimCount == 6 && guyAnimFrame != 4) {
             // If the guy is standing still, always show a certain frame
             // In future this could be a totally different animation
             // We have a yawn animation for instance for when waiting too long.
             guyAnimFrame = 4;
-            spriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
+            x16SpriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
         }
         
         // Quit
@@ -255,21 +275,21 @@ void main() {
 
         if (bulletActive == 1) {
             bulletX-= 4;
-            spriteIdxSetXY(1, 2, bulletX, bulletY);
+            x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
         }
 
         if (JOY_BTN_2(joy) && bulletActive==0) {
             bulletActive = 1;
             bulletX = x;
             bulletY = y;
-            spriteIdxSetZDepth(1, 2, BetweenL0L1);
-            spriteIdxSetXY(1, 2, bulletX, bulletY);
+            x16SpriteIdxSetZDepth(1, 2, BetweenL0L1);
+            x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
         }
 
-        spriteIdxSetXY(1, 1, x, y);
+        x16SpriteIdxSetXY(1, 1, x, y);
 
         // Get the Collision bits and shift them down
-        collision = spriteCollisionBitsGet();
+        collision = x16SpriteCollisionBitsGet();
 
         // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
         // We can then look at all the sprites that have that bit in their mask
@@ -281,20 +301,20 @@ void main() {
             // Want to make sure that works
             x = 380;
             y = 235;
-            spriteIdxSetXY(1, 1, x, y);
+            x16SpriteIdxSetXY(1, 1, x, y);
         } else if (collision == 0b1010) {
             bulletActive = 0;
-            spriteIdxSetZDepth(1, 2, Disabled);
+            x16SpriteIdxSetZDepth(1, 2, Disabled);
         }
 
         // Bullet is off screen
         if (bulletX < 0) {
             bulletActive = 0;
-            spriteIdxSetZDepth(1, 2, Disabled);
+            x16SpriteIdxSetZDepth(1, 2, Disabled);
         }
     }
 
     // Disable sprite collisions before quitting
     // or the UI hangs if sprites are still touching.
-    spriteCollisionsDisable();
+    x16SpriteCollisionsDisable();
 }
