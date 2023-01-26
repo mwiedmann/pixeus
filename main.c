@@ -18,6 +18,9 @@ unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 #define TILE_MEM 8192
 #define SPRITE_MEM 0x4000
 
+// External Sprites
+extern unsigned char guytestSprite[];
+
 void videoConfig() {
     // clear the screen to start
     clrscr();
@@ -138,6 +141,9 @@ void spritesCreate() {
         vMemSetData0(199);
     }
 
+    for (i=0; i<512; i++) {
+        vMemSetData0(guytestSprite[i]);
+    }
     // Turn on sprites
     spriteSetGlobalOn();
 
@@ -165,7 +171,7 @@ void main() {
     spriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX16, PX16); // bad guy
     spriteIdxSetXY(1, 0, 320, 240);
 
-    spriteInit(1, 1, 1, 0, SPRITE_MEM, 0b1101, BetweenL0L1, PX32, PX32); // player
+    spriteInit(1, 1, 1, 0, SPRITE_MEM+1024, 0b1101, BetweenL0L1, PX16, PX32); // player
     x = 380;
     y = 235;
     spriteIdxSetXY(1, 1, x, y);
