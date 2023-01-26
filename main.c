@@ -163,40 +163,71 @@ void spriteIRQConfig() {
     x16SpriteCollisionsEnable();
 }
 
-void playerCreate(Sprite *player) {
-    player->index = 1;
-    player->spriteBank = 1;
-    player->clrMode = 1;
-    player->collisionMask = 0b1101;
-    player->zDepth = BetweenL0L1;
-    player->width = PX32;
-    player->height = PX32;
-    player->graphicsBank = 0;
-    player->graphicsAddress = SPRITE_MEM+1024;
-    player->frames = 8;
-    player->frameSize = 1024; // Calculated as width * height
-    player->animationCount = 0;
-    player->animationSpeed = 6;
-    player->animationStopFrame = 4;
-    player->animationDirection = 0;
-    player->animationFrame = 0;
-    player->x = 380;
-    player->y = 235;
+void playerCreate(Sprite *p) {
+    p->index = 1;
+    p->spriteBank = 1;
+    p->clrMode = 1;
+    p->collisionMask = 0b1101;
+    p->zDepth = BetweenL0L1;
+    p->width = PX32;
+    p->height = PX32;
+    p->graphicsBank = 0;
+    p->graphicsAddress = SPRITE_MEM+1024;
+    p->frames = 8;
+    p->frameSize = 1024; // Calculated as width * height
+    p->animationCount = 0;
+    p->animationSpeed = 6;
+    p->animationStopFrame = 4;
+    p->animationDirection = 0;
+    p->animationFrame = 0;
+    p->x = 380;
+    p->y = 235;
+    p->speed = 2;
 
-    spriteInit(player);
-    x16SpriteIdxSetXY(player->spriteBank, player->index, player->x, player->y);
+    spriteInit(p);
+    x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
+}
+
+void badguyCreate(Sprite *bg) {
+    bg->index = 0;
+    bg->spriteBank = 1;
+    bg->clrMode = 1;
+    bg->collisionMask = 0b1011;
+    bg->zDepth = BetweenL0L1;
+    bg->width = PX32;
+    bg->height = PX32;
+    bg->graphicsBank = 0;
+    bg->graphicsAddress = SPRITE_MEM;
+    bg->frames = 1;
+    bg->x = 320;
+    bg->y = 240;
+
+    spriteInit(bg);
+    x16SpriteIdxSetXY(bg->spriteBank, bg->index, bg->x, bg->y);
+}
+
+void bulletCreate(Sprite *b) {
+    b->index = 2;
+    b->spriteBank = 1;
+    b->clrMode = 1;
+    b->collisionMask = 0b1010;
+    b->zDepth = Disabled;
+    b->width = PX16;
+    b->height = PX8;
+    b->graphicsBank = 0;
+    b->graphicsAddress = SPRITE_MEM;
+    b->frames = 1;
+    b->x = 320;
+    b->y = 240;
+
+    spriteInit(b);
 }
 
 void main() {
     unsigned char collision;
     unsigned char joy;
-    unsigned char speed = 2;
-    unsigned char guyAnimGo = 0;
-    short bulletX = 520;
-    short bulletY = 240;
-    unsigned char bulletActive = 0;
 
-    Sprite player;
+    Sprite player, badguy, bullet;
     
     videoConfig();
     tilesConfig();
@@ -206,13 +237,8 @@ void main() {
 
     // Create the sprites
     playerCreate(&player);
-
-    // Let's do a sprite collision test
-    x16SpriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX32, PX32); // bad guy
-    x16SpriteIdxSetXY(1, 0, 320, 240);
-
-    x16SpriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, Disabled, PX16, PX8); // bullet
-    x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
+    badguyCreate(&badguy);
+    bulletCreate(&bullet);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -222,7 +248,7 @@ void main() {
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.
-        guyAnimGo=0;
+        player.going=0;
         player.animationCount++;
 
         // We are changing the guys animation every 6 game loops
@@ -233,33 +259,33 @@ void main() {
 
         joy = joy_read(0);
         if (JOY_UP(joy)) {
-            player.y-=speed;
-            guyAnimGo=1;
+            player.y-=player.speed;
+            player.going=1;
         } else if (JOY_DOWN(joy)) {
-            guyAnimGo=1;
-            player.y+=speed;
+            player.going=1;
+            player.y+=player.speed;
         }
 
         if (JOY_LEFT(joy)) {
-            guyAnimGo=1;
+            player.going=1;
             // We also flip the animation depending on direction
             if (player.animationDirection != 1) {
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            player.x-=speed;
+            player.x-=player.speed;
         } else if (JOY_RIGHT(joy)) {
-            guyAnimGo=1;
+            player.going=1;
             // Maybe flip animation
             if (player.animationDirection != 0) {
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            player.x+=speed;
+            player.x+=player.speed;
         }
 
         // Change animation if moving and hit loop count
-        if (guyAnimGo==1 && player.animationCount == player.animationSpeed) {
+        if (player.going==1 && player.animationCount == player.animationSpeed) {
             player.animationCount=0;
             player.animationFrame++;
             if (player.animationFrame == player.frames) {
@@ -281,17 +307,18 @@ void main() {
             break;
         }
 
-        if (bulletActive == 1) {
-            bulletX-= 4;
-            x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
+        if (bullet.active == 1) {
+            bullet.x-= 4;
+            x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
         }
 
-        if (JOY_BTN_2(joy) && bulletActive==0) {
-            bulletActive = 1;
-            bulletX = player.x;
-            bulletY = player.y;
-            x16SpriteIdxSetZDepth(1, 2, BetweenL0L1);
-            x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
+        if (JOY_BTN_2(joy) && bullet.active==0) {
+            bullet.active = 1;
+            bullet.x = player.x;
+            bullet.y = player.y;
+            bullet.zDepth = BetweenL0L1;
+            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
+            x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
         }
 
         x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
@@ -311,14 +338,17 @@ void main() {
             player.y = 235;
             x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
         } else if (collision == 0b1010) {
-            bulletActive = 0;
-            x16SpriteIdxSetZDepth(1, 2, Disabled);
+            // Bullet hit the badguy
+            bullet.active = 0;
+            bullet.zDepth = Disabled;
+            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
         }
 
         // Bullet is off screen
-        if (bulletX < 0) {
-            bulletActive = 0;
-            x16SpriteIdxSetZDepth(1, 2, Disabled);
+        if (bullet.x < 0) {
+            bullet.active = 0;
+            bullet.zDepth = Disabled;
+            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
         }
     }
 
