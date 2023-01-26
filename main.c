@@ -117,7 +117,7 @@ void layerMapsAddSomeStuff() {
     }    
 }
 
-void spritesCreate() {
+void spriteDataLoad() {
     unsigned short i;
     unsigned char frames, f;
     unsigned char width;
@@ -151,6 +151,10 @@ void spritesCreate() {
             }
         }
     }
+    
+}
+
+void spriteIRQConfig() {
     // Turn on sprites
     x16SpriteSetGlobalOn();
 
@@ -159,52 +163,53 @@ void spritesCreate() {
     x16SpriteCollisionsEnable();
 }
 
+void playerCreate(Sprite *player) {
+    player->index = 1;
+    player->spriteBank = 1;
+    player->clrMode = 1;
+    player->collisionMask = 0b1101;
+    player->zDepth = BetweenL0L1;
+    player->width = PX32;
+    player->height = PX32;
+    player->graphicsBank = 0;
+    player->graphicsAddress = SPRITE_MEM+1024;
+    player->frames = 8;
+    player->frameSize = 1024; // Calculated as width * height
+    player->animationCount = 0;
+    player->animationSpeed = 6;
+    player->animationStopFrame = 4;
+    player->animationDirection = 0;
+    player->animationFrame = 0;
+    player->x = 380;
+    player->y = 235;
+
+    spriteInit(player);
+    x16SpriteIdxSetXY(player->spriteBank, player->index, player->x, player->y);
+}
+
 void main() {
-    unsigned short x;
-    unsigned short y;
     unsigned char collision;
     unsigned char joy;
     unsigned char speed = 2;
+    unsigned char guyAnimGo = 0;
     short bulletX = 520;
     short bulletY = 240;
     unsigned char bulletActive = 0;
-    unsigned char guyAnimCount = 0;
-    unsigned char guyAnimFrame = 0;
-    unsigned char guyAnimGo = 0;
-    unsigned char guyAnimDir = 0;
 
     Sprite player;
-    player.index = 1;
-    player.spriteBank = 1;
-    player.clrMode = 1;
-    player.collisionMask = 0b1101;
-    player.zDepth = BetweenL0L1;
-    player.width = PX32;
-    player.height = PX32;
-    player.graphicsBank = 0;
-    player.graphicsAddress = SPRITE_MEM+1024;
-    player.frames = 8;
-    player.frameSize = 1024; // Calculated as width * height
-    player.animationCount = 0;
-    player.animationSpeed = 6;
-    player.animationStopFrame = 4;
-    player.animationDirection = 0;
-    player.x = 380;
-    player.y = 235;
-
+    
     videoConfig();
     tilesConfig();
     layerMapsAddSomeStuff();
-    spritesCreate();
+    spriteDataLoad();
+    spriteIRQConfig();
+
+    // Create the sprites
+    playerCreate(&player);
 
     // Let's do a sprite collision test
     x16SpriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX32, PX32); // bad guy
     x16SpriteIdxSetXY(1, 0, 320, 240);
-
-    spriteInit(&player); // player
-    x = 380;
-    y = 235;
-    x16SpriteIdxSetXY(1, 1, x, y);
 
     x16SpriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, Disabled, PX16, PX8); // bullet
     x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
@@ -218,54 +223,57 @@ void main() {
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.
         guyAnimGo=0;
-        guyAnimCount++;
+        player.animationCount++;
+
         // We are changing the guys animation every 6 game loops
         // but hold at this count as we only animate if moving.
-        if (guyAnimCount > 6) {
-            guyAnimCount=6;
+        if (player.animationCount > 6) {
+            player.animationCount=6;
         }
 
         joy = joy_read(0);
         if (JOY_UP(joy)) {
-            y-=speed;
+            player.y-=speed;
             guyAnimGo=1;
         } else if (JOY_DOWN(joy)) {
             guyAnimGo=1;
-            y+=speed;
+            player.y+=speed;
         }
 
         if (JOY_LEFT(joy)) {
             guyAnimGo=1;
             // We also flip the animation depending on direction
-            if (guyAnimDir != 1) {
-                guyAnimDir=1;
-                x16SpriteIdxSetHFlip(1, 1, guyAnimDir);
+            if (player.animationDirection != 1) {
+                player.animationDirection=1;
+                x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            x-=speed;
+            player.x-=speed;
         } else if (JOY_RIGHT(joy)) {
             guyAnimGo=1;
             // Maybe flip animation
-            if (guyAnimDir != 0) {
-                guyAnimDir=0;
-                x16SpriteIdxSetHFlip(1, 1, guyAnimDir);
+            if (player.animationDirection != 0) {
+                player.animationDirection=0;
+                x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            x+=speed;
+            player.x+=speed;
         }
 
         // Change animation if moving and hit loop count
-        if (guyAnimGo==1 && guyAnimCount == 6) {
-            guyAnimCount=0;
-            guyAnimFrame++;
-            if (guyAnimFrame == 8) {
-                guyAnimFrame = 0;
+        if (guyAnimGo==1 && player.animationCount == player.animationSpeed) {
+            player.animationCount=0;
+            player.animationFrame++;
+            if (player.animationFrame == player.frames) {
+                player.animationFrame = 0;
             }
-            x16SpriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
-        } else if (guyAnimCount == 6 && guyAnimFrame != 4) {
+            x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
+                player.graphicsAddress+(player.animationFrame * player.frameSize));
+        } else if (player.animationCount == player.animationSpeed && player.animationFrame != player.animationStopFrame) {
             // If the guy is standing still, always show a certain frame
             // In future this could be a totally different animation
             // We have a yawn animation for instance for when waiting too long.
-            guyAnimFrame = 4;
-            x16SpriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
+            player.animationFrame = player.animationStopFrame;
+            x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
+                player.graphicsAddress+(player.animationFrame * player.frameSize));
         }
         
         // Quit
@@ -280,13 +288,13 @@ void main() {
 
         if (JOY_BTN_2(joy) && bulletActive==0) {
             bulletActive = 1;
-            bulletX = x;
-            bulletY = y;
+            bulletX = player.x;
+            bulletY = player.y;
             x16SpriteIdxSetZDepth(1, 2, BetweenL0L1);
             x16SpriteIdxSetXY(1, 2, bulletX, bulletY);
         }
 
-        x16SpriteIdxSetXY(1, 1, x, y);
+        x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
 
         // Get the Collision bits and shift them down
         collision = x16SpriteCollisionBitsGet();
@@ -299,9 +307,9 @@ void main() {
             // Move the sprite back
             // This will cause repeated collisions
             // Want to make sure that works
-            x = 380;
-            y = 235;
-            x16SpriteIdxSetXY(1, 1, x, y);
+            player.x = 380;
+            player.y = 235;
+            x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             bulletActive = 0;
             x16SpriteIdxSetZDepth(1, 2, Disabled);

@@ -19,6 +19,7 @@ typedef struct Sprite {
     unsigned char animationSpeed;
     unsigned char animationStopFrame;
     unsigned char animationDirection;
+    unsigned char animationFrame;
     short x;
     short y;
 } Sprite;
