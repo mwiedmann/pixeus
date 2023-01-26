@@ -1,7 +1,9 @@
 CC=cl65
 
 make:
-	$(CC) -o x16test.prg -t cx16 x16graphics.c main.c sprites.c waitforjiffy.s guyrunImage.c
+	$(CC) -I lib -o x16test.prg -t cx16 main.c lib/x16graphics.c lib/sprites.c lib/waitforjiffy.s images/guyrunImage.c
 
 clean:
 	rm *.o
+	rm lib/*.o 
+	rm images/*.o
