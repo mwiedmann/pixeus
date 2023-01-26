@@ -101,6 +101,13 @@ void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum 
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11110011) | zDepth<<2);
 }
 
+void spriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip) {
+    vMemSetBank(spriteBank);
+    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
+    vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
+    POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11111110) | hflip);
+}
+
 void spriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {
     // Set together because they are in the same byte
     POKE(VMEM_DATA_0, zDepth<<2 | collisionMask<<4);

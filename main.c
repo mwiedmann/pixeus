@@ -19,7 +19,7 @@ unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 #define SPRITE_MEM 0x4000
 
 // External Sprites
-extern unsigned char guytestSprite[];
+extern unsigned char guyrunImage[];
 
 void videoConfig() {
     // clear the screen to start
@@ -62,22 +62,14 @@ void tilesConfig() {
     // Make a square tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
-            //if (x==0 || x==15 || y==0 || y==15) {
-                vMemSetData0(59);
-            // } else {
-            //     vMemSetData0(0);
-            // }
+                vMemSetData0(162);
         }
     }
 
-    // Make a dashed tile
+    // Make a light background
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
-            if (y % 2 == 0 && x % 2 == 0) {
-                vMemSetData0(115);
-            } else {
-                vMemSetData0(0);
-            }
+            vMemSetData0(138);            
         }
     }
 
@@ -126,6 +118,10 @@ void layerMapsAddSomeStuff() {
 
 void spritesCreate() {
     unsigned short i;
+    unsigned char frames, f;
+    unsigned char width;
+    unsigned char height, h;
+    unsigned short start;
 
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
@@ -141,8 +137,18 @@ void spritesCreate() {
         vMemSetData0(199);
     }
 
-    for (i=0; i<512; i++) {
-        vMemSetData0(guytestSprite[i]);
+    // This has multiple frames so we have to jump around
+    // Need to know the width, height, and number of frames
+    frames = 8;
+    height = 32;
+    width = 32;
+    for (f=0; f<8; f++) {
+        for (h=0; h<height; h++) {
+            start = (f * width) + (h * frames * width);
+            for (i=0; i<width; i++) {
+                vMemSetData0(guyrunImage[start+i]);
+            }
+        }
     }
     // Turn on sprites
     spriteSetGlobalOn();
@@ -161,6 +167,10 @@ void main() {
     short bulletX = 520;
     short bulletY = 240;
     unsigned char bulletActive = 0;
+    unsigned char guyAnimCount = 0;
+    unsigned char guyAnimFrame = 0;
+    unsigned char guyAnimGo = 0;
+    unsigned char guyAnimDir = 0;
 
     videoConfig();
     tilesConfig();
@@ -168,36 +178,76 @@ void main() {
     spritesCreate();
 
     // Let's do a sprite collision test
-    spriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX16, PX16); // bad guy
+    spriteInit(1, 0, 1, 0, SPRITE_MEM, 0b1011, BetweenL0L1, PX32, PX32); // bad guy
     spriteIdxSetXY(1, 0, 320, 240);
 
-    spriteInit(1, 1, 1, 0, SPRITE_MEM+1024, 0b1101, BetweenL0L1, PX16, PX32); // player
+    spriteInit(1, 1, 1, 0, SPRITE_MEM+1024, 0b1101, BetweenL0L1, PX32, PX32); // player
     x = 380;
     y = 235;
     spriteIdxSetXY(1, 1, x, y);
 
-    spriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, BetweenL0L1, PX16, PX8); // bullet
+    spriteInit(1, 2, 1, 0, SPRITE_MEM, 0b1010, Disabled, PX16, PX8); // bullet
     spriteIdxSetXY(1, 2, bulletX, bulletY);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
-    
+
     while (1) {
         waitforjiffy();
-        
+
+        // Count game loops so we can animate sprites.
+        // Only animate if the guy is moving.
+        guyAnimGo=0;
+        guyAnimCount++;
+        // We are changing the guys animation every 6 game loops
+        // but hold at this count as we only animate if moving.
+        if (guyAnimCount > 6) {
+            guyAnimCount=6;
+        }
+
         joy = joy_read(0);
         if (JOY_UP(joy)) {
             y-=speed;
+            guyAnimGo=1;
         } else if (JOY_DOWN(joy)) {
+            guyAnimGo=1;
             y+=speed;
         }
 
         if (JOY_LEFT(joy)) {
+            guyAnimGo=1;
+            // We also flip the animation depending on direction
+            if (guyAnimDir != 1) {
+                guyAnimDir=1;
+                spriteIdxSetHFlip(1, 1, guyAnimDir);
+            }
             x-=speed;
         } else if (JOY_RIGHT(joy)) {
+            guyAnimGo=1;
+            // Maybe flip animation
+            if (guyAnimDir != 0) {
+                guyAnimDir=0;
+                spriteIdxSetHFlip(1, 1, guyAnimDir);
+            }
             x+=speed;
         }
 
+        // Change animation if moving and hit loop count
+        if (guyAnimGo==1 && guyAnimCount == 6) {
+            guyAnimCount=0;
+            guyAnimFrame++;
+            if (guyAnimFrame == 8) {
+                guyAnimFrame = 0;
+            }
+            spriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
+        } else if (guyAnimCount == 6 && guyAnimFrame != 4) {
+            // If the guy is standing still, always show a certain frame
+            // In future this could be a totally different animation
+            // We have a yawn animation for instance for when waiting too long.
+            guyAnimFrame = 4;
+            spriteIdxSetGraphicsPointer(1, 1, 1, 0, SPRITE_MEM+1024+(guyAnimFrame * 1024));
+        }
+        
         // Quit
         if (JOY_BTN_1(joy)) {
             break;

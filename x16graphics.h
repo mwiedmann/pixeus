@@ -117,6 +117,11 @@ void spriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned 
 void spriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth);
 
 /**
+ * Set the H-Flip on a sprite
+*/
+void spriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip);
+
+/**
  * Sets the Z-depth and collision mask on a sprite (they share the same byte)
  * Assumes the Video Memory address is pointing at the correct sprite ZDepth position (Offset 6)
 */

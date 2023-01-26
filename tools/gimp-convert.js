@@ -1,14 +1,32 @@
+/**
+ * This reads in a GIMP "Raw image data - data,raw" file and converts it to 
+ * a .c file as an array of palette indexes that can be used as image data by sprites and tiles.
+ * 
+ * Usage: `node gimp-convert.js imagefile.data WIDTH`
+ * WIDTH: A number that is the width of a frame. Images may have multiple frames.
+ * 
+ * It attempts to match colors to the default palette by chosing the closest.
+ * Improvements may be needed in the algorith but it works pretty well.
+ * 
+ * To create the image data in GIMP, "Export" the image and Select "Raw image data" as the file type
+ * Make sure to remove the alpha channel or the data is not in the correct formap
+ * Layer -> Transparency -> Remove Alpha Channel
+ * 
+ * To use the image in your program:
+ * Add `extern unsigned char yournameImage[];`
+ * In the makefile, add the .c file to the compile list
+ */
+
 const fs = require("fs");
 
 const pixelData = [];
 
 const filename = process.argv[2];
 const width = parseInt(process.argv[3]);
-// const height = parseInt(process.argv[4])
-
 const fileparts = filename.split(".");
 
 console.log("filename", filename, "wdith", width);
+
 if (!filename) {
   throw new Error("Missing filename");
 }
@@ -18,6 +36,8 @@ if (!width) {
 
 const data = fs.readFileSync(filename);
 
+// The raw data is just a long array of bytes
+// Group them by 3 (r,g,b) into an array
 for (let i = 0; i < data.length; i += 3) {
   pixelData.push({
     r: data[i],
@@ -26,6 +46,7 @@ for (let i = 0; i < data.length; i += 3) {
   });
 }
 
+// This is the standard palette for the X16
 const palette = [
   { i: 0, r: 0, g: 0, b: 0 },
   { i: 1, r: 15, g: 15, b: 15 },
@@ -285,16 +306,18 @@ const palette = [
   { i: 255, r: 15, g: 0, b: 11 },
 ];
 
+// Scale the values down to a 0-15 range to match the PX16 palette
 const convertColor = (c) => {
   return c === 0 ? 0 : parseInt(c / 16);
 };
 
+// Find the closest color we can
 const findPalleteIdx = (cRec) => {
   let exact = undefined;
   let close = undefined;
   let closeAmt = 9999;
   let closeBiggestSingle = 999;
-  const maxSingleDiff = 3;
+  const maxSingleDiff = 6;
 
   for (let i = 0; i < palette.length; i++) {
     const pRec = palette[i];
@@ -330,21 +353,9 @@ const findPalleteIdx = (cRec) => {
   return close;
 };
 
-// const tests = [
-//   { r: 255, g: 0, b: 0 },
-//   { r: 128, g: 64, b: 32 },
-//   { r: 230, g: 92, b: 132 },
-// ].forEach((d) => {
-//   const converted = {
-//     r: convertColor(d.r),
-//     g: convertColor(d.g),
-//     b: convertColor(d.b),
-//   };
-//   console.log(d, converted, findPalleteIdx(converted));
-// });
-
 let conversionError = [];
 
+// Convert to the scaled down colors and find a match in the palette
 const convertedPixels = pixelData.map((d, idx) => {
   const sized = {
     r: convertColor(d.r),
@@ -353,20 +364,23 @@ const convertedPixels = pixelData.map((d, idx) => {
   };
   const result = findPalleteIdx(sized);
 
+  // We are pretty generous but its possible we don't find a match
   if (!result) {
     conversionError.push({ data: d, sized });
   }
 
-  return result;
+  return result ? result : { i: -9999 };
 });
 
-let output = `unsigned char ${fileparts[0]}Sprite[${pixelData.length}] = {`;
+// Spit out an array
+let output = `unsigned char ${fileparts[0]}Image[${pixelData.length}] = {`;
 
+// We attempt to format it nicely by width/height
+// When you look at the generated array you can kind of see the image
 convertedPixels.forEach((cp, idx) => {
   if (idx % width === 0) {
     output += "\n  ";
   }
-
   output +=
     cp.i.toString().padStart(3, " ") + (idx < convertedPixels.length - 1
       ? ","
@@ -379,6 +393,9 @@ if (conversionError.length > 0) {
   console.error("Conversion Error(s)", conversionError);
 }
 
-console.log(pixelData.length, output);
+const outputFilename = `../${fileparts[0]}Image.c`
+fs.writeFileSync(outputFilename, output);
 
-fs.writeFileSync(`../${fileparts[0]}Sprite.c`, output);
+console.log(`Generated file ${outputFilename} with ${pixelData.length} pixels`);
+console.log(`Add the following line of code to use in your program. Also update the makefile with this file.`)
+console.log(`extern unsigned char ${fileparts[0]}Image[];`)
