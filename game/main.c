@@ -1,30 +1,25 @@
 #include <peekpoke.h>
-#include <6502.h>
 #include <cx16.h>
 #include <joystick.h>
-#include <conio.h>
+
+// Libs
 #include "x16graphics.h"
 #include "sprites.h"
+
+// Game specific
+#include "gametiles.h"
+#include "gamesprites.h"
+#include "memmap.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
 #include "waitforjiffy.h"
 
-// Not sure how big the stack needs to be. Unclear how this works.
-#define IRQ_HANDLER_STACK_SIZE 8
-unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
-
-#define LAYER0_MAP_MEM 0
-#define LAYER1_MAP_MEM 4096
-#define TILE_MEM 8192
-#define SPRITE_MEM 0x4000
-
-// External Sprites
-extern unsigned char guyrunImage[];
-
 void videoConfig() {
     // clear the screen to start
-    clrscr();
+    // This happens when we draw the screen anyway. If we need again...
+    // #include <conio.h>
+    // clrscr();
 
     // We are using 640x480 with 256clr, 16x16 Tiles
     // Each tile is 256 bytes, but we won't need THAT many so this feels ok
@@ -51,37 +46,6 @@ void videoConfig() {
     POKE(LAYER_1_TILEBASE, tileBaseConfig(0, TILE_MEM, 1, 1));
 }
 
-void tilesConfig() {
-    unsigned short x;
-    unsigned short y;
-
-    // Put some stuff into LAYER 1 - Bank 1, TILE: 0xF000, MAP: 0xB000
-    vMemSetBank0();
-    vMemSetAddr(TILE_MEM);
-    vMemSetIncMode(1);
-
-    // Make a square tile
-    for (y=0; y < 16; y++) {
-        for (x=0; x < 16; x++) {
-                vMemSetData0(162);
-        }
-    }
-
-    // Make a light background
-    for (y=0; y < 16; y++) {
-        for (x=0; x < 16; x++) {
-            vMemSetData0(138);            
-        }
-    }
-
-    // Empty tile
-    for (y=0; y < 16; y++) {
-        for (x=0; x < 16; x++) {
-            vMemSetData0(0);
-        }
-    }
-}
-
 void layerMapsAddSomeStuff() {
     unsigned short x;
     unsigned short y;
@@ -98,14 +62,10 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-
     // Set some tiles in the map for Layer 1 (foreground)
-    // Add a grid of tiles using tile 0 and tile 2 (empty)
     vMemSetAddr(LAYER1_MAP_MEM);
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
-            // vMemSetData0(2);
-            // vMemSetData0(0);
             if (x!=0 && y !=0 & x!=63 && y!=31 && x % 3 == 0 && y % 3 == 0) {
                 vMemSetData0(0);
                 vMemSetData0(0);
@@ -115,112 +75,6 @@ void layerMapsAddSomeStuff() {
             }
         }
     }    
-}
-
-void spriteDataLoad() {
-    unsigned short i;
-    unsigned char frames, f;
-    unsigned char width;
-    unsigned char height, h;
-    unsigned short start;
-
-    // You have to set the address you want to write to in VMEM using 9F20/21
-    // 9F22 controls how much the VMEM address increments after each read/write
-    // Then you can peek or poke using 0x9F23
-    // The address is auto incremented and you can peek/poke again
-    vMemSetBank0();
-    vMemSetAddr(SPRITE_MEM);
-    vMemSetIncMode(1);
-    
-    // Poke a block of solid data into vmem to use as sprite data
-    // Big enough for 32x32 sprites
-    for (i=0; i<32*32; i++) {
-        vMemSetData0(199);
-    }
-
-    // This has multiple frames so we have to jump around
-    // Need to know the width, height, and number of frames
-    frames = 8;
-    height = 32;
-    width = 32;
-    for (f=0; f<8; f++) {
-        for (h=0; h<height; h++) {
-            start = (f * width) + (h * frames * width);
-            for (i=0; i<width; i++) {
-                vMemSetData0(guyrunImage[start+i]);
-            }
-        }
-    }
-    
-}
-
-void spriteIRQConfig() {
-    // Turn on sprites
-    x16SpriteSetGlobalOn();
-
-    // Setup the IRQ handler for sprite collisions and enable global sprite collisions
-    set_irq(&x16SpriteCollisionIRQHandler, IRQHandlerStack, IRQ_HANDLER_STACK_SIZE);
-    x16SpriteCollisionsEnable();
-}
-
-void playerCreate(Sprite *p) {
-    p->index = 1;
-    p->spriteBank = 1;
-    p->clrMode = 1;
-    p->collisionMask = 0b1101;
-    p->zDepth = BetweenL0L1;
-    p->width = PX32;
-    p->height = PX32;
-    p->graphicsBank = 0;
-    p->graphicsAddress = SPRITE_MEM+1024;
-    p->frames = 8;
-    p->frameSize = 1024; // Calculated as width * height
-    p->animationCount = 0;
-    p->animationSpeed = 6;
-    p->animationStopFrame = 4;
-    p->animationDirection = 0;
-    p->animationFrame = 0;
-    p->x = 380;
-    p->y = 235;
-    p->speed = 2;
-
-    spriteInit(p);
-    x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
-}
-
-void badguyCreate(Sprite *bg) {
-    bg->index = 0;
-    bg->spriteBank = 1;
-    bg->clrMode = 1;
-    bg->collisionMask = 0b1011;
-    bg->zDepth = BetweenL0L1;
-    bg->width = PX32;
-    bg->height = PX32;
-    bg->graphicsBank = 0;
-    bg->graphicsAddress = SPRITE_MEM;
-    bg->frames = 1;
-    bg->x = 320;
-    bg->y = 240;
-
-    spriteInit(bg);
-    x16SpriteIdxSetXY(bg->spriteBank, bg->index, bg->x, bg->y);
-}
-
-void bulletCreate(Sprite *b) {
-    b->index = 2;
-    b->spriteBank = 1;
-    b->clrMode = 1;
-    b->collisionMask = 0b1010;
-    b->zDepth = Disabled;
-    b->width = PX16;
-    b->height = PX8;
-    b->graphicsBank = 0;
-    b->graphicsAddress = SPRITE_MEM;
-    b->frames = 1;
-    b->x = 320;
-    b->y = 240;
-
-    spriteInit(b);
 }
 
 void main() {

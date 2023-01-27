@@ -1,5 +1,5 @@
-#ifndef X16_GRAPHICS
-#define X16_GRAPHICS
+#ifndef X16_GRAPHICS_H
+#define X16_GRAPHICS_H
 
 #define VMEM_ADDR_LO 0x9F20
 #define VMEM_ADDR_MED 0x9F21
