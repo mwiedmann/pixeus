@@ -73,7 +73,7 @@ void playerCreate(Sprite *p) {
     p->animationStopFrame = 4;
     p->animationDirection = 0;
     p->animationFrame = 0;
-    p->x = 100;
+    p->x = 150;
     p->y = 50;
     p->lastX = p->x;
     p->lastY = p->y;
@@ -94,7 +94,7 @@ void badguyCreate(Sprite *bg) {
     bg->graphicsBank = 0;
     bg->graphicsAddress = SPRITE_MEM;
     bg->frames = 1;
-    bg->x = 320;
+    bg->x = 420;
     bg->y = 240;
     bg->lastX = bg->x;
     bg->lastY = bg->y;

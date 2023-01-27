@@ -34,5 +34,7 @@ void spriteMove(Sprite *sprite, short x, short y);
 void spriteMoveX(Sprite *sprite, short x);
 void spriteMoveY(Sprite *sprite, short y);
 void spriteMoveBack(Sprite *sprite);
+void spriteMoveBackX(Sprite *sprite);
+void spriteMoveBackY(Sprite *sprite);
 
 #endif

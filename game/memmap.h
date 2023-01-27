@@ -17,5 +17,7 @@
 #define TILES_DOWN 32
 #define TILES_SCREEN_ACROSS 40
 #define TILES_SCREEN_DOWN 30
+#define TILE_PIXEL_WIDTH 16
+#define TILE_PIXEL_HEIGHT 16
 
 #endif

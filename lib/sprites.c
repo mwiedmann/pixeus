@@ -35,3 +35,11 @@ void spriteMoveBack(Sprite *sprite) {
     sprite->x = sprite->lastX;
     sprite->y = sprite->lastY;
 }
+
+void spriteMoveBackX(Sprite *sprite) {
+    sprite->x = sprite->lastX;
+}
+
+void spriteMoveBackY(Sprite *sprite) {
+    sprite->y = sprite->lastY;
+}

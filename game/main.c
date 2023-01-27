@@ -80,7 +80,7 @@ void layerMapsAddSomeStuff() {
     }    
 
     vMemSetBank(LAYER1_MAP_MEM_BANK);
-    for (i=0; i<3; i++) {
+    for (i=0; i<4; i++) {
         vMemSetAddr(LAYER1_MAP_MEM+(testLevel[i].y * TILES_ACROSS * 2)+(testLevel[i].x * 2));
         for (l=0; l<testLevel[i].length; l++) {
             vMemSetData0(2);
@@ -97,13 +97,13 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
     // Special signal that all is clear
     collisionTile->type = 255;
 
-    leftTile.x = player->x / 16;
-    leftTile.y = (player->y + pixelSizes[player->height]) / 16;
+    leftTile.x = player->x / TILE_PIXEL_WIDTH;
+    leftTile.y = (player->y + pixelSizes[player->height]) / TILE_PIXEL_HEIGHT;
 
-    rightTile.x = leftTile.x + 2;
+    rightTile.x = (player->x + pixelSizes[player->width]) / TILE_PIXEL_WIDTH;
     rightTile.y = leftTile.y;
 
-    for (i=0; i<3; i++) {
+    for (i=0; i<4; i++) {
         if (leftTile.y == testLevel[i].y &&
             leftTile.x >= testLevel[i].x &&
             leftTile.x <= testLevel[i].x + (testLevel[i].length-1)) {
@@ -159,12 +159,22 @@ void main() {
         joy = joy_read(0);
         // No moving up/down now
         // Player just falls
-        if (JOY_UP(joy)) {
-            spriteMoveY(&player, player.y-player.speed);
-            player.going=1;
-        } else if (JOY_DOWN(joy)) {
-            player.going=1;
-            spriteMoveY(&player, player.y+player.speed);
+        // if (JOY_UP(joy)) {
+        //     spriteMoveY(&player, player.y-player.speed);
+        //     player.going=1;
+        // } else if (JOY_DOWN(joy)) {
+        //     player.going=1;
+        //     spriteMoveY(&player, player.y+player.speed);
+        // }
+
+        // Falling
+        // Inefficient: We are checking here AND after moving X
+        // Might be ok and makes it easier to deal with moving him back
+        spriteMoveY(&player, player.y+3);
+        playerTouchingTile(&player, &tileCollision);
+        if (tileCollision.type != 255) {
+            // spriteMoveBackY(&player);
+            spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
         }
 
         if (JOY_LEFT(joy)) {
@@ -226,7 +236,7 @@ void main() {
         // Just move back for now
         playerTouchingTile(&player, &tileCollision);
         if (tileCollision.type != 255) {
-            spriteMoveBack(&player);
+            spriteMoveBackX(&player);
         }
 
         x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
@@ -240,7 +250,7 @@ void main() {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back
-            player.x = 380;
+            player.x = 350;
             player.y = 235;
             x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
         } else if (collision == 0b1010) {
