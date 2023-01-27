@@ -33,10 +33,10 @@ void spriteDataLoad() {
 
     // This has multiple frames so we have to jump around
     // Need to know the width, height, and number of frames
-    frames = 8;
-    height = 32;
-    width = 32;
-    for (f=0; f<8; f++) {
+    frames = 4;
+    height = 16;
+    width = 16;
+    for (f=0; f<frames; f++) {
         for (h=0; h<height; h++) {
             start = (f * width) + (h * frames * width);
             for (i=0; i<width; i++) {
@@ -62,22 +62,22 @@ void playerCreate(Sprite *p) {
     p->clrMode = 1;
     p->collisionMask = 0b1101;
     p->zDepth = BetweenL0L1;
-    p->width = PX32;
-    p->height = PX32;
+    p->width = PX16;
+    p->height = PX16;
     p->graphicsBank = 0;
     p->graphicsAddress = SPRITE_MEM+1024;
-    p->frames = 8;
-    p->frameSize = 1024; // Calculated as width * height
+    p->frames = 4;
+    p->frameSize = 256; // Calculated as width * height
     p->animationCount = 0;
     p->animationSpeed = 6;
-    p->animationStopFrame = 4;
+    p->animationStopFrame = 0;
     p->animationDirection = 0;
     p->animationFrame = 0;
     p->x = 150;
     p->y = 50;
     p->lastX = p->x;
     p->lastY = p->y;
-    p->speed = 2;
+    p->speed = 1;
 
     spriteInit(p);
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);

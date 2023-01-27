@@ -55,6 +55,7 @@ void layerMapsAddSomeStuff() {
     unsigned short y;
     unsigned char i;
     unsigned char l;
+    unsigned char t;
 
     vMemSetIncMode(1);
 
@@ -64,7 +65,7 @@ void layerMapsAddSomeStuff() {
     vMemSetAddr(LAYER0_MAP_MEM);
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
-            vMemSetData0(1);
+            vMemSetData0(0);
             vMemSetData0(0);
         }
     }
@@ -79,11 +80,23 @@ void layerMapsAddSomeStuff() {
         }
     }    
 
+    // Green tiles start at 3
     vMemSetBank(LAYER1_MAP_MEM_BANK);
-    for (i=0; i<4; i++) {
+    for (i=0,t=4; i<4; i++) {
         vMemSetAddr(LAYER1_MAP_MEM+(testLevel[i].y * TILES_ACROSS * 2)+(testLevel[i].x * 2));
         for (l=0; l<testLevel[i].length; l++) {
-            vMemSetData0(2);
+            if (l==0) {
+                vMemSetData0(3);
+            } else if (l==testLevel[i].length-1) {
+                vMemSetData0(7);
+            } else {
+                vMemSetData0(t);
+                t++;
+                if (t==7) {
+                    t=4;
+                }
+            }
+            
             vMemSetData0(0);
         }
     }

@@ -3,7 +3,7 @@
  * a .c file as an array of palette indexes that can be used as image data by sprites and tiles.
  * 
  * Usage: `node gimp-convert.js imagefile.data WIDTH`
- * WIDTH: A number that is the width of a frame. Images may have multiple frames.
+ * WIDTH: A number that is the width of the image.
  * 
  * It attempts to match colors to the default palette by chosing the closest.
  * Improvements may be needed in the algorith but it works pretty well.
@@ -313,6 +313,13 @@ const convertColor = (c) => {
 
 // Find the closest color we can
 const findPalleteIdx = (cRec) => {
+  // We have a special case for 1,1,1
+  // 0,0,0 Index 0 is transparent in X16
+  // We use a special 1,1,1 color to select index 16 which is also black
+  if (cRec.r == 1 && cRec.g == 1 && cRec.b == 1) {
+    return { i: 16, r: 0, g: 0, b: 0 }
+  }
+  
   let exact = undefined;
   let close = undefined;
   let closeAmt = 9999;
@@ -393,7 +400,7 @@ if (conversionError.length > 0) {
   console.error("Conversion Error(s)", conversionError);
 }
 
-const outputFilename = `../${fileparts[0]}Image.c`
+const outputFilename = `../images/${fileparts[0]}Image.c`
 fs.writeFileSync(outputFilename, output);
 
 console.log(`Generated file ${outputFilename} with ${pixelData.length} pixels`);
