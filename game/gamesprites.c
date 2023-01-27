@@ -21,7 +21,7 @@ void spriteDataLoad() {
     // 9F22 controls how much the VMEM address increments after each read/write
     // Then you can peek or poke using 0x9F23
     // The address is auto incremented and you can peek/poke again
-    vMemSetBank0();
+    vMemSetBank(SPRITE_MEM_BANK);
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
     

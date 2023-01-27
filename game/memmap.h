@@ -10,7 +10,7 @@
 #define TILE_MEM 8192
 #define TILE_MEM_BANK 1
 
-#define SPRITE_MEM 0x4000
+#define SPRITE_MEM 0
 #define SPRITE_MEM_BANK 0
 
 #endif

@@ -6,7 +6,7 @@ void tilesConfig() {
     unsigned short y;
 
     // Create some tiles
-    vMemSetBank0();
+    vMemSetBank(TILE_MEM_BANK);
     vMemSetAddr(TILE_MEM);
     vMemSetIncMode(1);
 

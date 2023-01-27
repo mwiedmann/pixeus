@@ -38,23 +38,24 @@ void videoConfig() {
     POKE(LAYER_1_CONFIG, 0b00011011);
 
     // Mapbase for both layers - Bank 0
-    POKE(LAYER_0_MAPBASE, memoryToMapMemoryAddress(0, LAYER0_MAP_MEM));
-    POKE(LAYER_1_MAPBASE, memoryToMapMemoryAddress(0, LAYER1_MAP_MEM));
+    POKE(LAYER_0_MAPBASE, memoryToMapMemoryAddress(LAYER0_MAP_MEM_BANK, LAYER0_MAP_MEM));
+    POKE(LAYER_1_MAPBASE, memoryToMapMemoryAddress(LAYER1_MAP_MEM_BANK, LAYER1_MAP_MEM));
 
     // Tilebase - Put after the Mapbases for both layers
-    POKE(LAYER_0_TILEBASE, tileBaseConfig(0, TILE_MEM, 1, 1));
-    POKE(LAYER_1_TILEBASE, tileBaseConfig(0, TILE_MEM, 1, 1));
+    POKE(LAYER_0_TILEBASE, tileBaseConfig(TILE_MEM_BANK, TILE_MEM, 1, 1));
+    POKE(LAYER_1_TILEBASE, tileBaseConfig(TILE_MEM_BANK, TILE_MEM, 1, 1));
 }
 
 void layerMapsAddSomeStuff() {
     unsigned short x;
     unsigned short y;
 
+    vMemSetIncMode(1);
+    
     // Set some tiles in the map for Layer 0 (background)
     // All tiles filled in with tile 1
-    vMemSetBank0();
+    vMemSetBank(LAYER0_MAP_MEM_BANK);
     vMemSetAddr(LAYER0_MAP_MEM);
-    vMemSetIncMode(1);
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
             vMemSetData0(1);
@@ -63,6 +64,7 @@ void layerMapsAddSomeStuff() {
     }
 
     // Set some tiles in the map for Layer 1 (foreground)
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
     for (y=0; y<32; y++) {
         for (x=0; x<64; x++) {
