@@ -94,8 +94,8 @@ void badguyCreate(Sprite *bg) {
     bg->graphicsBank = 0;
     bg->graphicsAddress = SPRITE_MEM;
     bg->frames = 1;
-    bg->x = 420;
-    bg->y = 240;
+    bg->x = 520;
+    bg->y = 100;
     bg->lastX = bg->x;
     bg->lastY = bg->y;
 

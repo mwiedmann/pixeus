@@ -10,14 +10,16 @@
 #include "gametiles.h"
 #include "gamesprites.h"
 #include "memmap.h"
-#include "levels.h"
+#include "gamelevels.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
 #include "waitforjiffy.h"
 
 // Import the levels
-extern LevelLayout testLevel[];
+extern TileLayout testLevelTiles[];
+extern LevelLayout testLevelSolid[];
+extern TileLayout cloudTiles1[];
 
 void videoConfig() {
     // clear the screen to start
@@ -50,17 +52,42 @@ void videoConfig() {
     POKE(LAYER_1_TILEBASE, tileBaseConfig(TILE_MEM_BANK, TILE_MEM, 1, 1));
 }
 
-void layerMapsAddSomeStuff() {
-    unsigned short x;
-    unsigned short y;
-    unsigned char i;
-    unsigned char l;
-    unsigned char t;
+void addLevelTiles(unsigned char length, TileLayout layout[]) {
+    unsigned short layerMem;
+    unsigned char i, l, t;
 
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    for (i=0,t=2; i<length; i++) {
+        layerMem = layout[i].layer == 0 ? LAYER0_MAP_MEM : LAYER1_MAP_MEM;
+        vMemSetAddr(layerMem+(layout[i].y * TILES_ACROSS * 2)+(layout[i].x * 2));
+        for (l=0; l<layout[i].length; l++) {
+            // This special type repeats floor tiles with tiles for each end
+            if (layout[i].type == 255) {
+                if (l==0) {
+                    vMemSetData0(1);
+                } else if (l==layout[i].length-1) {
+                    vMemSetData0(5);
+                } else {
+                    vMemSetData0(t);
+                    t++;
+                    if (t==5) {
+                        t=2;
+                    }
+                }
+            } else {
+                vMemSetData0(layout[i].type);
+            }
+            vMemSetData0(0);
+        }
+    }
+}
+
+void layerMapsAddSomeStuff() {
+    unsigned short x, y;
+    
     vMemSetIncMode(1);
 
-    // Set some tiles in the map for Layer 0 (background)
-    // All tiles filled in with tile 1
+    // Clear Layer 0 (background) but add some clouds and other tiles
     vMemSetBank(LAYER0_MAP_MEM_BANK);
     vMemSetAddr(LAYER0_MAP_MEM);
     for (y=0; y<32; y++) {
@@ -70,6 +97,8 @@ void layerMapsAddSomeStuff() {
         }
     }
 
+    addLevelTiles(CLOUD_TILES_1_LENGTH, cloudTiles1);
+
     // Set to all empty tiles in Layer 1 (foreground)
     vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
@@ -78,28 +107,9 @@ void layerMapsAddSomeStuff() {
             vMemSetData0(0);
             vMemSetData0(0);
         }
-    }    
-
-    // Green tiles start at 3
-    vMemSetBank(LAYER1_MAP_MEM_BANK);
-    for (i=0,t=4; i<4; i++) {
-        vMemSetAddr(LAYER1_MAP_MEM+(testLevel[i].y * TILES_ACROSS * 2)+(testLevel[i].x * 2));
-        for (l=0; l<testLevel[i].length; l++) {
-            if (l==0) {
-                vMemSetData0(3);
-            } else if (l==testLevel[i].length-1) {
-                vMemSetData0(7);
-            } else {
-                vMemSetData0(t);
-                t++;
-                if (t==7) {
-                    t=4;
-                }
-            }
-            
-            vMemSetData0(0);
-        }
     }
+
+    addLevelTiles(TEST_LEVEL_TILES_LENGTH, testLevelTiles);
 }
 
 void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
@@ -116,17 +126,17 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
     rightTile.x = (player->x + pixelSizes[player->width]) / TILE_PIXEL_WIDTH;
     rightTile.y = leftTile.y;
 
-    for (i=0; i<4; i++) {
-        if (leftTile.y == testLevel[i].y &&
-            leftTile.x >= testLevel[i].x &&
-            leftTile.x <= testLevel[i].x + (testLevel[i].length-1)) {
+    for (i=0; i<TEST_LEVEL_SOLID_LENGTH; i++) {
+        if (leftTile.y == testLevelSolid[i].y &&
+            leftTile.x >= testLevelSolid[i].x &&
+            leftTile.x <= testLevelSolid[i].x + (testLevelSolid[i].length-1)) {
                 *collisionTile = leftTile;
                 return;
             }
 
-        if (rightTile.y == testLevel[i].y &&
-            rightTile.x >= testLevel[i].x &&
-            rightTile.x <= testLevel[i].x + (testLevel[i].length-1)) {
+        if (rightTile.y == testLevelSolid[i].y &&
+            rightTile.x >= testLevelSolid[i].x &&
+            rightTile.x <= testLevelSolid[i].x + (testLevelSolid[i].length-1)) {
                 *collisionTile = rightTile;
                 return;
             }
