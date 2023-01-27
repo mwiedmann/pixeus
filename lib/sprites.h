@@ -22,11 +22,17 @@ typedef struct Sprite {
     unsigned char animationFrame;
     short x;
     short y;
+    short lastX;
+    short lastY;
     unsigned char active;
     unsigned char going;
     unsigned char speed;
 } Sprite;
 
 void spriteInit(Sprite *sprite);
+void spriteMove(Sprite *sprite, short x, short y);
+void spriteMoveX(Sprite *sprite, short x);
+void spriteMoveY(Sprite *sprite, short y);
+void spriteMoveBack(Sprite *sprite);
 
 #endif

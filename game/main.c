@@ -10,10 +10,14 @@
 #include "gametiles.h"
 #include "gamesprites.h"
 #include "memmap.h"
+#include "levels.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
 #include "waitforjiffy.h"
+
+// Import the levels
+extern LevelLayout testLevel[];
 
 void videoConfig() {
     // clear the screen to start
@@ -49,9 +53,11 @@ void videoConfig() {
 void layerMapsAddSomeStuff() {
     unsigned short x;
     unsigned short y;
+    unsigned char i;
+    unsigned char l;
 
     vMemSetIncMode(1);
-    
+
     // Set some tiles in the map for Layer 0 (background)
     // All tiles filled in with tile 1
     vMemSetBank(LAYER0_MAP_MEM_BANK);
@@ -63,26 +69,63 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    // Set some tiles in the map for Layer 1 (foreground)
+    // Set to all empty tiles in Layer 1 (foreground)
     vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
     for (y=0; y<32; y++) {
-        for (x=0; x<64; x++) {
-            if (x!=0 && y !=0 & x!=63 && y!=31 && x % 3 == 0 && y % 3 == 0) {
-                vMemSetData0(0);
-                vMemSetData0(0);
-            } else {
-                vMemSetData0(2);
-                vMemSetData0(0);
-            }
+        for (x=0; x<64; x++) {     
+            vMemSetData0(0);
+            vMemSetData0(0);
         }
     }    
+
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    for (i=0; i<3; i++) {
+        vMemSetAddr(LAYER1_MAP_MEM+(testLevel[i].y * TILES_ACROSS * 2)+(testLevel[i].x * 2));
+        for (l=0; l<testLevel[i].length; l++) {
+            vMemSetData0(2);
+            vMemSetData0(0);
+        }
+    }
+}
+
+void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
+    unsigned char i;
+    LevelLayout leftTile;
+    LevelLayout rightTile;
+    
+    // Special signal that all is clear
+    collisionTile->type = 255;
+
+    leftTile.x = player->x / 16;
+    leftTile.y = (player->y + pixelSizes[player->height]) / 16;
+
+    rightTile.x = leftTile.x + 2;
+    rightTile.y = leftTile.y;
+
+    for (i=0; i<3; i++) {
+        if (leftTile.y == testLevel[i].y &&
+            leftTile.x >= testLevel[i].x &&
+            leftTile.x <= testLevel[i].x + (testLevel[i].length-1)) {
+                *collisionTile = leftTile;
+                return;
+            }
+
+        if (rightTile.y == testLevel[i].y &&
+            rightTile.x >= testLevel[i].x &&
+            rightTile.x <= testLevel[i].x + (testLevel[i].length-1)) {
+                *collisionTile = rightTile;
+                return;
+            }
+    }
+
+    return;
 }
 
 void main() {
     unsigned char collision;
     unsigned char joy;
-
+    LevelLayout tileCollision;
     Sprite player, badguy, bullet;
     
     videoConfig();
@@ -114,12 +157,14 @@ void main() {
         }
 
         joy = joy_read(0);
+        // No moving up/down now
+        // Player just falls
         if (JOY_UP(joy)) {
-            player.y-=player.speed;
+            spriteMoveY(&player, player.y-player.speed);
             player.going=1;
         } else if (JOY_DOWN(joy)) {
             player.going=1;
-            player.y+=player.speed;
+            spriteMoveY(&player, player.y+player.speed);
         }
 
         if (JOY_LEFT(joy)) {
@@ -129,7 +174,7 @@ void main() {
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            player.x-=player.speed;
+            spriteMoveX(&player, player.x-player.speed);
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -137,7 +182,7 @@ void main() {
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            player.x+=player.speed;
+            spriteMoveX(&player, player.x+player.speed);
         }
 
         // Change animation if moving and hit loop count
@@ -177,6 +222,13 @@ void main() {
             x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
         }
 
+        // See if the player is touching any tiles
+        // Just move back for now
+        playerTouchingTile(&player, &tileCollision);
+        if (tileCollision.type != 255) {
+            spriteMoveBack(&player);
+        }
+
         x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
 
         // Get the Collision bits and shift them down
@@ -188,8 +240,6 @@ void main() {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back
-            // This will cause repeated collisions
-            // Want to make sure that works
             player.x = 380;
             player.y = 235;
             x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);

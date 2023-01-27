@@ -13,4 +13,9 @@
 #define SPRITE_MEM 0
 #define SPRITE_MEM_BANK 0
 
+#define TILES_ACROSS 64
+#define TILES_DOWN 32
+#define TILES_SCREEN_ACROSS 40
+#define TILES_SCREEN_DOWN 30
+
 #endif

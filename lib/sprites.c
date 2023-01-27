@@ -13,3 +13,25 @@ void spriteInit(Sprite *sprite) {
         sprite->width,
         sprite->height);
 }
+
+void spriteMove(Sprite *sprite, short x, short y) {
+    sprite->lastX = sprite->x;
+    sprite->lastY = sprite->y;
+    sprite->x = x;
+    sprite->y = y;
+}
+
+void spriteMoveX(Sprite *sprite, short x) {
+    sprite->lastX = sprite->x;
+    sprite->x = x;
+}
+
+void spriteMoveY(Sprite *sprite, short y) {
+    sprite->lastY = sprite->y;
+    sprite->y = y;
+}
+
+void spriteMoveBack(Sprite *sprite) {
+    sprite->x = sprite->lastX;
+    sprite->y = sprite->lastY;
+}

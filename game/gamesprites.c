@@ -73,8 +73,10 @@ void playerCreate(Sprite *p) {
     p->animationStopFrame = 4;
     p->animationDirection = 0;
     p->animationFrame = 0;
-    p->x = 380;
-    p->y = 235;
+    p->x = 100;
+    p->y = 50;
+    p->lastX = p->x;
+    p->lastY = p->y;
     p->speed = 2;
 
     spriteInit(p);
@@ -94,6 +96,8 @@ void badguyCreate(Sprite *bg) {
     bg->frames = 1;
     bg->x = 320;
     bg->y = 240;
+    bg->lastX = bg->x;
+    bg->lastY = bg->y;
 
     spriteInit(bg);
     x16SpriteIdxSetXY(bg->spriteBank, bg->index, bg->x, bg->y);

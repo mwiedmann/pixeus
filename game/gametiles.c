@@ -10,24 +10,24 @@ void tilesConfig() {
     vMemSetAddr(TILE_MEM);
     vMemSetIncMode(1);
 
-    // Make a square tile
+    // Empty tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
-            vMemSetData0(162);
+            vMemSetData0(0);
         }
     }
 
-    // Make a light background
+    // Make a light background tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
             vMemSetData0(138);            
         }
     }
 
-    // Empty tile
+    // Platform tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
-            vMemSetData0(0);
+            vMemSetData0(165);
         }
     }
 }
