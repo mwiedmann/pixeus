@@ -25,6 +25,7 @@
 extern TileLayout testLevelTiles[];
 extern LevelLayout testLevelSolid[];
 extern TileLayout cloudTiles1[];
+extern TileLayout moonTiles[];
 
 void layerMapsAddSomeStuff() {
     unsigned short x, y;
@@ -41,6 +42,7 @@ void layerMapsAddSomeStuff() {
         }
     }
 
+    addLevelTiles(MOON_TILES_LENGTH, moonTiles);
     addLevelTiles(CLOUD_TILES_1_LENGTH, cloudTiles1);
 
     // Set to all empty tiles in Layer 1 (foreground)
@@ -56,7 +58,7 @@ void layerMapsAddSomeStuff() {
     addLevelTiles(TEST_LEVEL_TILES_LENGTH, testLevelTiles);
 }
 
-void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
+void spriteTouchingTile(Sprite *sprite, LevelLayout *collisionTile) {
     unsigned char i;
     LevelLayout leftTile;
     LevelLayout rightTile;
@@ -64,10 +66,10 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
     // Special signal that all is clear
     collisionTile->type = 255;
 
-    leftTile.x = player->x / TILE_PIXEL_WIDTH;
-    leftTile.y = (player->y + pixelSizes[player->height]) / TILE_PIXEL_HEIGHT;
+    leftTile.x = sprite->x / TILE_PIXEL_WIDTH;
+    leftTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
-    rightTile.x = (player->x + pixelSizes[player->width]) / TILE_PIXEL_WIDTH;
+    rightTile.x = (sprite->x + pixelSizes[sprite->width]) / TILE_PIXEL_WIDTH;
     rightTile.y = leftTile.y;
 
     for (i=0; i<TEST_LEVEL_SOLID_LENGTH; i++) {
@@ -164,7 +166,7 @@ void main() {
             // Inefficient: We are checking here AND after moving X
             // Might be ok and makes it easier to deal with moving him back
             spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
-            playerTouchingTile(&player, &tileCollision);
+            spriteTouchingTile(&player, &tileCollision);
             if (tileCollision.type != 255) {
                 spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
                 // Player is on solid ground, can jump
@@ -240,7 +242,7 @@ void main() {
 
         // See if the player is touching any tiles
         // Just move back for now
-        playerTouchingTile(&player, &tileCollision);
+        spriteTouchingTile(&player, &tileCollision);
         if (tileCollision.type != 255) {
             spriteMoveBackX(&player);
         }
@@ -265,11 +267,14 @@ void main() {
             x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
         }
 
-        // Bullet is off screen
-        if (bullet.x < 0 || bullet.x > 639) {
-            bullet.active = 0;
-            bullet.zDepth = Disabled;
-            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
+        // Bullet is off screen or collided with a solid tile
+        if (bullet.active == 1) {
+            spriteTouchingTile(&bullet, &tileCollision);
+            if (tileCollision.type != 255 || bullet.x < 0 || bullet.x > 639) {
+                bullet.active = 0;
+                bullet.zDepth = Disabled;
+                x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
+            }
         }
     }
 

@@ -22,7 +22,7 @@ void tilesConfig() {
 
     // This tileset is 6x10 Tiles, each tile is 16x16 pixels
     xTiles = 6;
-    yTiles = 10;
+    yTiles = 13;
     for (ty=0; ty < yTiles; ty++) {
         for (tx=0; tx < xTiles; tx++) {
             for (y=0; y < 16; y++) {
