@@ -52,8 +52,8 @@ void spriteIRQConfig() {
     x16SpriteCollisionsEnable();
 }
 
-void playerCreate(Sprite *p) {
-    p->index = 1;
+void playerCreate(Sprite *p, unsigned char index) {
+    p->index = index;
     p->spriteBank = 1;
     p->clrMode = 1;
     p->collisionMask = 0b1101;
@@ -81,9 +81,9 @@ void playerCreate(Sprite *p) {
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
 }
 
-void snakeCreate(AISprite *snake, LevelLayout *layout)
+void snakeCreate(AISprite *snake, LevelLayout *layout, unsigned char index)
 {
-    snake->sprite.index = 0;
+    snake->sprite.index = index;
     snake->sprite.spriteBank = 1;
     snake->sprite.clrMode = 1;
     snake->sprite.collisionMask = 0b1011;
@@ -101,11 +101,11 @@ void snakeCreate(AISprite *snake, LevelLayout *layout)
     snake->sprite.animationFrame = 0;
     snake->sprite.x = layout->x * TILE_PIXEL_WIDTH;
     snake->sprite.y = (layout->y - 1) * TILE_PIXEL_HEIGHT;
-    snake->sprite.xL = layout->x * MOVE_FACTOR;
-    snake->sprite.yL = layout->y * MOVE_FACTOR;
+    snake->sprite.xL = snake->sprite.x * MOVE_FACTOR;
+    snake->sprite.yL = snake->sprite.y * MOVE_FACTOR;
     snake->sprite.lastX = snake->sprite.x;
     snake->sprite.lastY = snake->sprite.y;
-    snake->sprite.speed = 5;
+    snake->sprite.speed = 6;
 
     snake->xTileStart = layout->x;
     snake->yTileStart = layout->y - 1;
@@ -117,8 +117,8 @@ void snakeCreate(AISprite *snake, LevelLayout *layout)
     x16SpriteIdxSetHFlip(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.animationDirection);
 }
 
-void bulletCreate(Sprite *b) {
-    b->index = 2;
+void bulletCreate(Sprite *b, unsigned char index) {
+    b->index = index;
     b->spriteBank = 1;
     b->clrMode = 1;
     b->collisionMask = 0b1010;

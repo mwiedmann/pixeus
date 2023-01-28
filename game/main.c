@@ -88,11 +88,14 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
 void main() {
     unsigned char collision;
     unsigned char joy;
-    unsigned char tileCalc;
+    signed char tileCalc;
+    unsigned char e;
+    unsigned char nextSpriteIndex = 0;
     LevelLayout tileCollision;
     Sprite player, bullet;
-    AISprite snake;
-    
+    AISprite snakes[3];
+    AISprite *enemy;
+
     videoConfig();
     tilesConfig();
     layerMapsAddSomeStuff();
@@ -100,9 +103,12 @@ void main() {
     spriteIRQConfig();
 
     // Create the sprites
-    playerCreate(&player);
-    snakeCreate(&snake, &testLevelSolid[3]);
-    bulletCreate(&bullet);
+    playerCreate(&player, nextSpriteIndex++);
+    snakeCreate(&snakes[0], &testLevelSolid[2], nextSpriteIndex++);
+    snakeCreate(&snakes[1], &testLevelSolid[3], nextSpriteIndex++);
+    snakeCreate(&snakes[2], &testLevelSolid[4], nextSpriteIndex++);
+    
+    bulletCreate(&bullet, nextSpriteIndex++);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -111,27 +117,30 @@ void main() {
         waitforjiffy();
 
         // Move enemies
-        spriteMoveXL(&snake.sprite, snake.sprite.animationDirection == 0 ? snake.sprite.xL-snake.sprite.speed : snake.sprite.xL+snake.sprite.speed);
-        snake.sprite.animationCount++;
-        if (snake.sprite.animationCount == snake.sprite.animationSpeed) {
-            snake.sprite.animationCount=0;
-            snake.sprite.animationFrame++;
-            if (snake.sprite.animationFrame == snake.sprite.frames) {
-                snake.sprite.animationFrame = 0;
+        for (e=0; e < 3; e++) {
+            enemy = &snakes[e];
+            spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
+            enemy->sprite.animationCount++;
+            if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
+                enemy->sprite.animationCount=0;
+                enemy->sprite.animationFrame++;
+                if (enemy->sprite.animationFrame == enemy->sprite.frames) {
+                    enemy->sprite.animationFrame = 0;
+                }
+                x16SpriteIdxSetGraphicsPointer(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
+                    enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
             }
-            x16SpriteIdxSetGraphicsPointer(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.clrMode, snake.sprite.graphicsBank,
-                snake.sprite.graphicsAddress+(snake.sprite.animationFrame * snake.sprite.frameSize));
-        }
-        tileCalc = snake.sprite.x / TILE_PIXEL_WIDTH;
-        if (tileCalc <= snake.xTileStart - 1) {
-            snake.sprite.animationDirection = 1;
-            x16SpriteIdxSetHFlip(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.animationDirection);
-        } else if (tileCalc >= snake.xTileEnd - 1) {
-            snake.sprite.animationDirection = 0;
-            x16SpriteIdxSetHFlip(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.animationDirection);
-        }
-        x16SpriteIdxSetXY(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.x, snake.sprite.y);
-        
+            tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
+            // Careful, can be -1 if on left edge (signed char)
+            if (tileCalc <= (signed char)enemy->xTileStart - 1) {
+                enemy->sprite.animationDirection = 1;
+                x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+            } else if (tileCalc >= enemy->xTileEnd - 1) {
+                enemy->sprite.animationDirection = 0;
+                x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+            }
+            x16SpriteIdxSetXY(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
+        }        
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.

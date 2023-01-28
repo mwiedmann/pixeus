@@ -15,8 +15,8 @@ typedef struct AISprite {
 void spriteDataLoad();
 void spriteIRQConfig();
 
-void playerCreate(Sprite *p);
-void snakeCreate(AISprite *snake, LevelLayout *layout);
-void bulletCreate(Sprite *b);
+void playerCreate(Sprite *p, unsigned char index);
+void snakeCreate(AISprite *snake, LevelLayout *layout, unsigned char index);
+void bulletCreate(Sprite *b, unsigned char index);
 
 #endif
