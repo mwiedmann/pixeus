@@ -1,4 +1,5 @@
 #include "gamelevels.h"
+#include "level.h"
 
 LevelLayout testLevelSolid[TEST_LEVEL_SOLID_LENGTH] = {
     { 7, 9, 1, 0},
