@@ -39,7 +39,7 @@ void spriteDataLoad() {
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
 
-    loadImage(5, 16, 16, guyrunImage);
+    loadImage(6, 16, 16, guyrunImage);
     loadImage(4, 16, 16, snakeImage);
 }
 
@@ -124,12 +124,13 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->collisionMask = 0b1010;
     b->zDepth = Disabled;
     b->width = PX16;
-    b->height = PX8;
+    b->height = PX16;
     b->graphicsBank = 0;
-    b->graphicsAddress = SPRITE_MEM;
+    b->graphicsAddress = SPRITE_MEM_PLAYER_BULLET;
     b->frames = 1;
     b->x = 320;
     b->y = 240;
+    b->speed = 4;
 
     spriteInit(b);
 }

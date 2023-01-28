@@ -186,16 +186,16 @@ void main() {
         if (JOY_LEFT(joy)) {
             player.going=1;
             // We also flip the animation depending on direction
-            if (player.animationDirection != 1) {
-                player.animationDirection=1;
+            if (player.animationDirection != 0) {
+                player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
             spriteMoveXL(&player, player.xL-player.speed);
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
-            if (player.animationDirection != 0) {
-                player.animationDirection=0;
+            if (player.animationDirection != 1) {
+                player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
             spriteMoveXL(&player, player.xL+player.speed);
@@ -221,18 +221,21 @@ void main() {
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
         }
         
+        // Move the bullet
         if (bullet.active == 1) {
-            bullet.x-= 4;
+            spriteMoveX(&bullet, bullet.animationDirection == 0 ? bullet.x-bullet.speed : bullet.x+bullet.speed);
             x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
         }
 
         if (JOY_BTN_2(joy) && bullet.active==0) {
             bullet.active = 1;
-            bullet.x = player.x;
-            bullet.y = player.y;
+            bullet.animationDirection = player.animationDirection;
+            spriteMove(&bullet, player.x, player.y);
+            // Show the bullet
             bullet.zDepth = BetweenL0L1;
             x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
             x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
+            x16SpriteIdxSetHFlip(bullet.spriteBank, bullet.index, bullet.animationDirection);
         }
 
         // See if the player is touching any tiles
@@ -253,9 +256,8 @@ void main() {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back
-            player.x = 350;
-            player.y = 235;
-            x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
+            spriteMove(&player, 350, 235);
+            // x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             // Bullet hit the snake
             bullet.active = 0;
@@ -264,7 +266,7 @@ void main() {
         }
 
         // Bullet is off screen
-        if (bullet.x < 0) {
+        if (bullet.x < 0 || bullet.x > 639) {
             bullet.active = 0;
             bullet.zDepth = Disabled;
             x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
