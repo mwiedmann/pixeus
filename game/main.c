@@ -17,6 +17,10 @@
 // People say to use this until fixed
 #include "waitforjiffy.h"
 
+#define PLAYER_FALL_SPEED 2
+#define PLAYER_JUMP_SPEED 2
+#define PLAYER_JUMP_FRAMES 14
+
 // Import the levels
 extern TileLayout testLevelTiles[];
 extern LevelLayout testLevelSolid[];
@@ -86,11 +90,11 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
 }
 
 void main() {
-    unsigned char collision;
-    unsigned char joy;
-    signed char tileCalc;
-    unsigned char e;
+    unsigned char collision, joy, e;
     unsigned char nextSpriteIndex = 0;
+    unsigned char jumpFrames = 0;
+    signed char tileCalc;
+    
     LevelLayout tileCollision;
     Sprite player, bullet;
     AISprite snakes[3];
@@ -154,24 +158,27 @@ void main() {
         }
 
         joy = joy_read(0);
-        // No moving up/down now
-        // Player just falls
-        // if (JOY_UP(joy)) {
-        //     spriteMoveY(&player, player.y-player.speed);
-        //     player.going=1;
-        // } else if (JOY_DOWN(joy)) {
-        //     player.going=1;
-        //     spriteMoveY(&player, player.y+player.speed);
-        // }
 
         // Falling
-        // Inefficient: We are checking here AND after moving X
-        // Might be ok and makes it easier to deal with moving him back
-        spriteMoveY(&player, player.y+3);
-        playerTouchingTile(&player, &tileCollision);
-        if (tileCollision.type != 255) {
-            // spriteMoveBackY(&player);
-            spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
+        if (jumpFrames == 0) {
+            // Inefficient: We are checking here AND after moving X
+            // Might be ok and makes it easier to deal with moving him back
+            spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
+            playerTouchingTile(&player, &tileCollision);
+            if (tileCollision.type != 255) {
+                spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
+                // Player is on solid ground, can jump
+                if (JOY_BTN_1(joy) || JOY_UP(joy)) {
+                    jumpFrames = PLAYER_JUMP_FRAMES;
+                    // The jump animation wasn't great. The normal animation is fine
+                    // x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
+                    //     player.graphicsAddress+(4 * player.frameSize)); // TODO: Hardcoded jump frame
+                }
+            }
+        } else {
+            jumpFrames--;
+            player.going==1;
+            spriteMoveY(&player, player.y-PLAYER_JUMP_SPEED);
         }
 
         // TODO: Player sprite images are backwards (right facing) from enemies
@@ -194,8 +201,10 @@ void main() {
             spriteMoveXL(&player, player.xL+player.speed);
         }
 
-        // Change animation if moving and hit loop count
-        if (player.going==1 && player.animationCount == player.animationSpeed) {
+        // Change animation if jumping or moving and hit loop count
+        if (jumpFrames > 0) {
+            // No animation change
+        } else if (player.going==1 && player.animationCount == player.animationSpeed) {
             player.animationCount=0;
             player.animationFrame++;
             if (player.animationFrame == player.frames) {
@@ -212,11 +221,6 @@ void main() {
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
         }
         
-        // Quit
-        if (JOY_BTN_1(joy)) {
-            break;
-        }
-
         if (bullet.active == 1) {
             bullet.x-= 4;
             x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);

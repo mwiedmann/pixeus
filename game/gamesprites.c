@@ -39,7 +39,7 @@ void spriteDataLoad() {
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
 
-    loadImage(4, 16, 16, guyrunImage);
+    loadImage(5, 16, 16, guyrunImage);
     loadImage(4, 16, 16, snakeImage);
 }
 
