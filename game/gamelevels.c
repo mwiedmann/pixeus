@@ -1,7 +1,11 @@
 #include "gamelevels.h"
 #include "level.h"
+#include "commontiles.h"
 
-LevelLayout testLevelSolid[TEST_LEVEL_SOLID_LENGTH] = {
+extern TileLayout cloudTiles1[];
+extern TileLayout moonTiles[];
+
+SolidLayout testLevelSolid[TEST_LEVEL_SOLID_LENGTH] = {
     { 7, 9, 1, 0},
     { 10, 8, 3, 0},
     { 0, 10, 20, 0},
@@ -61,32 +65,19 @@ TileLayout testLevelTiles[TEST_LEVEL_TILES_LENGTH] = {
     { 0, 29, 40, 255, 1} // Bottom
 };
 
-TileLayout cloudTiles1[CLOUD_TILES_1_LENGTH] = {
-    { 2, 2, 1, 7, 0},
-
-    { 15, 3, 1, 8, 0},
-    { 16, 3, 1, 9, 0},
-
-    { 24, 2, 1, 10, 0},
-    { 25, 2, 1, 11, 0},
-
-    { 9, 5, 1, 12, 0},
-    { 10, 5, 1, 13, 0},
-
-    { 20, 7, 1, 12, 0},
-    { 21, 7, 1, 13, 0}
+SolidLayoutList testLevelAllSolids[1] = {
+    { TEST_LEVEL_SOLID_LENGTH, testLevelSolid }
 };
 
-TileLayout moonTiles[9] = {
-    { 32, 3, 1, 61, 0},
-    { 33, 3, 1, 62, 0},
-    { 34, 3, 1, 63, 0},
+TileLayoutList testLevelAllTiles[3] = {
+    { TEST_LEVEL_TILES_LENGTH, testLevelTiles },
+    { CLOUD_TILES_1_LENGTH, cloudTiles1 },
+    { MOON_TILES_LENGTH, moonTiles }
+};
 
-    { 32, 4, 1, 67, 0},
-    { 33, 4, 1, 68, 0},
-    { 34, 4, 1, 69, 0},
-
-    { 32, 5, 1, 73, 0},
-    { 33, 5, 1, 74, 0},
-    { 34, 5, 1, 75, 0}
+LevelOveralLayout testLevel = {
+    1,
+    testLevelAllSolids,
+    3,
+    testLevelAllTiles
 };

@@ -22,10 +22,7 @@
 #define PLAYER_JUMP_FRAMES 14
 
 // Import the levels
-extern TileLayout testLevelTiles[];
-extern LevelLayout testLevelSolid[];
-extern TileLayout cloudTiles1[];
-extern TileLayout moonTiles[];
+extern LevelOveralLayout testLevel;
 
 void layerMapsAddSomeStuff() {
     unsigned short x, y;
@@ -42,9 +39,6 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    addLevelTiles(MOON_TILES_LENGTH, moonTiles);
-    addLevelTiles(CLOUD_TILES_1_LENGTH, cloudTiles1);
-
     // Set to all empty tiles in Layer 1 (foreground)
     vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
@@ -55,13 +49,15 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    addLevelTiles(TEST_LEVEL_TILES_LENGTH, testLevelTiles);
+    for (x=0; x < testLevel.tilesLength ; x++) {
+        addLevelTiles(testLevel.tiles[x].length, testLevel.tiles[x].tiles);
+    }
 }
 
-void spriteTouchingTile(Sprite *sprite, LevelLayout *collisionTile) {
-    unsigned char i;
-    LevelLayout leftTile;
-    LevelLayout rightTile;
+void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
+    unsigned char i,j;
+    SolidLayout leftTile;
+    SolidLayout rightTile;
     
     // Special signal that all is clear
     collisionTile->type = 255;
@@ -72,20 +68,22 @@ void spriteTouchingTile(Sprite *sprite, LevelLayout *collisionTile) {
     rightTile.x = (sprite->x + pixelSizes[sprite->width]) / TILE_PIXEL_WIDTH;
     rightTile.y = leftTile.y;
 
-    for (i=0; i<TEST_LEVEL_SOLID_LENGTH; i++) {
-        if (leftTile.y == testLevelSolid[i].y &&
-            leftTile.x >= testLevelSolid[i].x &&
-            leftTile.x <= testLevelSolid[i].x + (testLevelSolid[i].length-1)) {
-                *collisionTile = leftTile;
-                return;
-            }
+    for (i=0; i<testLevel.solidLength; i++) {
+        for (j=0; j<testLevel.solid[i].length; j++) {
+            if (leftTile.y == testLevel.solid[i].solid[j].y &&
+                leftTile.x >= testLevel.solid[i].solid[j].x &&
+                leftTile.x <= testLevel.solid[i].solid[j].x + (testLevel.solid[i].solid[j].length-1)) {
+                    *collisionTile = leftTile;
+                    return;
+                }
 
-        if (rightTile.y == testLevelSolid[i].y &&
-            rightTile.x >= testLevelSolid[i].x &&
-            rightTile.x <= testLevelSolid[i].x + (testLevelSolid[i].length-1)) {
-                *collisionTile = rightTile;
-                return;
-            }
+            if (rightTile.y == testLevel.solid[i].solid[j].y &&
+                rightTile.x >= testLevel.solid[i].solid[j].x &&
+                rightTile.x <= testLevel.solid[i].solid[j].x + (testLevel.solid[i].solid[j].length-1)) {
+                    *collisionTile = rightTile;
+                    return;
+                }
+        }
     }
 
     return;
@@ -97,7 +95,7 @@ void main() {
     unsigned char jumpFrames = 0;
     signed char tileCalc;
     
-    LevelLayout tileCollision;
+    SolidLayout tileCollision;
     Sprite player, bullet;
     AISprite snakes[3];
     AISprite *enemy;
@@ -110,9 +108,9 @@ void main() {
 
     // Create the sprites
     playerCreate(&player, nextSpriteIndex++);
-    snakeCreate(&snakes[0], &testLevelSolid[2], nextSpriteIndex++);
-    snakeCreate(&snakes[1], &testLevelSolid[3], nextSpriteIndex++);
-    snakeCreate(&snakes[2], &testLevelSolid[4], nextSpriteIndex++);
+    snakeCreate(&snakes[0], &testLevel.solid[0].solid[2], nextSpriteIndex++);
+    snakeCreate(&snakes[1], &testLevel.solid[0].solid[3], nextSpriteIndex++);
+    snakeCreate(&snakes[2], &testLevel.solid[0].solid[4], nextSpriteIndex++);
     
     bulletCreate(&bullet, nextSpriteIndex++);
     

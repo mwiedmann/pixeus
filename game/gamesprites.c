@@ -81,7 +81,7 @@ void playerCreate(Sprite *p, unsigned char index) {
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
 }
 
-void snakeCreate(AISprite *snake, LevelLayout *layout, unsigned char index)
+void snakeCreate(AISprite *snake, SolidLayout *layout, unsigned char index)
 {
     snake->sprite.index = index;
     snake->sprite.spriteBank = 1;

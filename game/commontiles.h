@@ -1,0 +1,7 @@
+#ifndef COMMONTILES_H
+#define COMMONTILES_H
+
+#define CLOUD_TILES_1_LENGTH 9
+#define MOON_TILES_LENGTH 9
+
+#endif
