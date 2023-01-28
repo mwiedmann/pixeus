@@ -1,22 +1,36 @@
 #include <6502.h>
+#include "gamesprites.h"
 #include "x16graphics.h"
 #include "memmap.h"
 #include "sprites.h"
+#include "level.h"
 
 // External Sprites
 extern unsigned char guyrunImage[];
+extern unsigned char snakeImage[];
 
 // Not sure how big the stack needs to be. Unclear how this works.
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-void spriteDataLoad() {
-    unsigned short i;
-    unsigned char frames, f;
-    unsigned char width;
-    unsigned char height, h;
+/**
+ * Load image data from an array. Assumes vMem Bank and Address already set.
+*/
+void loadImage(unsigned char frames, unsigned char width, unsigned char height, unsigned char imageData[]) {
+    unsigned char f, h, i;
     unsigned short start;
 
+    for (f=0; f<frames; f++) {
+        for (h=0; h<height; h++) {
+            start = (f * width) + (h * frames * width);
+            for (i=0; i<width; i++) {
+                vMemSetData0(imageData[start+i]);
+            }
+        }
+    }
+}
+
+void spriteDataLoad() {
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
     // Then you can peek or poke using 0x9F23
@@ -24,27 +38,9 @@ void spriteDataLoad() {
     vMemSetBank(SPRITE_MEM_BANK);
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
-    
-    // Poke a block of solid data into vmem to use as sprite data
-    // Big enough for 32x32 sprites
-    for (i=0; i<32*32; i++) {
-        vMemSetData0(199);
-    }
 
-    // This has multiple frames so we have to jump around
-    // Need to know the width, height, and number of frames
-    frames = 4;
-    height = 16;
-    width = 16;
-    for (f=0; f<frames; f++) {
-        for (h=0; h<height; h++) {
-            start = (f * width) + (h * frames * width);
-            for (i=0; i<width; i++) {
-                vMemSetData0(guyrunImage[start+i]);
-            }
-        }
-    }
-    
+    loadImage(4, 16, 16, guyrunImage);
+    loadImage(4, 16, 16, snakeImage);
 }
 
 void spriteIRQConfig() {
@@ -65,7 +61,7 @@ void playerCreate(Sprite *p) {
     p->width = PX16;
     p->height = PX16;
     p->graphicsBank = 0;
-    p->graphicsAddress = SPRITE_MEM+1024;
+    p->graphicsAddress = SPRITE_MEM_PLAYER;
     p->frames = 4;
     p->frameSize = 256; // Calculated as width * height
     p->animationCount = 0;
@@ -83,24 +79,38 @@ void playerCreate(Sprite *p) {
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
 }
 
-void badguyCreate(Sprite *bg) {
-    bg->index = 0;
-    bg->spriteBank = 1;
-    bg->clrMode = 1;
-    bg->collisionMask = 0b1011;
-    bg->zDepth = BetweenL0L1;
-    bg->width = PX32;
-    bg->height = PX32;
-    bg->graphicsBank = 0;
-    bg->graphicsAddress = SPRITE_MEM;
-    bg->frames = 1;
-    bg->x = 520;
-    bg->y = 100;
-    bg->lastX = bg->x;
-    bg->lastY = bg->y;
+void snakeCreate(AISprite *snake, LevelLayout *layout)
+{
+    snake->sprite.index = 0;
+    snake->sprite.spriteBank = 1;
+    snake->sprite.clrMode = 1;
+    snake->sprite.collisionMask = 0b1011;
+    snake->sprite.zDepth = BetweenL0L1;
+    snake->sprite.width = PX16;
+    snake->sprite.height = PX16;
+    snake->sprite.graphicsBank = 0;
+    snake->sprite.graphicsAddress = SPRITE_MEM_SNAKE;
+    snake->sprite.frames = 4;
+    snake->sprite.frameSize = 256; // Calculated as width * height
+    snake->sprite.animationCount = 0;
+    snake->sprite.animationSpeed = 6;
+    snake->sprite.animationStopFrame = 0;
+    snake->sprite.animationDirection = 1;
+    snake->sprite.animationFrame = 0;
+    snake->sprite.x = layout->x * TILE_PIXEL_WIDTH;
+    snake->sprite.y = (layout->y - 1) * TILE_PIXEL_HEIGHT;
+    snake->sprite.lastX = snake->sprite.x;
+    snake->sprite.lastY = snake->sprite.y;
+    snake->sprite.speed = 1;
 
-    spriteInit(bg);
-    x16SpriteIdxSetXY(bg->spriteBank, bg->index, bg->x, bg->y);
+    snake->xTileStart = layout->x;
+    snake->yTileStart = layout->y - 1;
+    snake->xTileEnd = layout->x + layout->length;
+    snake->yTileEnd = layout->y - 1;
+
+    spriteInit(&snake->sprite);
+    x16SpriteIdxSetXY(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.x, snake->sprite.y);
+    x16SpriteIdxSetHFlip(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.animationDirection);
 }
 
 void bulletCreate(Sprite *b) {

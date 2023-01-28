@@ -88,8 +88,10 @@ void playerTouchingTile(Sprite *player, LevelLayout *collisionTile) {
 void main() {
     unsigned char collision;
     unsigned char joy;
+    unsigned char tileCalc;
     LevelLayout tileCollision;
-    Sprite player, badguy, bullet;
+    Sprite player, bullet;
+    AISprite snake;
     
     videoConfig();
     tilesConfig();
@@ -99,7 +101,7 @@ void main() {
 
     // Create the sprites
     playerCreate(&player);
-    badguyCreate(&badguy);
+    snakeCreate(&snake, &testLevelSolid[3]);
     bulletCreate(&bullet);
     
     // Configure the joysticks
@@ -108,6 +110,29 @@ void main() {
     while (1) {
         waitforjiffy();
 
+        // Move enemies
+        spriteMoveX(&snake.sprite, snake.sprite.animationDirection == 0 ? snake.sprite.x-snake.sprite.speed : snake.sprite.x+snake.sprite.speed);
+        snake.sprite.animationCount++;
+        if (snake.sprite.animationCount == snake.sprite.animationSpeed) {
+            snake.sprite.animationCount=0;
+            snake.sprite.animationFrame++;
+            if (snake.sprite.animationFrame == snake.sprite.frames) {
+                snake.sprite.animationFrame = 0;
+            }
+            x16SpriteIdxSetGraphicsPointer(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.clrMode, snake.sprite.graphicsBank,
+                snake.sprite.graphicsAddress+(snake.sprite.animationFrame * snake.sprite.frameSize));
+        }
+        tileCalc = snake.sprite.x / TILE_PIXEL_WIDTH;
+        if (tileCalc <= snake.xTileStart - 1) {
+            snake.sprite.animationDirection = 1;
+            x16SpriteIdxSetHFlip(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.animationDirection);
+        } else if (tileCalc >= snake.xTileEnd - 1) {
+            snake.sprite.animationDirection = 0;
+            x16SpriteIdxSetHFlip(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.animationDirection);
+        }
+        x16SpriteIdxSetXY(snake.sprite.spriteBank, snake.sprite.index, snake.sprite.x, snake.sprite.y);
+        
+
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.
         player.going=0;
@@ -115,8 +140,8 @@ void main() {
 
         // We are changing the guys animation every 6 game loops
         // but hold at this count as we only animate if moving.
-        if (player.animationCount > 6) {
-            player.animationCount=6;
+        if (player.animationCount > player.animationSpeed) {
+            player.animationCount=player.animationSpeed;
         }
 
         joy = joy_read(0);
@@ -140,6 +165,8 @@ void main() {
             spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
         }
 
+        // TODO: Player sprite images are backwards (right facing) from enemies
+        // This means the animationDirection is reversed. Flip the image in the source.
         if (JOY_LEFT(joy)) {
             player.going=1;
             // We also flip the animation depending on direction
@@ -217,7 +244,7 @@ void main() {
             player.y = 235;
             x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
         } else if (collision == 0b1010) {
-            // Bullet hit the badguy
+            // Bullet hit the snake
             bullet.active = 0;
             bullet.zDepth = Disabled;
             x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
