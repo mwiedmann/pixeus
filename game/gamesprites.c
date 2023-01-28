@@ -71,9 +71,11 @@ void playerCreate(Sprite *p) {
     p->animationFrame = 0;
     p->x = 150;
     p->y = 50;
+    p->xL = p->x * MOVE_FACTOR;
+    p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;
     p->lastY = p->y;
-    p->speed = 1;
+    p->speed = 12;
 
     spriteInit(p);
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
@@ -99,9 +101,11 @@ void snakeCreate(AISprite *snake, LevelLayout *layout)
     snake->sprite.animationFrame = 0;
     snake->sprite.x = layout->x * TILE_PIXEL_WIDTH;
     snake->sprite.y = (layout->y - 1) * TILE_PIXEL_HEIGHT;
+    snake->sprite.xL = layout->x * MOVE_FACTOR;
+    snake->sprite.yL = layout->y * MOVE_FACTOR;
     snake->sprite.lastX = snake->sprite.x;
     snake->sprite.lastY = snake->sprite.y;
-    snake->sprite.speed = 1;
+    snake->sprite.speed = 5;
 
     snake->xTileStart = layout->x;
     snake->yTileStart = layout->y - 1;

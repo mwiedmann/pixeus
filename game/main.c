@@ -111,7 +111,7 @@ void main() {
         waitforjiffy();
 
         // Move enemies
-        spriteMoveX(&snake.sprite, snake.sprite.animationDirection == 0 ? snake.sprite.x-snake.sprite.speed : snake.sprite.x+snake.sprite.speed);
+        spriteMoveXL(&snake.sprite, snake.sprite.animationDirection == 0 ? snake.sprite.xL-snake.sprite.speed : snake.sprite.xL+snake.sprite.speed);
         snake.sprite.animationCount++;
         if (snake.sprite.animationCount == snake.sprite.animationSpeed) {
             snake.sprite.animationCount=0;
@@ -174,7 +174,7 @@ void main() {
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            spriteMoveX(&player, player.x-player.speed);
+            spriteMoveXL(&player, player.xL-player.speed);
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -182,7 +182,7 @@ void main() {
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
             }
-            spriteMoveX(&player, player.x+player.speed);
+            spriteMoveXL(&player, player.xL+player.speed);
         }
 
         // Change animation if moving and hit loop count

@@ -3,6 +3,8 @@
 
 #include "x16graphics.h"
 
+#define  MOVE_FACTOR 10
+
 typedef struct Sprite {
     unsigned char index;
     unsigned char spriteBank;
@@ -24,6 +26,8 @@ typedef struct Sprite {
     short y;
     short lastX;
     short lastY;
+    short xL;
+    short yL;
     unsigned char active;
     unsigned char going;
     unsigned char speed;
@@ -36,5 +40,8 @@ void spriteMoveY(Sprite *sprite, short y);
 void spriteMoveBack(Sprite *sprite);
 void spriteMoveBackX(Sprite *sprite);
 void spriteMoveBackY(Sprite *sprite);
+void spriteMoveL(Sprite *sprite, short xL, short yL);
+void spriteMoveXL(Sprite *sprite, short xL);
+void spriteMoveYL(Sprite *sprite, short yL);
 
 #endif
