@@ -24,6 +24,10 @@
 // Import the levels
 extern LevelOveralLayout testLevel;
 
+// TODO: Fixed array to hold AISprites
+// Need something more dynamic but this works for now
+AISprite enemies[16];
+
 void layerMapsAddSomeStuff() {
     unsigned short x, y;
     
@@ -49,9 +53,23 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    for (x=0; x < testLevel.tilesLength ; x++) {
-        addLevelTiles(testLevel.tiles[x].length, testLevel.tiles[x].tiles);
+    for (x=0; x < testLevel.tilesListLength ; x++) {
+        addLevelTiles(testLevel.tilesList[x].length, testLevel.tilesList[x].tiles);
     }
+}
+
+unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
+    unsigned char i, j;
+    unsigned char length = 0;
+
+    for (i=0; i<testLevel.enemiesListLength; i++) {
+        for (j=0; j<testLevel.enemiesList[i].length; j++) {
+            snakeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            length++;
+        }
+    }
+
+    return length;
 }
 
 void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
@@ -68,18 +86,18 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     rightTile.x = (sprite->x + pixelSizes[sprite->width]) / TILE_PIXEL_WIDTH;
     rightTile.y = leftTile.y;
 
-    for (i=0; i<testLevel.solidLength; i++) {
-        for (j=0; j<testLevel.solid[i].length; j++) {
-            if (leftTile.y == testLevel.solid[i].solid[j].y &&
-                leftTile.x >= testLevel.solid[i].solid[j].x &&
-                leftTile.x <= testLevel.solid[i].solid[j].x + (testLevel.solid[i].solid[j].length-1)) {
+    for (i=0; i<testLevel.solidListLength; i++) {
+        for (j=0; j<testLevel.solidList[i].length; j++) {
+            if (leftTile.y == testLevel.solidList[i].solid[j].y &&
+                leftTile.x >= testLevel.solidList[i].solid[j].x &&
+                leftTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
                     *collisionTile = leftTile;
                     return;
                 }
 
-            if (rightTile.y == testLevel.solid[i].solid[j].y &&
-                rightTile.x >= testLevel.solid[i].solid[j].x &&
-                rightTile.x <= testLevel.solid[i].solid[j].x + (testLevel.solid[i].solid[j].length-1)) {
+            if (rightTile.y == testLevel.solidList[i].solid[j].y &&
+                rightTile.x >= testLevel.solidList[i].solid[j].x &&
+                rightTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
                     *collisionTile = rightTile;
                     return;
                 }
@@ -89,17 +107,46 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     return;
 }
 
+void enemiesMove(AISprite enemies[], unsigned char length) {
+    unsigned char i;
+    signed char tileCalc;
+    AISprite *enemy;
+
+    // Move enemies
+    for (i=0; i<length; i++) {
+        enemy = &enemies[i];
+        spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
+        enemy->sprite.animationCount++;
+        if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
+            enemy->sprite.animationCount=0;
+            enemy->sprite.animationFrame++;
+            if (enemy->sprite.animationFrame == enemy->sprite.frames) {
+                enemy->sprite.animationFrame = 0;
+            }
+            x16SpriteIdxSetGraphicsPointer(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
+                enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
+        }
+        tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
+        // Careful, can be -1 if on left edge (signed char)
+        if (tileCalc <= (signed char)enemy->xTileStart - 1) {
+            enemy->sprite.animationDirection = 1;
+            x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+        } else if (tileCalc >= enemy->xTileEnd - 1) {
+            enemy->sprite.animationDirection = 0;
+            x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+        }
+        x16SpriteIdxSetXY(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
+    }
+}
+
 void main() {
-    unsigned char collision, joy, e;
+    unsigned char collision, joy, enemyCount;
     unsigned char nextSpriteIndex = 0;
     unsigned char jumpFrames = 0;
-    signed char tileCalc;
     
     SolidLayout tileCollision;
     Sprite player, bullet;
-    AISprite snakes[3];
-    AISprite *enemy;
-
+    
     videoConfig();
     tilesConfig();
     layerMapsAddSomeStuff();
@@ -108,10 +155,8 @@ void main() {
 
     // Create the sprites
     playerCreate(&player, nextSpriteIndex++);
-    snakeCreate(&snakes[0], &testLevel.solid[0].solid[2], nextSpriteIndex++);
-    snakeCreate(&snakes[1], &testLevel.solid[0].solid[3], nextSpriteIndex++);
-    snakeCreate(&snakes[2], &testLevel.solid[0].solid[4], nextSpriteIndex++);
-    
+    enemyCount = enemiesCreate(enemies, nextSpriteIndex);
+    nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
     
     // Configure the joysticks
@@ -120,31 +165,7 @@ void main() {
     while (1) {
         waitforjiffy();
 
-        // Move enemies
-        for (e=0; e < 3; e++) {
-            enemy = &snakes[e];
-            spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
-            enemy->sprite.animationCount++;
-            if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
-                enemy->sprite.animationCount=0;
-                enemy->sprite.animationFrame++;
-                if (enemy->sprite.animationFrame == enemy->sprite.frames) {
-                    enemy->sprite.animationFrame = 0;
-                }
-                x16SpriteIdxSetGraphicsPointer(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
-                    enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
-            }
-            tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
-            // Careful, can be -1 if on left edge (signed char)
-            if (tileCalc <= (signed char)enemy->xTileStart - 1) {
-                enemy->sprite.animationDirection = 1;
-                x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
-            } else if (tileCalc >= enemy->xTileEnd - 1) {
-                enemy->sprite.animationDirection = 0;
-                x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
-            }
-            x16SpriteIdxSetXY(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
-        }        
+        enemiesMove(enemies, enemyCount);
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.

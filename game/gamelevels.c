@@ -75,9 +75,22 @@ TileLayoutList testLevelAllTiles[3] = {
     { MOON_TILES_LENGTH, moonTiles }
 };
 
+EnemyLayout snakes[4] = {
+    { 8, 9, 10, 0, 0},
+    { 14, 15, 17, 0, 0},
+    { 7, 22, 25, 0, 0},
+    { 0, 28, 40, 0, 0}
+};
+
+EnemyLayoutList testLevelEnemies[1] = {
+    { 4, snakes }
+};
+
 LevelOveralLayout testLevel = {
     1,
     testLevelAllSolids,
     3,
-    testLevelAllTiles
+    testLevelAllTiles,
+    1,
+    testLevelEnemies
 };

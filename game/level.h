@@ -1,6 +1,8 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "enemies.h"
+
 typedef struct SolidLayout {
     unsigned char x;
     unsigned char y;
@@ -16,6 +18,14 @@ typedef struct TileLayout {
     unsigned char layer;
 } TileLayout;
 
+typedef struct EnemyLayout {
+    unsigned char x;
+    unsigned char y;
+    unsigned char length;
+    EnemyType enemyType;
+    EnemyMoveType moveType;
+} EnemyLayout;
+
 typedef struct SolidLayoutList {
     unsigned short length;
     SolidLayout *solid;
@@ -26,11 +36,18 @@ typedef struct TileLayoutList {
     TileLayout *tiles;
 } TileLayoutList;
 
+typedef struct EnemyLayoutList {
+    unsigned short length;
+    EnemyLayout *enemies;
+} EnemyLayoutList;
+
 typedef struct LevelOveralLayout {
-    unsigned short solidLength;
-    SolidLayoutList *solid;
-    unsigned short tilesLength;
-    TileLayoutList *tiles;
+    unsigned short solidListLength;
+    SolidLayoutList *solidList;
+    unsigned short tilesListLength;
+    TileLayoutList *tilesList;
+    unsigned short enemiesListLength;
+    EnemyLayoutList *enemiesList;
 } LevelOveralLayout;
 
 void addLevelTiles(unsigned char length, TileLayout layout[]);

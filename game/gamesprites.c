@@ -81,7 +81,7 @@ void playerCreate(Sprite *p, unsigned char index) {
     x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
 }
 
-void snakeCreate(AISprite *snake, SolidLayout *layout, unsigned char index)
+void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
 {
     snake->sprite.index = index;
     snake->sprite.spriteBank = 1;
@@ -100,7 +100,7 @@ void snakeCreate(AISprite *snake, SolidLayout *layout, unsigned char index)
     snake->sprite.animationDirection = 1;
     snake->sprite.animationFrame = 0;
     snake->sprite.x = layout->x * TILE_PIXEL_WIDTH;
-    snake->sprite.y = (layout->y - 1) * TILE_PIXEL_HEIGHT;
+    snake->sprite.y = layout->y * TILE_PIXEL_HEIGHT;
     snake->sprite.xL = snake->sprite.x * MOVE_FACTOR;
     snake->sprite.yL = snake->sprite.y * MOVE_FACTOR;
     snake->sprite.lastX = snake->sprite.x;
@@ -108,9 +108,9 @@ void snakeCreate(AISprite *snake, SolidLayout *layout, unsigned char index)
     snake->sprite.speed = 6;
 
     snake->xTileStart = layout->x;
-    snake->yTileStart = layout->y - 1;
+    snake->yTileStart = layout->y;
     snake->xTileEnd = layout->x + layout->length;
-    snake->yTileEnd = layout->y - 1;
+    snake->yTileEnd = layout->y;
 
     spriteInit(&snake->sprite);
     x16SpriteIdxSetXY(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.x, snake->sprite.y);

@@ -16,7 +16,7 @@ void spriteDataLoad();
 void spriteIRQConfig();
 
 void playerCreate(Sprite *p, unsigned char index);
-void snakeCreate(AISprite *snake, SolidLayout *layout, unsigned char index);
+void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 
 #endif

@@ -10,9 +10,9 @@ typedef struct Sprite {
     unsigned char spriteBank;
     unsigned char clrMode;
     unsigned char collisionMask;
-    enum ZDepth zDepth;
-    enum SpriteSize width;
-    enum SpriteSize height;
+    ZDepth zDepth;
+    SpriteSize width;
+    SpriteSize height;
     unsigned char graphicsBank;
     unsigned short graphicsAddress;
     unsigned char frames;
