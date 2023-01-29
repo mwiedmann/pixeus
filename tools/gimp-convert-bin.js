@@ -1,19 +1,15 @@
 /**
- * This reads in a GIMP "Raw image data - data,raw" file and converts it to 
- * a .c file as an array of palette indexes that can be used as image data by sprites and tiles.
- * 
+ * This reads in a GIMP "Raw image data - data,raw" file and converts it to
+ * a .bin file that can be loaded with cbm_k_load
+ *
  * Usage: `node gimp-convert.js imagefile.data`
- * 
+ *
  * It attempts to match colors to the default palette by chosing the closest.
  * Improvements may be needed in the algorith but it works pretty well.
- * 
+ *
  * To create the image data in GIMP, "Export" the image and Select "Raw image data" as the file type
  * Make sure to remove the alpha channel or the data is not in the correct formap
  * Layer -> Transparency -> Remove Alpha Channel
- * 
- * To use the image in your program:
- * Add `extern unsigned char yournameImage[];`
- * In the makefile, add the .c file to the compile list
  */
 
 const fs = require("fs");
@@ -312,9 +308,9 @@ const findPalleteIdx = (cRec) => {
   // 0,0,0 Index 0 is transparent in X16
   // We use a special 1,1,1 color to select index 16 which is also black
   if (cRec.r == 1 && cRec.g == 1 && cRec.b == 1) {
-    return { i: 16, r: 0, g: 0, b: 0 }
+    return { i: 16, r: 0, g: 0, b: 0 };
   }
-  
+
   let exact = undefined;
   let close = undefined;
   let closeAmt = 9999;
@@ -374,16 +370,15 @@ const convertedPixels = pixelData.map((d, idx) => {
   return result ? result : { i: -9999 };
 });
 
-
 if (conversionError.length > 0) {
   console.error("Conversion Error(s)", conversionError);
 }
 
-const output = new Uint8Array(convertedPixels.map(cp => cp.i))
+// Added a 0, 0 2 byte header required for cbm_k_load
+// Its an optional address to load into. We don't use it but its required
+const output = new Uint8Array([0, 0, ...convertedPixels.map((cp) => cp.i)]);
 
-const outputFilename = `../images/${fileparts[0]}.bin`.toLowerCase()
-fs.writeFileSync(outputFilename, output, 'binary');
+const outputFilename = `../images/${fileparts[0]}.bin`.toLowerCase();
+fs.writeFileSync(outputFilename, output, "binary");
 
 console.log(`Generated file ${outputFilename} with ${pixelData.length} pixels`);
-console.log(`Add the following line of code to use in your program. Also update the makefile with this file.`)
-console.log(`extern unsigned char ${fileparts[0]}Image[];`)
