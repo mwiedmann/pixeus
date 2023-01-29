@@ -1,13 +1,12 @@
 #include <6502.h>
+#include <cbm.h>
+#include <peekpoke.h>
+#include <cx16.h>
 #include "gamesprites.h"
 #include "x16graphics.h"
 #include "memmap.h"
 #include "sprites.h"
 #include "level.h"
-
-// External Sprites
-extern unsigned char guyrunImage[];
-extern unsigned char snakeImage[];
 
 // Not sure how big the stack needs to be. Unclear how this works.
 #define IRQ_HANDLER_STACK_SIZE 8
@@ -31,6 +30,8 @@ void loadImage(unsigned char frames, unsigned char width, unsigned char height, 
 }
 
 void spriteDataLoad() {
+    unsigned int lastMemLoc;
+
     // You have to set the address you want to write to in VMEM using 9F20/21
     // 9F22 controls how much the VMEM address increments after each read/write
     // Then you can peek or poke using 0x9F23
@@ -39,8 +40,24 @@ void spriteDataLoad() {
     vMemSetAddr(SPRITE_MEM);
     vMemSetIncMode(1);
 
-    loadImage(6, 16, 16, guyrunImage);
-    loadImage(4, 16, 16, snakeImage);
+    // Switch to memory bank 2 to load data
+    // The default is 1, switch back when done
+    // Bank 0 is for system use only
+    // Starting at BANK_RAM you getg 8kb to use
+    POKE(0, 2);
+
+    cbm_k_setnam("images/guyrun.bin");
+    cbm_k_setlfs(0, 8, 0);
+    lastMemLoc = cbm_k_load(0, (unsigned int)BANK_RAM);
+    loadImage(6, 16, 16, BANK_RAM);
+
+    cbm_k_setnam("images/snake.bin");
+    cbm_k_setlfs(0, 8, 0);
+    lastMemLoc = cbm_k_load(0, (unsigned int)BANK_RAM);
+    loadImage(4, 16, 16, BANK_RAM);
+
+    // Back to memory bank 1
+    POKE(0, 1);
 }
 
 void spriteIRQConfig() {
