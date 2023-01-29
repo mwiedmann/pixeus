@@ -116,7 +116,7 @@ void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsign
 /**
  * Sets the Z-depth on a sprite
 */
-void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth);
+void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, ZDepth zDepth);
 
 /**
  * Set the H-Flip on a sprite
@@ -127,13 +127,13 @@ void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, uns
  * Sets the Z-depth and collision mask on a sprite (they share the same byte)
  * Assumes the Video Memory address is pointing at the correct sprite ZDepth position (Offset 6)
 */
-void x16SpriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask);
+void x16SpriteSetZDepthAndCollisionMask(ZDepth zDepth, unsigned char collisionMask);
 
 /**
  * Sets the width and height on a sprite
  * Assumes the Video Memory address is pointing at the correct sprite Width/Height position (Offset 7)
 */
-void x16SpriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height);
+void x16SpriteSetWidthHeight(SpriteSize width, SpriteSize height);
 
 /**
  * Initialize a sprite.
@@ -142,7 +142,7 @@ void x16SpriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height);
 */
 void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
-    unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height);
+    unsigned char collisionMask, ZDepth zDepth, SpriteSize width, SpriteSize height);
 
 /**
  * Enable global sprite collision detection

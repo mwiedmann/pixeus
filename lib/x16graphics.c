@@ -96,7 +96,7 @@ void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsign
     x16SpriteSetXY(x, y);
 }
 
-void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, enum ZDepth zDepth) {
+void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, ZDepth zDepth) {
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
@@ -110,18 +110,18 @@ void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, uns
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11111110) | hflip);
 }
 
-void x16SpriteSetZDepthAndCollisionMask(enum ZDepth zDepth, unsigned char collisionMask) {
+void x16SpriteSetZDepthAndCollisionMask(ZDepth zDepth, unsigned char collisionMask) {
     // Set together because they are in the same byte
     POKE(VMEM_DATA_0, zDepth<<2 | collisionMask<<4);
 }
 
-void x16SpriteSetWidthHeight(enum SpriteSize width, enum SpriteSize height) {
+void x16SpriteSetWidthHeight(SpriteSize width, SpriteSize height) {
     POKE(VMEM_DATA_0, height<<6 | width<<4);
 }
 
 void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
-    unsigned char collisionMask, enum ZDepth zDepth, enum SpriteSize width, enum SpriteSize height) {
+    unsigned char collisionMask, ZDepth zDepth, SpriteSize width, SpriteSize height) {
     
     vMemSetBank(spriteBank);
     vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8));
