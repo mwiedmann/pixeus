@@ -16,6 +16,8 @@ typedef struct TileLayout {
     unsigned char length;
     unsigned char type;
     unsigned char layer;
+    unsigned char vFlip;
+    unsigned char hFlip;
 } TileLayout;
 
 typedef struct EnemyLayout {
