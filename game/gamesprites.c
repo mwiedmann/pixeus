@@ -15,6 +15,7 @@ unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 6, 1, 16, 16);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 4, 1, 16, 16);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 4, 1, 16, 16);
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -92,6 +93,42 @@ void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
     spriteInit(&snake->sprite);
     x16SpriteIdxSetXY(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.x, snake->sprite.y);
     x16SpriteIdxSetHFlip(snake->sprite.spriteBank, snake->sprite.index, snake->sprite.animationDirection);
+}
+
+void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
+{
+    bee->sprite.index = index;
+    bee->sprite.spriteBank = 1;
+    bee->sprite.clrMode = 1;
+    bee->sprite.collisionMask = 0b1011;
+    bee->sprite.zDepth = BetweenL0L1;
+    bee->sprite.width = PX16;
+    bee->sprite.height = PX16;
+    bee->sprite.graphicsBank = 0;
+    bee->sprite.graphicsAddress = SPRITE_MEM_BEE;
+    bee->sprite.frames = 4;
+    bee->sprite.frameSize = 256; // Calculated as width * height
+    bee->sprite.animationCount = 0;
+    bee->sprite.animationSpeed = 6;
+    bee->sprite.animationStopFrame = 0;
+    bee->sprite.animationDirection = 1;
+    bee->sprite.animationFrame = 0;
+    bee->sprite.x = layout->x * TILE_PIXEL_WIDTH;
+    bee->sprite.y = layout->y * TILE_PIXEL_HEIGHT;
+    bee->sprite.xL = bee->sprite.x * MOVE_FACTOR;
+    bee->sprite.yL = bee->sprite.y * MOVE_FACTOR;
+    bee->sprite.lastX = bee->sprite.x;
+    bee->sprite.lastY = bee->sprite.y;
+    bee->sprite.speed = 13;
+
+    bee->xTileStart = layout->x;
+    bee->yTileStart = layout->y;
+    bee->xTileEnd = layout->x + layout->length;
+    bee->yTileEnd = layout->y;
+
+    spriteInit(&bee->sprite);
+    x16SpriteIdxSetXY(bee->sprite.spriteBank, bee->sprite.index, bee->sprite.x, bee->sprite.y);
+    x16SpriteIdxSetHFlip(bee->sprite.spriteBank, bee->sprite.index, bee->sprite.animationDirection);
 }
 
 void bulletCreate(Sprite *b, unsigned char index) {

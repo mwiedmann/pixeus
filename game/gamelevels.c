@@ -76,14 +76,21 @@ TileLayoutList testLevelAllTiles[3] = {
 };
 
 EnemyLayout snakes[4] = {
-    { 8, 9, 10, 0, 0},
-    { 14, 15, 17, 0, 0},
-    { 7, 22, 25, 0, 0},
-    { 0, 28, 40, 0, 0}
+    { 8, 9, 10, Snake, 0},
+    { 14, 15, 17, Snake, 0},
+    { 7, 22, 25, Snake, 0},
+    { 0, 28, 40, Snake, 0}
 };
 
-EnemyLayoutList testLevelEnemies[1] = {
-    { 4, snakes }
+EnemyLayout bees[3] = {
+    { 14, 15, 17, Bee, 0},
+    { 7, 22, 25, Bee, 0},
+    { 0, 28, 40, Bee, 0}
+};
+
+EnemyLayoutList testLevelEnemies[2] = {
+    { 4, snakes },
+    { 3, bees }
 };
 
 LevelOveralLayout testLevel = {
@@ -91,6 +98,6 @@ LevelOveralLayout testLevel = {
     testLevelAllSolids,
     3,
     testLevelAllTiles,
-    1,
+    2,
     testLevelEnemies
 };

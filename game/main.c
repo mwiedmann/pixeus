@@ -65,7 +65,11 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
 
     for (i=0; i<testLevel.enemiesListLength; i++) {
         for (j=0; j<testLevel.enemiesList[i].length; j++) {
-            snakeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            if (testLevel.enemiesList[i].enemies[j].enemyType == Snake) {
+                snakeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            } else {
+                beeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            }
             length++;
         }
     }
@@ -160,7 +164,7 @@ void main() {
     spriteIRQConfig();
     welcomeSprites();
     welcomeEnd();
-    
+
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)
     videoConfig();
