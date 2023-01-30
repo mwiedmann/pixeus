@@ -12,6 +12,7 @@
 #include "memmap.h"
 #include "gamelevels.h"
 #include "level.h"
+#include "welcome.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -146,12 +147,22 @@ void main() {
     
     SolidLayout tileCollision;
     Sprite player, bullet;
-    
-    videoConfig();
+
+    welcomeStart();
+
     tilesConfig();
+    welcomeTiles();
+
     layerMapsAddSomeStuff();
+    welcomeMaps();
+
     spriteDataLoad();
     spriteIRQConfig();
+    welcomeSprites();
+    
+    // Wait to switch to game mode until everything is loaded
+    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
+    videoConfig();
 
     // Create the sprites
     playerCreate(&player, nextSpriteIndex++);
