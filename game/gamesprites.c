@@ -1,5 +1,4 @@
 #include <6502.h>
-#include <cbm.h>
 #include <peekpoke.h>
 #include <cx16.h>
 #include "gamesprites.h"
@@ -7,54 +6,15 @@
 #include "memmap.h"
 #include "sprites.h"
 #include "level.h"
+#include "imageload.h"
 
 // Not sure how big the stack needs to be. Unclear how this works.
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-/**
- * Load image data from an array. Assumes vMem Bank and Address already set.
-*/
-void loadImage(unsigned char frames, unsigned char width, unsigned char height, unsigned char imageData[]) {
-    unsigned char f, h, i;
-    unsigned short start;
-
-    for (f=0; f<frames; f++) {
-        for (h=0; h<height; h++) {
-            start = (f * width) + (h * frames * width);
-            for (i=0; i<width; i++) {
-                vMemSetData0(imageData[start+i]);
-            }
-        }
-    }
-}
-
 void spriteDataLoad() {
-    unsigned int lastMemLoc;
-
-    // You have to set the address you want to write to in VMEM using 9F20/21
-    // 9F22 controls how much the VMEM address increments after each read/write
-    // Then you can peek or poke using 0x9F23
-    // The address is auto incremented and you can peek/poke again
-    vMemSetBank(SPRITE_MEM_BANK);
-    vMemSetAddr(SPRITE_MEM);
-    vMemSetIncMode(1);
-
-    // Switch to memory bank 2 to load data
-    // The default is 1, switch back when done
-    // Bank 0 is for system use only
-    // Starting at BANK_RAM you getg 8kb to use
-    POKE(0, 2);
-
-    cbm_k_setnam("images/guyrun.bin");
-    cbm_k_setlfs(0, 8, 0);
-    lastMemLoc = cbm_k_load(0, (unsigned int)BANK_RAM);
-    loadImage(6, 16, 16, BANK_RAM);
-
-    cbm_k_setnam("images/snake.bin");
-    cbm_k_setlfs(0, 8, 0);
-    lastMemLoc = cbm_k_load(0, (unsigned int)BANK_RAM);
-    loadImage(4, 16, 16, BANK_RAM);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 6, 16, 16);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 4, 16, 16);
 
     // Back to memory bank 1
     POKE(0, 1);
