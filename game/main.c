@@ -71,6 +71,8 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
                 beeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
             } else if (testLevel.enemiesList[i].enemies[j].enemyType == Ghost) {
                 ghostCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Scorpion) {
+                scorpionCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
             }
             length++;
         }

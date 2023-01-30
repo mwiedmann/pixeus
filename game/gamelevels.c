@@ -75,9 +75,8 @@ TileLayoutList testLevelAllTiles[3] = {
     { MOON_TILES_LENGTH, moonTiles }
 };
 
-EnemyLayout snakes[4] = {
+EnemyLayout snakes[3] = {
     { 8, 9, 10, Snake, 0},
-    { 14, 15, 17, Snake, 0},
     { 7, 22, 25, Snake, 0},
     { 0, 28, 40, Snake, 0}
 };
@@ -93,10 +92,15 @@ EnemyLayout ghosts[2] = {
     { 7, 22, 25, Ghost, 0}
 };
 
-EnemyLayoutList testLevelEnemies[3] = {
-    { 4, snakes },
+EnemyLayout scopions[1] = {
+    { 14, 15, 17, Scorpion, 0}
+};
+
+EnemyLayoutList testLevelEnemies[4] = {
+    { 3, snakes },
     { 3, bees },
-    { 2, ghosts }
+    { 2, ghosts },
+    { 1, scopions }
 };
 
 LevelOveralLayout testLevel = {
@@ -104,6 +108,6 @@ LevelOveralLayout testLevel = {
     testLevelAllSolids,
     3,
     testLevelAllTiles,
-    3,
+    4,
     testLevelEnemies
 };

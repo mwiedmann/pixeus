@@ -19,6 +19,7 @@ void playerCreate(Sprite *p, unsigned char index);
 void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index);
 void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index);
 void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
+void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 
 #endif
