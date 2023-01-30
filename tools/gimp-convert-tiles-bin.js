@@ -1,9 +1,9 @@
 /**
  * This reads in a GIMP "Raw image data - data,raw" file and converts it to
  * a .bin file that can be loaded with cbm_k_load.
- * This keeps the same order of the bytes which requires extracting tiles/frames in code.
+ * This will use the tile width/height to flatted the tiles so they can be used directly in code.
  *
- * Usage: `node gimp-convert.js imagefile.data`
+ * Usage: `node gimp-convert-tiles-bin.js imagefile.data xTiles yTiles frameWidth frameHeight`
  *
  * It attempts to match colors to the default palette by chosing the closest.
  * Improvements may be needed in the algorith but it works pretty well.
@@ -19,11 +19,17 @@ const pixelData = [];
 
 const filename = process.argv[2];
 const fileparts = filename.split(".");
+const xTiles = parseInt(process.argv[3]);
+const yTiles = parseInt(process.argv[4]);
+const frameWidth = parseInt(process.argv[5]);
+const frameHeight = parseInt(process.argv[6]);
 
-console.log("filename", filename);
+console.log(
+  `filename: ${filename} xTiles:${xTiles} yTiles:${yTiles} frameWidth:${frameWidth} frameHeight:${frameHeight}`
+);
 
-if (!filename) {
-  throw new Error("Missing filename");
+if (!filename || !xTiles || !yTiles || !frameWidth || !frameHeight) {
+  throw new Error("Missing required argument");
 }
 
 const data = fs.readFileSync(filename);
@@ -375,9 +381,28 @@ if (conversionError.length > 0) {
   console.error("Conversion Error(s)", conversionError);
 }
 
+const flattenedTiles = [];
+
+let ty, tx, y, x, start, pixelIdx;
+
+for (ty = 0; ty < yTiles; ty++) {
+  for (tx = 0; tx < xTiles; tx++) {
+    for (y = 0; y < frameHeight; y++) {
+      start =
+        ty * xTiles * frameWidth * frameHeight +
+        tx * frameWidth +
+        y * xTiles * frameHeight;
+      for (x = 0; x < frameWidth; x++) {
+        pixelIdx = start + x;
+        flattenedTiles.push(convertedPixels[pixelIdx].i)
+      }
+    }
+  }
+}
+
 // Added a 0, 0 2 byte header required for cbm_k_load
 // Its an optional address to load into. We don't use it but its required
-const output = new Uint8Array([0, 0, ...convertedPixels.map((cp) => cp.i)]);
+const output = new Uint8Array([0, 0, ...flattenedTiles]);
 
 const outputFilename = `../images/${fileparts[0]}.bin`.toLowerCase();
 fs.writeFileSync(outputFilename, output, "binary");
