@@ -18,6 +18,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin", 1024);
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -146,6 +147,20 @@ void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index
     scorpion->sprite.speed = 8;
 
     standardAISpriteConfig(scorpion, layout, index);
+}
+
+void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
+{
+    wasp->sprite.collisionMask = 0b1011;
+    wasp->sprite.width = PX16;
+    wasp->sprite.height = PX16;
+    wasp->sprite.graphicsAddress = SPRITE_MEM_WASP;
+    wasp->sprite.frames = 4;
+    wasp->sprite.frameSize = 256; // Calculated as width * height
+    wasp->sprite.animationSpeed = 6;
+    wasp->sprite.speed = 12;
+
+    standardAISpriteConfig(wasp, layout, index);
 }
 
 void bulletCreate(Sprite *b, unsigned char index) {

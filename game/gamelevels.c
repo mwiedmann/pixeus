@@ -81,9 +81,8 @@ EnemyLayout snakes[3] = {
     { 0, 28, 40, Snake, 0}
 };
 
-EnemyLayout bees[3] = {
+EnemyLayout bees[2] = {
     { 14, 15, 17, Bee, 0},
-    { 7, 22, 25, Bee, 0},
     { 0, 28, 40, Bee, 0}
 };
 
@@ -96,11 +95,16 @@ EnemyLayout scopions[1] = {
     { 14, 15, 17, Scorpion, 0}
 };
 
-EnemyLayoutList testLevelEnemies[4] = {
+EnemyLayout wasps[1] = {
+    { 7, 22, 25, Wasp, 0}
+};
+
+EnemyLayoutList testLevelEnemies[5] = {
     { 3, snakes },
-    { 3, bees },
+    { 2, bees },
     { 2, ghosts },
-    { 1, scopions }
+    { 1, scopions },
+    { 1, wasps }
 };
 
 LevelOveralLayout testLevel = {
@@ -108,6 +112,6 @@ LevelOveralLayout testLevel = {
     testLevelAllSolids,
     3,
     testLevelAllTiles,
-    4,
+    5,
     testLevelEnemies
 };
