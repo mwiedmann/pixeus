@@ -159,6 +159,7 @@ void main() {
     spriteDataLoad();
     spriteIRQConfig();
     welcomeSprites();
+    welcomeEnd();
     
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)
