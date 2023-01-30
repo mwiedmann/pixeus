@@ -8,6 +8,8 @@
 #define LAYER1_MAP_MEM_BANK 1
 
 #define TILE_MEM 8192
+#define TILE_EMPTY_MEM TILE_MEM
+#define TILE_SET_1_MEM TILE_EMPTY_MEM + 256
 #define TILE_MEM_BANK 1
 
 #define SPRITE_MEM 0
