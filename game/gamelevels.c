@@ -88,9 +88,15 @@ EnemyLayout bees[3] = {
     { 0, 28, 40, Bee, 0}
 };
 
-EnemyLayoutList testLevelEnemies[2] = {
+EnemyLayout ghosts[2] = {
+    { 8, 9, 12, Ghost, 0},
+    { 7, 22, 25, Ghost, 0}
+};
+
+EnemyLayoutList testLevelEnemies[3] = {
     { 4, snakes },
-    { 3, bees }
+    { 3, bees },
+    { 2, ghosts }
 };
 
 LevelOveralLayout testLevel = {
@@ -98,6 +104,6 @@ LevelOveralLayout testLevel = {
     testLevelAllSolids,
     3,
     testLevelAllTiles,
-    2,
+    3,
     testLevelEnemies
 };

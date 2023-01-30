@@ -67,8 +67,10 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
         for (j=0; j<testLevel.enemiesList[i].length; j++) {
             if (testLevel.enemiesList[i].enemies[j].enemyType == Snake) {
                 snakeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            } else {
+            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Bee) {
                 beeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
+            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Ghost) {
+                ghostCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
             }
             length++;
         }

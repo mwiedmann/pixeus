@@ -16,6 +16,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 1536);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -129,6 +130,42 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
     spriteInit(&bee->sprite);
     x16SpriteIdxSetXY(bee->sprite.spriteBank, bee->sprite.index, bee->sprite.x, bee->sprite.y);
     x16SpriteIdxSetHFlip(bee->sprite.spriteBank, bee->sprite.index, bee->sprite.animationDirection);
+}
+
+void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
+{
+    ghost->sprite.index = index;
+    ghost->sprite.spriteBank = 1;
+    ghost->sprite.clrMode = 1;
+    ghost->sprite.collisionMask = 0b1011;
+    ghost->sprite.zDepth = BetweenL0L1;
+    ghost->sprite.width = PX16;
+    ghost->sprite.height = PX16;
+    ghost->sprite.graphicsBank = 0;
+    ghost->sprite.graphicsAddress = SPRITE_MEM_GHOST;
+    ghost->sprite.frames = 4;
+    ghost->sprite.frameSize = 256; // Calculated as width * height
+    ghost->sprite.animationCount = 0;
+    ghost->sprite.animationSpeed = 20;
+    ghost->sprite.animationStopFrame = 0;
+    ghost->sprite.animationDirection = 1;
+    ghost->sprite.animationFrame = 0;
+    ghost->sprite.x = layout->x * TILE_PIXEL_WIDTH;
+    ghost->sprite.y = layout->y * TILE_PIXEL_HEIGHT;
+    ghost->sprite.xL = ghost->sprite.x * MOVE_FACTOR;
+    ghost->sprite.yL = ghost->sprite.y * MOVE_FACTOR;
+    ghost->sprite.lastX = ghost->sprite.x;
+    ghost->sprite.lastY = ghost->sprite.y;
+    ghost->sprite.speed = 3;
+
+    ghost->xTileStart = layout->x;
+    ghost->yTileStart = layout->y;
+    ghost->xTileEnd = layout->x + layout->length;
+    ghost->yTileEnd = layout->y;
+
+    spriteInit(&ghost->sprite);
+    x16SpriteIdxSetXY(ghost->sprite.spriteBank, ghost->sprite.index, ghost->sprite.x, ghost->sprite.y);
+    x16SpriteIdxSetHFlip(ghost->sprite.spriteBank, ghost->sprite.index, ghost->sprite.animationDirection);
 }
 
 void bulletCreate(Sprite *b, unsigned char index) {
