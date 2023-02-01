@@ -11,7 +11,8 @@ void welcomeStart() {
 
     printf("\n\n%sWELCOME TO: \"UNAMED GAME\" V0.0.1\n", WELCOME_SPACER);
     printf("%sBY MARK WIEDMANN\n\n", WELCOME_SPACER);
-    printf("%sLOADING TILES...\n", WELCOME_SPACER);
+    printf("%sLOADING TILES\n", WELCOME_SPACER);
+    printf("%sTHIS WILL TAKE A MOMENT...\n", WELCOME_SPACER);
 }
 
 void welcomeTiles() {

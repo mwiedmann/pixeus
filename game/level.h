@@ -52,6 +52,6 @@ typedef struct LevelOveralLayout {
     EnemyLayoutList *enemiesList;
 } LevelOveralLayout;
 
-void addLevelTiles(unsigned char length, TileLayout layout[]);
+void addLevelTiles(unsigned short length, TileLayout layout[]);
 
 #endif

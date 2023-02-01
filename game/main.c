@@ -10,7 +10,6 @@
 #include "gametiles.h"
 #include "gamesprites.h"
 #include "memmap.h"
-#include "gamelevels.h"
 #include "level.h"
 #include "welcome.h"
 
@@ -27,14 +26,14 @@ extern LevelOveralLayout testLevel;
 
 // TODO: Fixed array to hold AISprites
 // Need something more dynamic but this works for now
-AISprite enemies[16];
+AISprite masterEnemiesList[16];
 
 void layerMapsAddSomeStuff() {
     unsigned short x, y;
     
     vMemSetIncMode(1);
 
-    // Clear Layer 0 (background) but add some clouds and other tiles
+    // Clear Layer 0 (background)
     vMemSetBank(LAYER0_MAP_MEM_BANK);
     vMemSetAddr(LAYER0_MAP_MEM);
     for (y=0; y<32; y++) {
@@ -177,7 +176,7 @@ void main() {
 
     // Create the sprites
     playerCreate(&player, nextSpriteIndex++);
-    enemyCount = enemiesCreate(enemies, nextSpriteIndex);
+    enemyCount = enemiesCreate(masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
     
@@ -187,7 +186,7 @@ void main() {
     while (1) {
         waitforjiffy();
 
-        enemiesMove(enemies, enemyCount);
+        enemiesMove(masterEnemiesList, enemyCount);
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is moving.

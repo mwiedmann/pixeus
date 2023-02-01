@@ -81,7 +81,7 @@ void playerCreate(Sprite *p, unsigned char index) {
     p->animationStopFrame = 0;
     p->animationDirection = 0;
     p->animationFrame = 0;
-    p->x = 150;
+    p->x = 360;
     p->y = 50;
     p->xL = p->x * MOVE_FACTOR;
     p->yL = p->y * MOVE_FACTOR;

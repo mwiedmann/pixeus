@@ -18,5 +18,5 @@ void tilesConfig() {
         }
     }
 
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, "images/tileset1.bin", 23040);
+    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, "images/tileset1.bin", 46080L);
 }
