@@ -8,3 +8,5 @@ make:
 clean:
 	rm lib/*.o images/*.o game/*.o
 
+run:
+	../emu/x16emu -prg x16test.prg -run

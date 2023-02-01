@@ -4,7 +4,7 @@
 #define LAYER0_MAP_MEM 0
 #define LAYER0_MAP_MEM_BANK 1
 
-#define LAYER1_MAP_MEM 32768L
+#define LAYER1_MAP_MEM 4096
 #define LAYER1_MAP_MEM_BANK 1
 
 #define TILE_MEM 8192
@@ -12,7 +12,7 @@
 #define TILE_SET_1_MEM TILE_EMPTY_MEM + 256
 #define TILE_MEM_BANK 0
 
-#define SPRITE_MEM 0
+#define SPRITE_MEM 8192
 #define SPRITE_MEM_BANK 0
 
 #define SPRITE_MEM_PLAYER 0

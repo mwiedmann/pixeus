@@ -61,20 +61,15 @@ void layerMapsAddSomeStuff() {
 unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
     unsigned char i, j;
     unsigned char length = 0;
+    void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
+        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
+    };
 
     for (i=0; i<testLevel.enemiesListLength; i++) {
         for (j=0; j<testLevel.enemiesList[i].length; j++) {
-            if (testLevel.enemiesList[i].enemies[j].enemyType == Snake) {
-                snakeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Bee) {
-                beeCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Ghost) {
-                ghostCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            } else if (testLevel.enemiesList[i].enemies[j].enemyType == Scorpion) {
-                scorpionCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            }  else if (testLevel.enemiesList[i].enemies[j].enemyType == Wasp) {
-                waspCreate(&enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length);
-            }
+            (*enemyCreate[testLevel.enemiesList[i].enemies[j].enemyType])(
+                &enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length
+            );
             length++;
         }
     }
