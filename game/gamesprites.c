@@ -42,7 +42,7 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     // Possible zDepth will change but leave for now
     sp->sprite.zDepth = BetweenL0L1;
 
-    sp->sprite.graphicsBank = 0;
+    sp->sprite.graphicsBank = SPRITE_MEM_BANK;
     sp->sprite.animationCount = 0;    
     sp->sprite.animationStopFrame = 0;
     sp->sprite.animationDirection = 1;
@@ -72,7 +72,7 @@ void playerCreate(Sprite *p, unsigned char index) {
     p->zDepth = BetweenL0L1;
     p->width = PX16;
     p->height = PX16;
-    p->graphicsBank = 0;
+    p->graphicsBank = SPRITE_MEM_BANK;
     p->graphicsAddress = SPRITE_MEM_PLAYER;
     p->frames = 4;
     p->frameSize = 256; // Calculated as width * height
@@ -171,7 +171,7 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->zDepth = Disabled;
     b->width = PX16;
     b->height = PX16;
-    b->graphicsBank = 0;
+    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_PLAYER_BULLET;
     b->frames = 1;
     b->x = 320;
