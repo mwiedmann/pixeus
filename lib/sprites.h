@@ -7,7 +7,6 @@
 
 typedef struct Sprite {
     unsigned char index;
-    unsigned char spriteBank;
     unsigned char clrMode;
     unsigned char collisionMask;
     ZDepth zDepth;

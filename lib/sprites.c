@@ -3,7 +3,6 @@
 
 void spriteInit(Sprite *sprite) {
     x16SpriteInit(
-        sprite->spriteBank, 
         sprite->index,
         sprite->clrMode,
         sprite->graphicsBank,

@@ -14,7 +14,7 @@
 
 #define VMEM_ADDR_INC_MASK 0b00001111
 #define VMEM_SPRITE_ENABLE_MASK 0b10111111
-#define SPRITE_MEM_START 0xFC00
+#define SPRITE_ATTRIBUTES_START 0xFC00
 #define SPRCOL_MASK 4
 
 #define LAYER_0_CONFIG 0x9F2D
@@ -98,8 +98,8 @@ void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char gr
 /**
  * Sets the graphic address on a sprite
 */
-void x16SpriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
-    unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr);
+void x16SpriteIdxSetGraphicsPointer(unsigned char spriteIdx, unsigned char use256ColorMode,
+    unsigned char graphicsBank, unsigned short graphicsAddr);
 
 /**
  * Sets the X,Y values on a sprite
@@ -111,17 +111,17 @@ void x16SpriteSetXY(unsigned short x, unsigned short y);
 /**
  * Sets the X,Y values on a sprite
 */
-void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y);
+void x16SpriteIdxSetXY(unsigned char spriteIdx, unsigned short x, unsigned short y);
 
 /**
  * Sets the Z-depth on a sprite
 */
-void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, ZDepth zDepth);
+void x16SpriteIdxSetZDepth(unsigned char spriteIdx, ZDepth zDepth);
 
 /**
  * Set the H-Flip on a sprite
 */
-void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip);
+void x16SpriteIdxSetHFlip(unsigned char spriteIdx, unsigned char hflip);
 
 /**
  * Sets the Z-depth and collision mask on a sprite (they share the same byte)
@@ -140,7 +140,7 @@ void x16SpriteSetWidthHeight(SpriteSize width, SpriteSize height);
  * Includes assigning the graphics and setting most of the required fields
  * like color mode, zDepth, width, height
 */
-void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
+void x16SpriteInit(unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
     unsigned char collisionMask, ZDepth zDepth, SpriteSize width, SpriteSize height);
 

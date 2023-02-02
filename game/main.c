@@ -128,19 +128,19 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
             if (enemy->sprite.animationFrame == enemy->sprite.frames) {
                 enemy->sprite.animationFrame = 0;
             }
-            x16SpriteIdxSetGraphicsPointer(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
+            x16SpriteIdxSetGraphicsPointer(enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
                 enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
         }
         tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
         // Careful, can be -1 if on left edge (signed char)
         if (tileCalc <= (signed char)enemy->xTileStart - 1) {
             enemy->sprite.animationDirection = 1;
-            x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+            x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
         } else if (tileCalc >= enemy->xTileEnd - 1) {
             enemy->sprite.animationDirection = 0;
-            x16SpriteIdxSetHFlip(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.animationDirection);
+            x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
         }
-        x16SpriteIdxSetXY(enemy->sprite.spriteBank, enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
+        x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
     }
 }
 
@@ -208,8 +208,6 @@ void main() {
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     jumpFrames = PLAYER_JUMP_FRAMES;
                     // The jump animation wasn't great. The normal animation is fine
-                    // x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
-                    //     player.graphicsAddress+(4 * player.frameSize)); // TODO: Hardcoded jump frame
                 }
             }
         } else {
@@ -225,7 +223,7 @@ void main() {
             // We also flip the animation depending on direction
             if (player.animationDirection != 0) {
                 player.animationDirection=0;
-                x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
+                x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
             spriteMoveXL(&player, player.xL-player.speed);
         } else if (JOY_RIGHT(joy)) {
@@ -233,7 +231,7 @@ void main() {
             // Maybe flip animation
             if (player.animationDirection != 1) {
                 player.animationDirection=1;
-                x16SpriteIdxSetHFlip(player.spriteBank, player.index, player.animationDirection);
+                x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
             spriteMoveXL(&player, player.xL+player.speed);
         }
@@ -247,21 +245,21 @@ void main() {
             if (player.animationFrame == player.frames) {
                 player.animationFrame = 0;
             }
-            x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
+            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
         } else if (player.animationCount == player.animationSpeed && player.animationFrame != player.animationStopFrame) {
             // If the guy is standing still, always show a certain frame
             // In future this could be a totally different animation
             // We have a yawn animation for instance for when waiting too long.
             player.animationFrame = player.animationStopFrame;
-            x16SpriteIdxSetGraphicsPointer(player.spriteBank, player.index, player.clrMode, player.graphicsBank,
+            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
         }
         
         // Move the bullet
         if (bullet.active == 1) {
             spriteMoveX(&bullet, bullet.animationDirection == 0 ? bullet.x-bullet.speed : bullet.x+bullet.speed);
-            x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
+            x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
         }
 
         if (JOY_BTN_2(joy) && bullet.active==0) {
@@ -270,9 +268,9 @@ void main() {
             spriteMove(&bullet, player.x, player.y);
             // Show the bullet
             bullet.zDepth = BetweenL0L1;
-            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
-            x16SpriteIdxSetXY(bullet.spriteBank, bullet.index, bullet.x, bullet.y);
-            x16SpriteIdxSetHFlip(bullet.spriteBank, bullet.index, bullet.animationDirection);
+            x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+            x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
+            x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
         }
 
         // See if the player is touching any tiles
@@ -282,7 +280,7 @@ void main() {
             spriteMoveBackX(&player);
         }
 
-        x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
+        x16SpriteIdxSetXY(player.index, player.x, player.y);
 
         // Get the Collision bits and shift them down
         collision = x16SpriteCollisionBitsGet();
@@ -294,12 +292,12 @@ void main() {
         if (collision == 0b1001) {
             // Move the sprite back
             spriteMove(&player, 350, 235);
-            // x16SpriteIdxSetXY(player.spriteBank, player.index, player.x, player.y);
+            // x16SpriteIdxSetXY(player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             // Bullet hit the snake
             bullet.active = 0;
             bullet.zDepth = Disabled;
-            x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
+            x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
         }
 
         // Bullet is off screen or collided with a solid tile
@@ -308,7 +306,7 @@ void main() {
             if (tileCollision.type != 255 || bullet.x < 0 || bullet.x > 639) {
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
-                x16SpriteIdxSetZDepth(bullet.spriteBank, bullet.index, bullet.zDepth);
+                x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
             }
         }
     }

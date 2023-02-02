@@ -36,12 +36,10 @@ void spriteIRQConfig() {
 void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char index)
 {
     sp->sprite.index = index;
-    sp->sprite.spriteBank = 1;
     sp->sprite.clrMode = 1;
     
     // Possible zDepth will change but leave for now
     sp->sprite.zDepth = BetweenL0L1;
-
     sp->sprite.graphicsBank = SPRITE_MEM_BANK;
     sp->sprite.animationCount = 0;    
     sp->sprite.animationStopFrame = 0;
@@ -60,13 +58,12 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->yTileEnd = layout->y;
 
     spriteInit(&sp->sprite);
-    x16SpriteIdxSetXY(sp->sprite.spriteBank, sp->sprite.index, sp->sprite.x, sp->sprite.y);
-    x16SpriteIdxSetHFlip(sp->sprite.spriteBank, sp->sprite.index, sp->sprite.animationDirection);
+    x16SpriteIdxSetXY(sp->sprite.index, sp->sprite.x, sp->sprite.y);
+    x16SpriteIdxSetHFlip(sp->sprite.index, sp->sprite.animationDirection);
 }
 
 void playerCreate(Sprite *p, unsigned char index) {
     p->index = index;
-    p->spriteBank = 1;
     p->clrMode = 1;
     p->collisionMask = 0b1101;
     p->zDepth = BetweenL0L1;
@@ -90,7 +87,7 @@ void playerCreate(Sprite *p, unsigned char index) {
     p->speed = 12;
 
     spriteInit(p);
-    x16SpriteIdxSetXY(p->spriteBank, p->index, p->x, p->y);
+    x16SpriteIdxSetXY(p->index, p->x, p->y);
 }
 
 void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
@@ -165,7 +162,6 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
 
 void bulletCreate(Sprite *b, unsigned char index) {
     b->index = index;
-    b->spriteBank = 1;
     b->clrMode = 1;
     b->collisionMask = 0b1010;
     b->zDepth = Disabled;

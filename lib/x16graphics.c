@@ -61,7 +61,7 @@ void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char gr
     unsigned short shiftedAddr = graphicsAddr>>5;
     unsigned char addr0 = shiftedAddr & 255;
     unsigned char addr1 = shiftedAddr>>8 & 255;
-    // unsigned short spritePtr = SPRITE_MEM_START + (spriteIdx * 8);
+    // unsigned short spritePtr = SPRITE_ATTRIBUTES_START + (spriteIdx * 8);
     unsigned char mode = use256ColorMode == 1 ? 128 : 0;
     unsigned char graphicsBankVal = graphicsBank == 1 ? 0b1000 : 0;
 
@@ -71,10 +71,10 @@ void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char gr
     POKE(VMEM_DATA_0, addr1 | mode | graphicsBankVal);
 }
 
-void x16SpriteIdxSetGraphicsPointer(unsigned char spriteBank, unsigned char spriteIdx,
+void x16SpriteIdxSetGraphicsPointer(unsigned char spriteIdx,
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
-    vMemSetBank(spriteBank);
-    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8));
+    vMemSetBank(1);
+    vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8));
     vMemSetIncMode(1);
     x16SpriteSetGraphicsPointer(use256ColorMode, graphicsBank, graphicsAddr);
 }
@@ -90,22 +90,22 @@ void x16SpriteSetXY(unsigned short x, unsigned short y) {
     POKE(VMEM_DATA_0, y/256);
 }
 
-void x16SpriteIdxSetXY(unsigned char spriteBank, unsigned char spriteIdx, unsigned short x, unsigned short y) {
-    vMemSetBank(spriteBank);
-    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 2); // +2 to point to the X Position Offset
+void x16SpriteIdxSetXY(unsigned char spriteIdx, unsigned short x, unsigned short y) {
+    vMemSetBank(1);
+    vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8) + 2); // +2 to point to the X Position Offset
     x16SpriteSetXY(x, y);
 }
 
-void x16SpriteIdxSetZDepth(unsigned char spriteBank, unsigned char spriteIdx, ZDepth zDepth) {
-    vMemSetBank(spriteBank);
-    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
+void x16SpriteIdxSetZDepth(unsigned char spriteIdx, ZDepth zDepth) {
+    vMemSetBank(1);
+    vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11110011) | zDepth<<2);
 }
 
-void x16SpriteIdxSetHFlip(unsigned char spriteBank, unsigned char spriteIdx, unsigned char hflip) {
-    vMemSetBank(spriteBank);
-    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
+void x16SpriteIdxSetHFlip(unsigned char spriteIdx, unsigned char hflip) {
+    vMemSetBank(1);
+    vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
     POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11111110) | hflip);
 }
@@ -119,12 +119,12 @@ void x16SpriteSetWidthHeight(SpriteSize width, SpriteSize height) {
     POKE(VMEM_DATA_0, height<<6 | width<<4);
 }
 
-void x16SpriteInit(unsigned char spriteBank, unsigned char spriteIdx, 
+void x16SpriteInit(unsigned char spriteIdx, 
     unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr,
     unsigned char collisionMask, ZDepth zDepth, SpriteSize width, SpriteSize height) {
     
-    vMemSetBank(spriteBank);
-    vMemSetAddr(SPRITE_MEM_START + (spriteIdx*8));
+    vMemSetBank(1);
+    vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8));
    
     // Most of these functions assume an Inc Mode of 1 since they are setting bytes
     // It will automatically move the address 1 byte so we can set the next field
