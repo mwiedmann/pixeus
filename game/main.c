@@ -58,25 +58,6 @@ void layerMapsAddSomeStuff() {
     }
 }
 
-unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
-    unsigned char i, j;
-    unsigned char length = 0;
-    void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
-        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
-    };
-
-    for (i=0; i<testLevel.enemiesListLength; i++) {
-        for (j=0; j<testLevel.enemiesList[i].length; j++) {
-            (*enemyCreate[testLevel.enemiesList[i].enemies[j].enemyType])(
-                &enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length
-            );
-            length++;
-        }
-    }
-
-    return length;
-}
-
 void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     unsigned char i,j;
     SolidLayout standingTile;
@@ -92,13 +73,42 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
             if (standingTile.y == testLevel.solidList[i].solid[j].y &&
                 standingTile.x >= testLevel.solidList[i].solid[j].x &&
                 standingTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
-                    *collisionTile = standingTile;
+                    *collisionTile = testLevel.solidList[i].solid[j];
                     return;
                 }
         }
     }
 
     return;
+}
+
+unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
+    unsigned char i, j;
+    unsigned char length = 0;
+    SolidLayout si;
+    void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
+        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
+    };
+
+    for (i=0; i<testLevel.enemiesListLength; i++) {
+        for (j=0; j<testLevel.enemiesList[i].length; j++) {
+            (*enemyCreate[testLevel.enemiesList[i].enemies[j].enemyType])(
+                &enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length
+            );
+
+            // Get the current ground the AI is standing on and patrol it
+            spriteTouchingTile(&enemies[length].sprite, &si);
+            if (si.type !=255) {
+                enemies[length].xTileStart = si.x;
+                enemies[length].yTileStart = si.y;
+                enemies[length].xTileEnd = si.x + si.length;
+                enemies[length].yTileEnd = si.y + si.length;
+            }
+            length++;
+        }
+    }
+
+    return length;
 }
 
 void enemiesMove(AISprite enemies[], unsigned char length) {
