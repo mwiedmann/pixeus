@@ -79,31 +79,20 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
 
 void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     unsigned char i,j;
-    SolidLayout leftTile;
-    SolidLayout rightTile;
+    SolidLayout standingTile;
     
     // Special signal that all is clear
     collisionTile->type = 255;
 
-    leftTile.x = sprite->x / TILE_PIXEL_WIDTH;
-    leftTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
-
-    rightTile.x = (sprite->x + pixelSizes[sprite->width]) / TILE_PIXEL_WIDTH;
-    rightTile.y = leftTile.y;
+    standingTile.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    standingTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
     for (i=0; i<testLevel.solidListLength; i++) {
         for (j=0; j<testLevel.solidList[i].length; j++) {
-            if (leftTile.y == testLevel.solidList[i].solid[j].y &&
-                leftTile.x >= testLevel.solidList[i].solid[j].x &&
-                leftTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
-                    *collisionTile = leftTile;
-                    return;
-                }
-
-            if (rightTile.y == testLevel.solidList[i].solid[j].y &&
-                rightTile.x >= testLevel.solidList[i].solid[j].x &&
-                rightTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
-                    *collisionTile = rightTile;
+            if (standingTile.y == testLevel.solidList[i].solid[j].y &&
+                standingTile.x >= testLevel.solidList[i].solid[j].x &&
+                standingTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
+                    *collisionTile = standingTile;
                     return;
                 }
         }
