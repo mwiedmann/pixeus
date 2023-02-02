@@ -1,5 +1,6 @@
 #include <peekpoke.h>
 #include <6502.h>
+#include <cx16.h>
 #include "x16graphics.h"
 
 unsigned char pixelSizes[4] = {8, 16, 32, 64};
@@ -13,11 +14,11 @@ struct MemSplit splitMem(unsigned short addr) {
 }
 
 void vMemSetBank0() {
-    POKE(VMEM_ADDR_HI, PEEK(VMEM_ADDR_HI) & 254);
+    VERA.address_hi = VERA.address_hi & 254;
 }
 
 void vMemSetBank1() {
-    POKE(VMEM_ADDR_HI, PEEK(VMEM_ADDR_HI) | 1);
+    VERA.address_hi = VERA.address_hi | 1;
 }
 
 void vMemSetBank(unsigned char bank) {
@@ -36,21 +37,21 @@ void vMemSetAddr(unsigned short mem) {
 }
 
 void vMemSetIncMode(unsigned char mode) {
-    unsigned char currentCleared = PEEK(VMEM_ADDR_HI) & VMEM_ADDR_INC_MASK;
+    unsigned char currentCleared = VERA.address_hi & VMEM_ADDR_INC_MASK;
     unsigned char newVal = (mode<<4) | currentCleared;
-    POKE(VMEM_ADDR_HI, newVal);
+    VERA.address_hi = newVal;
 }
 
 void vMemSetData0(unsigned char val) {
-    POKE(VMEM_DATA_0, val);
+    VERA.data0 = val;
 }
 
 void vMemSetData1(unsigned char val) {
-    POKE(VMEM_DATA_1, val);
+    VERA.data1 = val;
 }
 
 void x16SpriteSetGlobalOn() {
-    POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) | 0b01000000);
+    VERA.display.video = VERA.display.video | 0b01000000;
 }
 
 void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char graphicsBank, unsigned short graphicsAddr) {
@@ -65,10 +66,10 @@ void x16SpriteSetGraphicsPointer(unsigned char use256ColorMode, unsigned char gr
     unsigned char mode = use256ColorMode == 1 ? 128 : 0;
     unsigned char graphicsBankVal = graphicsBank == 1 ? 0b1000 : 0;
 
-    POKE(VMEM_DATA_0, addr0); //POKE $1,$FC00,$00 sets the bits 5-12 of the pointer to graphics ($040000)
+    VERA.data0 = addr0; //POKE $1,$FC00,$00 sets the bits 5-12 of the pointer to graphics ($040000)
     
     // sets the bits 13-16 of the same pointer plus it sets the bit 7 to 1 to turn on 256 color sprite mode
-    POKE(VMEM_DATA_0, addr1 | mode | graphicsBankVal);
+    VERA.data0 = addr1 | mode | graphicsBankVal;
 }
 
 void x16SpriteIdxSetGraphicsPointer(unsigned char spriteIdx,
@@ -84,10 +85,10 @@ void x16SpriteSetXY(unsigned short x, unsigned short y) {
     // First one takes the 1st 8 bits
     // Second one takes the next 2 bits (hence the /256)
     vMemSetIncMode(1);
-    POKE(VMEM_DATA_0, x & 0xFF);
-    POKE(VMEM_DATA_0, x/256);
-    POKE(VMEM_DATA_0, y & 0xFF);
-    POKE(VMEM_DATA_0, y/256);
+    VERA.data0 = x & 0xFF;
+    VERA.data0 = x/256;
+    VERA.data0 = y & 0xFF;
+    VERA.data0 = y/256;
 }
 
 void x16SpriteIdxSetXY(unsigned char spriteIdx, unsigned short x, unsigned short y) {
@@ -100,23 +101,23 @@ void x16SpriteIdxSetZDepth(unsigned char spriteIdx, ZDepth zDepth) {
     vMemSetBank(1);
     vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
-    POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11110011) | zDepth<<2);
+    VERA.data0 = (VERA.data0 & 0b11110011) | zDepth<<2;
 }
 
 void x16SpriteIdxSetHFlip(unsigned char spriteIdx, unsigned char hflip) {
     vMemSetBank(1);
     vMemSetAddr(SPRITE_ATTRIBUTES_START + (spriteIdx*8) + 6); // +6 to point to the byte with Z Depth
     vMemSetIncMode(0); // Needed because we PEEK to get the existing value as to not lose other bits
-    POKE(VMEM_DATA_0, (PEEK(VMEM_DATA_0) & 0b11111110) | hflip);
+    VERA.data0 = (VERA.data0 & 0b11111110) | hflip;
 }
 
 void x16SpriteSetZDepthAndCollisionMask(ZDepth zDepth, unsigned char collisionMask) {
     // Set together because they are in the same byte
-    POKE(VMEM_DATA_0, zDepth<<2 | collisionMask<<4);
+    VERA.data0 = zDepth<<2 | collisionMask<<4;
 }
 
 void x16SpriteSetWidthHeight(SpriteSize width, SpriteSize height) {
-    POKE(VMEM_DATA_0, height<<6 | width<<4);
+    VERA.data0 = height<<6 | width<<4;
 }
 
 void x16SpriteInit(unsigned char spriteIdx, 
@@ -143,16 +144,16 @@ void x16SpriteInit(unsigned char spriteIdx,
 }
 
 void x16SpriteCollisionsEnable() {
-    POKE(IEN_REG, PEEK(IEN_REG) | SPRCOL_MASK);
+    VERA.irq_enable = VERA.irq_enable | SPRCOL_MASK;
 }
 
 void x16SpriteCollisionsDisable() {
-    POKE(IEN_REG, PEEK(IEN_REG) & (255 - SPRCOL_MASK));
+    VERA.irq_enable = VERA.irq_enable & (255 - SPRCOL_MASK);
 }
 
 unsigned char x16SpriteCollisionBitsGet() {
     // Get the Collision bits and shift them down
-    return (PEEK(ISR_REG) & 0b11110000)>>4;
+    return (VERA.irq_flags & 0b11110000)>>4;
 }
 
 unsigned char x16SpriteCollisionIRQHandler()
@@ -164,7 +165,7 @@ unsigned char x16SpriteCollisionIRQHandler()
         // Clear the collision IRQ by writing to the SPRCOL (bit 2) in the ISR
         // NOTE: It appears that ISR is special read-only in a way
         // We just write the bit and the other data seems to stay untouched
-        POKE(ISR_REG,  SPRCOL_MASK); 
+        VERA.irq_flags = SPRCOL_MASK; 
         return IRQ_HANDLED;
     }
 
