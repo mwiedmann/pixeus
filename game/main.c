@@ -147,7 +147,8 @@ void main() {
     unsigned char collision, joy, enemyCount;
     unsigned char nextSpriteIndex = 0;
     unsigned char jumpFrames = 0;
-    
+    unsigned char releasedBtnAfterJump = 1;
+
     SolidLayout tileCollision;
     Sprite player, bullet;
 
@@ -205,8 +206,17 @@ void main() {
                 spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
                 // Player is on solid ground, can jump
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
-                    jumpFrames = PLAYER_JUMP_FRAMES;
-                    // The jump animation wasn't great. The normal animation is fine
+                    // Only let them jump if they released the jump button since the last jump.
+                    // Without this, the player just hops as you hold the button.
+                    if (releasedBtnAfterJump == 1) {
+                        jumpFrames = PLAYER_JUMP_FRAMES;
+                        releasedBtnAfterJump = 0;
+                        // The jump animation wasn't great. The normal animation is fine
+                    }
+                } else {
+                    // Player is on ground and isn't holding the button
+                    // They can jump again.
+                    releasedBtnAfterJump = 1;
                 }
             }
         } else {
