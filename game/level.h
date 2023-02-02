@@ -43,6 +43,11 @@ typedef struct EnemyLayoutList {
     EnemyLayout *enemies;
 } EnemyLayoutList;
 
+typedef struct PlayerLayout {
+    unsigned short x;
+    unsigned short y;
+} PlayerLayout;
+
 typedef struct LevelOveralLayout {
     unsigned short solidListLength;
     SolidLayoutList *solidList;
@@ -50,6 +55,7 @@ typedef struct LevelOveralLayout {
     TileLayoutList *tilesList;
     unsigned short enemiesListLength;
     EnemyLayoutList *enemiesList;
+    PlayerLayout *playerLayout;
 } LevelOveralLayout;
 
 void addLevelTiles(unsigned short length, TileLayout layout[]);

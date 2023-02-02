@@ -159,7 +159,7 @@ void main() {
     videoConfig();
 
     // Create the sprites
-    playerCreate(&player, nextSpriteIndex++);
+    playerCreate(&player, testLevel.playerLayout, nextSpriteIndex++);
     enemyCount = enemiesCreate(masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);

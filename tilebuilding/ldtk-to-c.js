@@ -179,6 +179,17 @@ const addTiles = (gridTiles, layer) => {
     })
 }
 
+let playerStartCode
+
+const addEntities = (entityInstances) => {
+    const ps = entityInstances.find(e => e.__identifier === "PlayerStart")
+    if (!ps) {
+        throw new Error("Missing required PlayerStart in entityInstances")
+    }
+
+    playerStartCode = `PlayerLayout playerLayout = {${ps.px[0]}, ${ps.px[1]}};\n\n`
+}
+
 level.layerInstances.forEach((li) => {
   switch (li.__identifier) {
     case "Enemies":
@@ -200,6 +211,10 @@ level.layerInstances.forEach((li) => {
     case "Tiles_Foreground":
         addTiles(li.gridTiles, 1)
         break;
+
+    case "Entities":
+        addEntities(li.entityInstances)
+        break
   }
 });
 
@@ -212,6 +227,7 @@ allTilesCode += `TileLayoutList testLevelAllTiles[1] = {\n    { ${allGridTiles.l
 
 masterCode+= allTilesCode
 
+masterCode+= playerStartCode
 
 /*
 LevelOveralLayout testLevel = {
@@ -224,7 +240,7 @@ LevelOveralLayout testLevel = {
 };
 */
 
-masterCode+= `LevelOveralLayout testLevel = { 1, testLevelAllSolids, 1, testLevelAllTiles, 1, testLevelEnemies };\n`
+masterCode+= `LevelOveralLayout testLevel = { 1, testLevelAllSolids, 1, testLevelAllTiles, 1, testLevelEnemies, &playerLayout };\n`
 
 const outputFilename = `../game/gamelevels.c`
 fs.writeFileSync(outputFilename, masterCode);

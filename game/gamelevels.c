@@ -15,7 +15,8 @@ EnemyLayoutList testLevelEnemies[1] = {
     { 8, enemies }
 };
 
-SolidLayout testLevelSolid[14] = {
+SolidLayout testLevelSolid[15] = {
+    { 10, 3, 2, 0},
     { 0, 5, 25, 0},
     { 27, 13, 13, 0},
     { 16, 14, 12, 0},
@@ -33,10 +34,10 @@ SolidLayout testLevelSolid[14] = {
 };
 
 SolidLayoutList testLevelAllSolids[1] = {
-    { 14, testLevelSolid }
+    { 15, testLevelSolid }
 };
 
-TileLayout testLevelTiles[386] = {
+TileLayout testLevelTiles[388] = {
     { 6, 1, 1, 13, 0, 0, 0 },
     { 17, 1, 1, 160, 0, 0, 0 },
     { 30, 1, 1, 162, 0, 0, 0 },
@@ -360,6 +361,8 @@ TileLayout testLevelTiles[386] = {
     { 39, 29, 1, 2, 0, 0, 0 },
     { 3, 2, 1, 66, 1, 0, 0 },
     { 3, 3, 1, 78, 1, 0, 0 },
+    { 10, 3, 1, 2, 1, 0, 0 },
+    { 11, 3, 1, 3, 1, 0, 0 },
     { 2, 4, 1, 30, 1, 0, 0 },
     { 3, 4, 1, 90, 1, 0, 0 },
     { 5, 4, 1, 53, 1, 0, 0 },
@@ -426,7 +429,9 @@ TileLayout testLevelTiles[386] = {
 };
 
 TileLayoutList testLevelAllTiles[1] = {
-    { 386, testLevelTiles }
+    { 388, testLevelTiles }
 };
 
-LevelOveralLayout testLevel = { 1, testLevelAllSolids, 1, testLevelAllTiles, 1, testLevelEnemies };
+PlayerLayout playerLayout = {160, 16};
+
+LevelOveralLayout testLevel = { 1, testLevelAllSolids, 1, testLevelAllTiles, 1, testLevelEnemies, &playerLayout };

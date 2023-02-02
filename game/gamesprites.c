@@ -62,7 +62,7 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     x16SpriteIdxSetHFlip(sp->sprite.index, sp->sprite.animationDirection);
 }
 
-void playerCreate(Sprite *p, unsigned char index) {
+void playerCreate(Sprite *p, PlayerLayout *playerLayout, unsigned char index) {
     p->index = index;
     p->clrMode = 1;
     p->collisionMask = 0b1101;
@@ -78,8 +78,8 @@ void playerCreate(Sprite *p, unsigned char index) {
     p->animationStopFrame = 0;
     p->animationDirection = 0;
     p->animationFrame = 0;
-    p->x = 360;
-    p->y = 50;
+    p->x = playerLayout->x;
+    p->y = playerLayout->y;
     p->xL = p->x * MOVE_FACTOR;
     p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;
