@@ -1,33 +1,37 @@
 #include <stdio.h>
 #include <conio.h>
 #include <peekpoke.h>
+#include "gametiles.h"
 
 #define WELCOME_SPACER "  "
 
 void welcomeStart() {
     clrscr();
+
+    loadFont();
+   
     POKE(0x9F2A, 64);
     POKE(0x9F2B, 64);
 
-    printf("\n\n%sWELCOME TO: \"PIXEUS\" V0.0.1\n", WELCOME_SPACER);
-    printf("%sBY MARK WIEDMANN\n\n", WELCOME_SPACER);
-    printf("%sLOADING TILES\n", WELCOME_SPACER);
-    printf("%sTHIS WILL TAKE A MOMENT...\n", WELCOME_SPACER);
+    printf("\n\n%swelcome to \"pixeus\" v0.0.1\n", WELCOME_SPACER);
+    printf("%sby mark wiedmann\n\n", WELCOME_SPACER);
+    printf("%sloading tiles\n", WELCOME_SPACER);
+    printf("%sthis will take a moment...\n", WELCOME_SPACER);
 }
 
 void welcomeTiles() {
-    printf("%sTILES LOADED\n", WELCOME_SPACER);
-    printf("%sCONFIGURING TILES...\n", WELCOME_SPACER);
+    printf("%stiles loaded\n", WELCOME_SPACER);
+    printf("%sconfiguring tiles...\n", WELCOME_SPACER);
 }
 
 void welcomeMaps() {
-    printf("%sTILES DONE\n", WELCOME_SPACER);
-    printf("%sLOADING SPRITES...\n", WELCOME_SPACER);
+    printf("%stiles done\n", WELCOME_SPACER);
+    printf("%sloading sprites...\n", WELCOME_SPACER);
 }
 
 void welcomeSprites() {
-    printf("%SPRITES DONE\n", WELCOME_SPACER);
-    printf("%sGAME STARTING...\n", WELCOME_SPACER);
+    printf("%ssprites done\n", WELCOME_SPACER);
+    printf("%sgame starting...\n", WELCOME_SPACER);
 }
 
 void welcomeEnd() {

@@ -20,3 +20,7 @@ void tilesConfig() {
 
     imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, "images/tileset1.bin", 46080L);
 }
+
+void loadFont() {
+    imageFileLoad(2, FONT_MEM_BANK, FONT_MEM, "images/fontsimple.bin", 208);
+}

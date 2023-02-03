@@ -5,5 +5,6 @@
 #define EMPTY_TILE 0
 
 void tilesConfig();
+void loadFont();
 
 #endif

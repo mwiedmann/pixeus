@@ -3,8 +3,11 @@
 
 // Default video on X16 startup
 // Layer 1 is ON (Layer 0 is OFF)
+// $9F34 - 01100000 - 1 bpp, T256 is 0, so this is 16 color text mode, bitmap mode OFF, 128 cols (needed to show 80), 64 rows (needed to show 60) 
 // $9F35 Layer 1 - Mapbase  - 216 - 11011000 - VBank 1 - 1011000000000000 - B000 / 45056
 // $9F36 Layer 1 - Tilebase - 248 - 11111000 - VBank 1 - 1111000000000000 - F000 / 61440 (4k from the end)
+
+// 10 FOR I=0 TO 127 : VPOKE 1, $B000+(I*2), I : NEXT I
 
 // We put the Map Memory and Sprites in Bank 1
 // **** BANK 1 ****
@@ -40,6 +43,11 @@
 #define TILE_EMPTY_MEM TILE_MEM
 #define TILE_SET_1_MEM TILE_EMPTY_MEM + 256
 #define TILE_MEM_BANK 0
+
+#define FONT_LETTER_START 8
+#define FONT_MEM 0xF000 + FONT_LETTER_START
+#define FONT_MEM_BANK 1
+
 
 #define TILES_ACROSS 64
 #define TILES_DOWN 32
