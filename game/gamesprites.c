@@ -14,6 +14,7 @@ unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
 void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 1536);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
@@ -158,6 +159,22 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
     wasp->sprite.speed = 12;
 
     standardAISpriteConfig(wasp, layout, index);
+}
+
+void explosionSmallCreate(Sprite *b, unsigned char index) {
+    b->index = index;
+    b->clrMode = 1;
+    b->collisionMask = 0;
+    b->zDepth = Disabled;
+    b->width = PX16;
+    b->height = PX16;
+    b->graphicsBank = SPRITE_MEM_BANK;
+    b->graphicsAddress = SPRITE_MEM_EXP_SMALL;
+    b->frames = 4;
+    b->frameSize = 256; // Calculated as width * height
+    b->animationSpeed = 6;
+
+    spriteInit(b);
 }
 
 void bulletCreate(Sprite *b, unsigned char index) {

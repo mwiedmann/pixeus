@@ -20,6 +20,7 @@
 #define PLAYER_FALL_SPEED 2
 #define PLAYER_JUMP_SPEED 2
 #define PLAYER_JUMP_FRAMES 14
+#define NO_TILE_COLLISION 255
 
 // Import the levels
 extern LevelOveralLayout testLevel;
@@ -63,7 +64,7 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     SolidLayout standingTile;
     
     // Special signal that all is clear
-    collisionTile->type = 255;
+    collisionTile->type = NO_TILE_COLLISION;
 
     standingTile.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     standingTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
@@ -96,9 +97,9 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
                 &enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length
             );
 
-            // Get the current ground the AI is standing on and patrol it
+            // Get the current ground tile the AI is standing on and patrol its entire length
             spriteTouchingTile(&enemies[length].sprite, &si);
-            if (si.type !=255) {
+            if (si.type != NO_TILE_COLLISION) {
                 enemies[length].xTileStart = si.x;
                 enemies[length].yTileStart = si.y;
                 enemies[length].xTileEnd = si.x + si.length;
@@ -143,6 +144,17 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
     }
 }
 
+void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y) {
+    // Explosion
+    spriteMove(expSmall, x, y);
+    x16SpriteIdxSetGraphicsPointer(expSmall->index, expSmall->clrMode, expSmall->graphicsBank, expSmall->graphicsAddress);
+    x16SpriteIdxSetXY(expSmall->index, expSmall->x, expSmall->y);
+    expSmall->zDepth = zDepth;
+    x16SpriteIdxSetZDepth(expSmall->index, expSmall->zDepth);
+    expSmall->animationCount = 0;
+    expSmall->animationFrame = 0;
+}
+
 void main() {
     unsigned char collision, joy, enemyCount;
     unsigned char nextSpriteIndex = 0;
@@ -150,7 +162,7 @@ void main() {
     unsigned char releasedBtnAfterJump = 1;
 
     SolidLayout tileCollision;
-    Sprite player, bullet;
+    Sprite player, bullet, expSmall;
 
     welcomeStart();
 
@@ -174,7 +186,8 @@ void main() {
     enemyCount = enemiesCreate(masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
-    
+    explosionSmallCreate(&expSmall, nextSpriteIndex++);
+
     // Configure the joysticks
     joy_install(cx16_std_joy);
 
@@ -184,7 +197,7 @@ void main() {
         enemiesMove(masterEnemiesList, enemyCount);
 
         // Count game loops so we can animate sprites.
-        // Only animate if the guy is moving.
+        // Only animate if the guy is "going" somewhere.
         player.going=0;
         player.animationCount++;
 
@@ -197,14 +210,20 @@ void main() {
         joy = joy_read(0);
 
         // Falling
+        // jumpFrames are the number of frames the player moves UP (jumps)
+        // At 0, the player is always falling, even if on the ground.
         if (jumpFrames == 0) {
             // Inefficient: We are checking here AND after moving X
             // Might be ok and makes it easier to deal with moving him back
             spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
             spriteTouchingTile(&player, &tileCollision);
-            if (tileCollision.type != 255) {
+
+            // If the player is standing on a tile, a few things happen
+            if (tileCollision.type != NO_TILE_COLLISION) {
+                // Move the player to the top of the tile
+                // We do this because as the player falls they may end up wedged a few pixels into a tile
                 spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
-                // Player is on solid ground, can jump
+                // Player is on solid ground, see if they pressed jump button
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
@@ -215,18 +234,18 @@ void main() {
                     }
                 } else {
                     // Player is on ground and isn't holding the button
-                    // They can jump again.
+                    // They can jump again next game loop.
                     releasedBtnAfterJump = 1;
                 }
             }
         } else {
+            // Player is jumping, move them up
             jumpFrames--;
             player.going==1;
             spriteMoveY(&player, player.y-PLAYER_JUMP_SPEED);
         }
 
-        // TODO: Player sprite images are backwards (right facing) from enemies
-        // This means the animationDirection is reversed. Flip the image in the source.
+        // Check if player is moving left/right
         if (JOY_LEFT(joy)) {
             player.going=1;
             // We also flip the animation depending on direction
@@ -247,7 +266,7 @@ void main() {
 
         // Change animation if jumping or moving and hit loop count
         if (jumpFrames > 0) {
-            // No animation change
+            // No animation change because it looked dumb
         } else if (player.going==1 && player.animationCount == player.animationSpeed) {
             player.animationCount=0;
             player.animationFrame++;
@@ -271,6 +290,7 @@ void main() {
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
         }
 
+        // See if player is shooting
         if (JOY_BTN_2(joy) && bullet.active==0) {
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
@@ -282,15 +302,30 @@ void main() {
             x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
         }
 
-        // See if the player is touching any tiles
-        // Just move back for now
+        // See if the player is touching any tiles left/right
+        // Move back if so.
         spriteTouchingTile(&player, &tileCollision);
         if (tileCollision.type != 255) {
             spriteMoveBackX(&player);
         }
 
+        // Final position of the player. Update their sprite
         x16SpriteIdxSetXY(player.index, player.x, player.y);
 
+        // Manage explosion sprites
+        expSmall.animationCount++;
+        if (expSmall.animationCount == expSmall.animationSpeed) {
+            expSmall.animationCount=0;
+            expSmall.animationFrame++;
+            x16SpriteIdxSetGraphicsPointer(expSmall.index, expSmall.clrMode, expSmall.graphicsBank,
+                expSmall.graphicsAddress+(expSmall.animationFrame * expSmall.frameSize));
+
+            if (expSmall.animationFrame == expSmall.frames) {
+                expSmall.zDepth = Disabled;
+                x16SpriteIdxSetZDepth(expSmall.index, expSmall.zDepth);
+            }
+        }
+            
         // Get the Collision bits and shift them down
         collision = x16SpriteCollisionBitsGet();
 
@@ -299,11 +334,14 @@ void main() {
 
         // Player and Enemy collisions
         if (collision == 0b1001) {
-            // Move the sprite back
-            spriteMove(&player, 350, 235);
-            // x16SpriteIdxSetXY(player.index, player.x, player.y);
+            // Move the sprite back to the start
+            spriteMove(&player, testLevel.playerLayout->x, testLevel.playerLayout->y);
+            x16SpriteIdxSetXY(player.index, player.x, player.y);
         } else if (collision == 0b1010) {
-            // Bullet hit the snake
+            // Explosion
+            smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
+            
+            // Bullet hit an enemy
             bullet.active = 0;
             bullet.zDepth = Disabled;
             x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
@@ -313,6 +351,10 @@ void main() {
         if (bullet.active == 1) {
             spriteTouchingTile(&bullet, &tileCollision);
             if (tileCollision.type != 255 || bullet.x < 0 || bullet.x > 639) {
+                if (tileCollision.type != 255) {
+                    // Explosion
+                    smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
+                }
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
                 x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
