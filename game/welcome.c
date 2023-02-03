@@ -9,7 +9,7 @@ void welcomeStart() {
     POKE(0x9F2A, 64);
     POKE(0x9F2B, 64);
 
-    printf("\n\n%sWELCOME TO: \"UNAMED GAME\" V0.0.1\n", WELCOME_SPACER);
+    printf("\n\n%sWELCOME TO: \"PIXEUS\" V0.0.1\n", WELCOME_SPACER);
     printf("%sBY MARK WIEDMANN\n\n", WELCOME_SPACER);
     printf("%sLOADING TILES\n", WELCOME_SPACER);
     printf("%sTHIS WILL TAKE A MOMENT...\n", WELCOME_SPACER);
