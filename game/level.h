@@ -74,11 +74,6 @@ typedef struct LevelOveralLayout {
     ExitList *exitList;
 } LevelOveralLayout;
 
-typedef struct GameLayout {
-    unsigned short levelsLength;
-    LevelOveralLayout *levels;
-} GameLayout;
-
 void addLevelTiles(unsigned short length, TileLayout layout[]);
 
 #endif

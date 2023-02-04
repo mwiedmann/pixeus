@@ -12,6 +12,7 @@
 #include "memmap.h"
 #include "level.h"
 #include "welcome.h"
+#include "gameoverall.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -24,13 +25,13 @@
 
 // Import the levels
 // extern GameLayout gameLayout;
-extern LevelOveralLayout level1;
+// extern LevelOveralLayout level1;
 
 // TODO: Fixed array to hold AISprites
 // Need something more dynamic but this works for now
 AISprite masterEnemiesList[16];
 
-void layerMapsAddSomeStuff() {
+void layerMapsAddSomeStuff(LevelOveralLayout *level) {
     unsigned short x, y;
     
     vMemSetIncMode(1);
@@ -55,10 +56,10 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    addLevelTiles(level1.tilesList->length, level1.tilesList->tiles);
+    addLevelTiles(level->tilesList->length, level->tilesList->tiles);
 }
 
-void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
+void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *collisionTile) {
     unsigned char i;
     SolidLayout standingTile;
     
@@ -68,11 +69,11 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     standingTile.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     standingTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
-    for (i=0; i<level1.solidList->length; i++) {
-        if (standingTile.y == level1.solidList->solid[i].y &&
-            standingTile.x >= level1.solidList->solid[i].x &&
-            standingTile.x <= level1.solidList->solid[i].x + (level1.solidList->solid[i].length-1)) {
-                *collisionTile = level1.solidList->solid[i];
+    for (i=0; i<level->solidList->length; i++) {
+        if (standingTile.y == level->solidList->solid[i].y &&
+            standingTile.x >= level->solidList->solid[i].x &&
+            standingTile.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
+                *collisionTile = level->solidList->solid[i];
                 return;
             }
     }
@@ -80,7 +81,7 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     return;
 }
 
-unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
+unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsigned char nextSpriteIndex) {
     unsigned char i;
     unsigned char length = 0;
     SolidLayout si;
@@ -88,13 +89,13 @@ unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
         snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
     };
 
-    for (i=0; i<level1.enemiesList->length; i++) {
-        (*enemyCreate[level1.enemiesList->enemies[i].enemyType])(
-            &enemies[length], &level1.enemiesList->enemies[i], nextSpriteIndex+length
+    for (i=0; i<level->enemiesList->length; i++) {
+        (*enemyCreate[level->enemiesList->enemies[i].enemyType])(
+            &enemies[length], &level->enemiesList->enemies[i], nextSpriteIndex+length
         );
 
         // Get the current ground tile the AI is standing on and patrol its entire length
-        spriteTouchingTile(&enemies[length].sprite, &si);
+        spriteTouchingTile(level, &enemies[length].sprite, &si);
         if (si.type != NO_TILE_COLLISION) {
             enemies[length].xTileStart = si.x;
             enemies[length].yTileStart = si.y;
@@ -155,9 +156,12 @@ void main() {
     unsigned char nextSpriteIndex = 0;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
-
+    
     SolidLayout tileCollision;
     Sprite player, bullet, expSmall;
+    LevelOveralLayout* level;
+
+    level = levelGet(1);
 
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -165,7 +169,7 @@ void main() {
     showTitleScreen();
     
     tilesConfig();
-    layerMapsAddSomeStuff();
+    layerMapsAddSomeStuff(level);
     spriteDataLoad();
     spriteIRQConfig();
 
@@ -174,8 +178,8 @@ void main() {
     videoConfig();
 
     // Create the sprites
-    playerCreate(&player, &level1.entranceList->entrances[0], nextSpriteIndex++);
-    enemyCount = enemiesCreate(masterEnemiesList, nextSpriteIndex);
+    playerCreate(&player, &level->entranceList->entrances[0], nextSpriteIndex++);
+    enemyCount = enemiesCreate(level, masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
@@ -205,7 +209,7 @@ void main() {
             // Inefficient: We are checking here AND after moving X
             // Might be ok and makes it easier to deal with moving him back
             spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
-            spriteTouchingTile(&player, &tileCollision);
+            spriteTouchingTile(level, &player, &tileCollision);
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != NO_TILE_COLLISION) {
@@ -293,7 +297,7 @@ void main() {
 
         // See if the player is touching any tiles left/right
         // Move back if so.
-        spriteTouchingTile(&player, &tileCollision);
+        spriteTouchingTile(level, &player, &tileCollision);
         if (tileCollision.type != 255) {
             spriteMoveBackX(&player);
         }
@@ -324,7 +328,7 @@ void main() {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back to the start
-            spriteMove(&player, level1.entranceList->entrances[0].x, level1.entranceList->entrances[0].y);
+            spriteMove(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             // Explosion
@@ -338,7 +342,7 @@ void main() {
 
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
-            spriteTouchingTile(&bullet, &tileCollision);
+            spriteTouchingTile(level, &bullet, &tileCollision);
             if (tileCollision.type != 255 || bullet.x < 0 || bullet.x > 639) {
                 if (tileCollision.type != 255) {
                     // Explosion
