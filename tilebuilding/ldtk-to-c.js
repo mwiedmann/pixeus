@@ -5,7 +5,7 @@ const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
 const createLevelCode = (levelNum, level) => {
-  let levelName = `level${levelNum}`
+  let levelName = `level${levelNum}`;
   let masterCode = `#include "level.h"
 
 `;
@@ -34,12 +34,20 @@ const createLevelCode = (levelNum, level) => {
 
     let enemyLayout = "";
 
-    Object.keys(enemies).forEach((k) => {
-      enemies[k].forEach((e) => {
-        enemyLayout += `${enemyCount > 0 ? ",\n" : ""}    ${e}`;
-        enemyCount++;
+    const enemyKeys = Object.keys(enemies);
+    // Can't have an empty array in C, so we just add a dummy record
+    // the "length" field will be 0 so its ok
+    if (enemyKeys.length === 0) {
+      enemyLayout += `    {0, 0, 0, 0, 0}`;
+      enemyCount = 0;
+    } else {
+      enemyKeys.forEach((k) => {
+        enemies[k].forEach((e) => {
+          enemyLayout += `${enemyCount > 0 ? ",\n" : ""}    ${e}`;
+          enemyCount++;
+        });
       });
-    });
+    }
 
     enemyLayout = `EnemyLayout ${levelName}Enemies[${enemyCount}] = {\n${enemyLayout}\n};\n\nEnemyLayoutList ${levelName}EnemyList = { ${enemyCount}, ${levelName}Enemies };\n\n`;
 
@@ -125,37 +133,53 @@ const createLevelCode = (levelNum, level) => {
 
   const addEntities = (entityInstances) => {
     // Entrances
-    const entrances = entityInstances.filter((e) => e.__identifier === "LevelEntrance").map(e => {
-        return {name: e.fieldInstances.find(fi => fi.__identifier === 'Name').__value, x: e.__grid[0], y: e.__grid[1] }
-    });
+    const entrances = entityInstances
+      .filter((e) => e.__identifier === "LevelEntrance")
+      .map((e) => {
+        return {
+          name: e.fieldInstances.find((fi) => fi.__identifier === "Name")
+            .__value,
+          x: e.__grid[0],
+          y: e.__grid[1],
+        };
+      });
     if (entrances.length === 0) {
       throw new Error("Missing required LevelEntrance in entityInstances");
     }
 
-    let entranceCode = entrances.map(e => {
-        return `    { ${e.x}, ${e.y}, "${e.name}" }`
-    }).join(',\n')
-    
+    let entranceCode = entrances
+      .map((e) => {
+        return `    { ${e.x}, ${e.y}, "${e.name}" }`;
+      })
+      .join(",\n");
+
     entrancesCodeAll = `Entrance ${levelName}Entrances[${entrances.length}] = {\n${entranceCode}\n};\n\n`;
     entrancesCodeAll = `${entrancesCodeAll}EntranceList ${levelName}EntranceList = { ${entrances.length}, ${levelName}Entrances };\n\n`;
 
     // Exits
-    const exits = entityInstances.filter((e) => e.__identifier === "LevelExit").map(e => {
+    const exits = entityInstances
+      .filter((e) => e.__identifier === "LevelExit")
+      .map((e) => {
         return {
-            entrance: e.fieldInstances.find(fi => fi.__identifier === 'Entrance').__value, 
-            level: e.fieldInstances.find(fi => fi.__identifier === 'Level').__value, 
-            x: e.__grid[0], 
-            y: e.__grid[1]
-        }
-    });
+          entrance: e.fieldInstances.find(
+            (fi) => fi.__identifier === "Entrance"
+          ).__value,
+          level: e.fieldInstances.find((fi) => fi.__identifier === "Level")
+            .__value,
+          x: e.__grid[0],
+          y: e.__grid[1],
+        };
+      });
     if (exits.length === 0) {
       throw new Error("Missing required LevelEntrance in entityInstances");
     }
 
-    let exitsCode = exits.map(e => {
-        return `    { ${e.x}, ${e.y}, ${e.level}, "${e.entrance}" }`
-    }).join(',\n')
-    
+    let exitsCode = exits
+      .map((e) => {
+        return `    { ${e.x}, ${e.y}, ${e.level}, "${e.entrance}" }`;
+      })
+      .join(",\n");
+
     exitsCodeAll = `Exit ${levelName}Exits[${exits.length}] = {\n${exitsCode}\n};\n\n`;
     exitsCodeAll = `${exitsCodeAll}ExitList ${levelName}ExitList = { ${exits.length}, ${levelName}Exits };\n\n`;
   };
@@ -213,26 +237,7 @@ const createLevelCode = (levelNum, level) => {
   );
 };
 
-let gameOverallCode = `#include "level.h"\n\n`
-gameOverallCode+= d.levels.map((l,idx) => {
-  return `extern LevelOveralLayout level${idx};`
-}).join('\n')
-
-gameOverallCode+= `\n\nLevelOveralLayout levels[${d.levels.length}] = {\n`
-
-//  unsigned short levelsLength;
-//  LevelOveralLayout *levels;`
-
-d.levels.forEach(l => {
-    const levelNum = l.identifier.split('_')[1]
-    createLevelCode(levelNum, l)
-    gameOverallCode+= ``
-})
-
-gameOverallCode+= d.levels.map((l,idx) => {
-  return `    &level${idx}`
-}).join(',\n') + '\n};\n\n'
-
-gameOverallCode+= `GameLayout gameLayout = { ${d.levels.length}, levels };\n`
-
-fs.writeFileSync(`../game/gameoverall.c`, gameOverallCode);
+d.levels.forEach((l) => {
+  const levelNum = l.identifier.split("_")[1];
+  createLevelCode(levelNum, l);
+});

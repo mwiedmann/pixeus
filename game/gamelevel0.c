@@ -1,7 +1,7 @@
 #include "level.h"
 
-EnemyLayout level0Enemies[1] = {
-{27, 22, 5, 0, 0}
+EnemyLayout level0Enemies[0] = {
+    {0, 0, 0, 0, 0}
 };
 
 EnemyLayoutList level0EnemyList = { 0, level0Enemies };
