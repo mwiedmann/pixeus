@@ -1,6 +1,6 @@
 #include <cx16.h>
 #include <joystick.h>
-
+#include <stdio.h>
 // Libs
 #include "x16graphics.h"
 #include "sprites.h"
@@ -23,7 +23,8 @@
 #define NO_TILE_COLLISION 255
 
 // Import the levels
-extern LevelOveralLayout testLevel;
+// extern GameLayout gameLayout;
+extern LevelOveralLayout level1;
 
 // TODO: Fixed array to hold AISprites
 // Need something more dynamic but this works for now
@@ -54,13 +55,11 @@ void layerMapsAddSomeStuff() {
         }
     }
 
-    for (x=0; x < testLevel.tilesListLength ; x++) {
-        addLevelTiles(testLevel.tilesList[x].length, testLevel.tilesList[x].tiles);
-    }
+    addLevelTiles(level1.tilesList->length, level1.tilesList->tiles);
 }
 
 void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
-    unsigned char i,j;
+    unsigned char i;
     SolidLayout standingTile;
     
     // Special signal that all is clear
@@ -69,44 +68,40 @@ void spriteTouchingTile(Sprite *sprite, SolidLayout *collisionTile) {
     standingTile.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     standingTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
-    for (i=0; i<testLevel.solidListLength; i++) {
-        for (j=0; j<testLevel.solidList[i].length; j++) {
-            if (standingTile.y == testLevel.solidList[i].solid[j].y &&
-                standingTile.x >= testLevel.solidList[i].solid[j].x &&
-                standingTile.x <= testLevel.solidList[i].solid[j].x + (testLevel.solidList[i].solid[j].length-1)) {
-                    *collisionTile = testLevel.solidList[i].solid[j];
-                    return;
-                }
-        }
+    for (i=0; i<level1.solidList->length; i++) {
+        if (standingTile.y == level1.solidList->solid[i].y &&
+            standingTile.x >= level1.solidList->solid[i].x &&
+            standingTile.x <= level1.solidList->solid[i].x + (level1.solidList->solid[i].length-1)) {
+                *collisionTile = level1.solidList->solid[i];
+                return;
+            }
     }
 
     return;
 }
 
 unsigned char enemiesCreate(AISprite enemies[], unsigned char nextSpriteIndex) {
-    unsigned char i, j;
+    unsigned char i;
     unsigned char length = 0;
     SolidLayout si;
     void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
         snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
     };
 
-    for (i=0; i<testLevel.enemiesListLength; i++) {
-        for (j=0; j<testLevel.enemiesList[i].length; j++) {
-            (*enemyCreate[testLevel.enemiesList[i].enemies[j].enemyType])(
-                &enemies[length], &testLevel.enemiesList[i].enemies[j], nextSpriteIndex+length
-            );
+    for (i=0; i<level1.enemiesList->length; i++) {
+        (*enemyCreate[level1.enemiesList->enemies[i].enemyType])(
+            &enemies[length], &level1.enemiesList->enemies[i], nextSpriteIndex+length
+        );
 
-            // Get the current ground tile the AI is standing on and patrol its entire length
-            spriteTouchingTile(&enemies[length].sprite, &si);
-            if (si.type != NO_TILE_COLLISION) {
-                enemies[length].xTileStart = si.x;
-                enemies[length].yTileStart = si.y;
-                enemies[length].xTileEnd = si.x + si.length;
-                enemies[length].yTileEnd = si.y + si.length;
-            }
-            length++;
+        // Get the current ground tile the AI is standing on and patrol its entire length
+        spriteTouchingTile(&enemies[length].sprite, &si);
+        if (si.type != NO_TILE_COLLISION) {
+            enemies[length].xTileStart = si.x;
+            enemies[length].yTileStart = si.y;
+            enemies[length].xTileEnd = si.x + si.length;
+            enemies[length].yTileEnd = si.y + si.length;
         }
+        length++;
     }
 
     return length;
@@ -179,7 +174,7 @@ void main() {
     videoConfig();
 
     // Create the sprites
-    playerCreate(&player, testLevel.playerLayout, nextSpriteIndex++);
+    playerCreate(&player, &level1.entranceList->entrances[0], nextSpriteIndex++);
     enemyCount = enemiesCreate(masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
@@ -329,7 +324,7 @@ void main() {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back to the start
-            spriteMove(&player, testLevel.playerLayout->x, testLevel.playerLayout->y);
+            spriteMove(&player, level1.entranceList->entrances[0].x, level1.entranceList->entrances[0].y);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             // Explosion

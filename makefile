@@ -2,7 +2,7 @@ CC=cl65
 
 make:
 	$(CC) -I lib -o pixeus.prg -t cx16 \
-	game/main.c game/startup.c game/level.c game/gamelevels.c game/gametiles.c game/gamesprites.c game/welcome.c \
+	game/main.c game/startup.c game/level.c game/gamelevel0.c game/gamelevel1.c game/gameoverall.c game/gametiles.c game/gamesprites.c game/welcome.c \
 	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s
 
 clean:

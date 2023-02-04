@@ -43,20 +43,41 @@ typedef struct EnemyLayoutList {
     EnemyLayout *enemies;
 } EnemyLayoutList;
 
-typedef struct PlayerLayout {
+typedef struct Entrance {
     unsigned short x;
     unsigned short y;
-} PlayerLayout;
+    unsigned char *name;
+} Entrance;
+
+typedef struct EntranceList {
+    unsigned short length;
+    Entrance *entrances;
+} EntranceList;
+
+typedef struct Exit {
+    unsigned short x;
+    unsigned short y;
+    unsigned char level;
+    unsigned char *entrance;
+} Exit;
+
+typedef struct ExitList {
+    unsigned short length;
+    Exit *exits;
+} ExitList;
 
 typedef struct LevelOveralLayout {
-    unsigned short solidListLength;
     SolidLayoutList *solidList;
-    unsigned short tilesListLength;
     TileLayoutList *tilesList;
-    unsigned short enemiesListLength;
     EnemyLayoutList *enemiesList;
-    PlayerLayout *playerLayout;
+    EntranceList *entranceList;
+    ExitList *exitList;
 } LevelOveralLayout;
+
+typedef struct GameLayout {
+    unsigned short levelsLength;
+    LevelOveralLayout *levels;
+} GameLayout;
 
 void addLevelTiles(unsigned short length, TileLayout layout[]);
 

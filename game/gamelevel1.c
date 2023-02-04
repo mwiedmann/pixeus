@@ -1,19 +1,17 @@
 #include "level.h"
 
-EnemyLayout enemies[6] = {
-    {27, 22, 10, 0, 0},
-    {6, 4, 10, 1, 0},
-    {16, 13, 10, 2, 0},
-    {6, 28, 10, 3, 0},
-    {26, 28, 10, 3, 0},
-    {28, 12, 10, 4, 0}
+EnemyLayout level1Enemies[6] = {
+    {27, 22, 5, 0, 0},
+    {6, 4, 5, 1, 0},
+    {16, 13, 5, 2, 0},
+    {6, 28, 5, 3, 0},
+    {26, 28, 5, 3, 0},
+    {28, 12, 5, 4, 0}
 };
 
-EnemyLayoutList testLevelEnemies[1] = {
-    { 6, enemies }
-};
+EnemyLayoutList level1EnemyList = { 6, level1Enemies };
 
-SolidLayout testLevelSolid[16] = {
+SolidLayout level1Solids[16] = {
     { 10, 3, 2, 0},
     { 0, 5, 25, 0},
     { 27, 13, 13, 0},
@@ -32,11 +30,9 @@ SolidLayout testLevelSolid[16] = {
     { 0, 29, 40, 0}
 };
 
-SolidLayoutList testLevelAllSolids[1] = {
-    { 16, testLevelSolid }
-};
+SolidLayoutList level1SolidList = { 16, level1Solids };
 
-TileLayout testLevelTiles[388] = {
+TileLayout level1Tiles[388] = {
     { 6, 1, 1, 13, 0, 0, 0 },
     { 17, 1, 1, 160, 0, 0, 0 },
     { 30, 1, 1, 162, 0, 0, 0 },
@@ -427,10 +423,24 @@ TileLayout testLevelTiles[388] = {
     { 31, 28, 1, 89, 1, 0, 0 }
 };
 
-TileLayoutList testLevelAllTiles[1] = {
-    { 388, testLevelTiles }
+TileLayoutList level1TilesList = { 388, level1Tiles };
+
+Entrance level1Entrances[1] = {
+    { 1, 4, "TopLeft" }
 };
 
-PlayerLayout playerLayout = {160, 16};
+EntranceList level1EntranceList = { 1, level1Entrances };
 
-LevelOveralLayout testLevel = { 1, testLevelAllSolids, 1, testLevelAllTiles, 1, testLevelEnemies, &playerLayout };
+Exit level1Exits[1] = {
+    { 0, 4, 0, "Right" }
+};
+
+ExitList level1ExitList = { 1, level1Exits };
+
+LevelOveralLayout level1 = {
+    &level1SolidList,
+    &level1TilesList,
+    &level1EnemyList,
+    &level1EntranceList,
+    &level1ExitList
+};

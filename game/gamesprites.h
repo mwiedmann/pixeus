@@ -15,7 +15,7 @@ typedef struct AISprite {
 void spriteDataLoad();
 void spriteIRQConfig();
 
-void playerCreate(Sprite *p, PlayerLayout *playerLayout, unsigned char index);
+void playerCreate(Sprite *p, Entrance *entrance, unsigned char index);
 void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index);
 void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index);
 void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
