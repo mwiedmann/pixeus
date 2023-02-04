@@ -30,6 +30,8 @@
 // TODO: Fixed array to hold AISprites
 // Need something more dynamic but this works for now
 AISprite masterEnemiesList[16];
+Sprite player, bullet, expSmall;
+LevelOveralLayout* level;
 
 void layerMapsAddSomeStuff(LevelOveralLayout *level) {
     unsigned short x, y;
@@ -170,39 +172,16 @@ void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y) {
     expSmall->animationFrame = 0;
 }
 
-void main() {
+void runLevel(unsigned char nextSpriteIndex) {
     unsigned char collision, joy, enemyCount;
-    unsigned char nextSpriteIndex = 0;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     
     SolidLayout tileCollision;
     Exit exitCollision;
-    Sprite player, bullet, expSmall;
-    LevelOveralLayout* level;
-
-    level = levelGet(1);
-
-    // Configure the joysticks
-    joy_install(cx16_std_joy);
     
-    showTitleScreen();
-    
-    tilesConfig();
-    layerMapsAddSomeStuff(level);
-    spriteDataLoad();
-    spriteIRQConfig();
-
-    // Wait to switch to game mode until everything is loaded
-    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
-    videoConfig();
-
-    // Create the sprites
-    playerCreate(&player, &level->entranceList->entrances[0], nextSpriteIndex++);
     enemyCount = enemiesCreate(level, masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
-    bulletCreate(&bullet, nextSpriteIndex++);
-    explosionSmallCreate(&expSmall, nextSpriteIndex++);
 
     while (1) {
         waitforjiffy();
@@ -376,6 +355,33 @@ void main() {
             }
         }
     }
+}
+
+void main() {
+    unsigned char nextSpriteIndex = 0;
+
+    level = levelGet(1);
+
+    // Configure the joysticks
+    joy_install(cx16_std_joy);
+    
+    showTitleScreen();
+    
+    tilesConfig();
+    layerMapsAddSomeStuff(level);
+    spriteDataLoad();
+    spriteIRQConfig();
+
+    // Wait to switch to game mode until everything is loaded
+    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
+    videoConfig();
+
+    // Create the sprites
+    playerCreate(&player, &level->entranceList->entrances[0], nextSpriteIndex++);
+    bulletCreate(&bullet, nextSpriteIndex++);
+    explosionSmallCreate(&expSmall, nextSpriteIndex++);
+
+    runLevel(nextSpriteIndex);
 
     // Disable sprite collisions before quitting
     // or the UI hangs if sprites are still touching.
