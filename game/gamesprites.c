@@ -79,8 +79,8 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->animationStopFrame = 0;
     p->animationDirection = 0;
     p->animationFrame = 0;
-    p->x = entrance->x;
-    p->y = entrance->y;
+    p->x = entrance->x * TILE_PIXEL_WIDTH;
+    p->y = entrance->y * TILE_PIXEL_HEIGHT;
     p->xL = p->x * MOVE_FACTOR;
     p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;

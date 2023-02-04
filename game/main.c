@@ -48,7 +48,7 @@ void layerMapsAddSomeStuff(LevelOveralLayout *level) {
         }
     }
 
-    // Set to all empty tiles in Layer 1 (foreground)
+    // Clear Layer 1 (foreground)
     vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
     for (y=0; y<32; y++) {
@@ -69,11 +69,11 @@ void playerTouchingExit(LevelOveralLayout *level, Sprite *sprite, Exit *exitColl
     exitCollision->level = NO_TILE_COLLISION;
 
     exitStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
-    exitStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
+    exitStanding.y = ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT);
 
     for (i=0; i<level->exitList->length; i++) {
         if (exitStanding.y == level->exitList->exits[i].y &&
-            exitStanding.x >= level->exitList->exits[i].x) {
+            exitStanding.x == level->exitList->exits[i].x) {
                 *exitCollision = level->exitList->exits[i];
                 return;
             }
@@ -129,6 +129,19 @@ unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsign
     return length;
 }
 
+void enemiesReset(AISprite enemies[], unsigned char length) {
+    unsigned char i;
+    AISprite *enemy;
+
+    // Reset enemies
+    for (i=0; i<length; i++) {
+        enemy = &enemies[i];
+        enemy->sprite.active = 0;
+        enemy->sprite.zDepth = Disabled;
+        x16SpriteIdxSetZDepth(enemy->sprite.index, Disabled);
+    }
+}
+
 void enemiesMove(AISprite enemies[], unsigned char length) {
     unsigned char i;
     signed char tileCalc;
@@ -172,7 +185,7 @@ void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y) {
     expSmall->animationFrame = 0;
 }
 
-void runLevel(unsigned char nextSpriteIndex) {
+Exit* runLevel(unsigned char nextSpriteIndex) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
@@ -186,7 +199,13 @@ void runLevel(unsigned char nextSpriteIndex) {
     while (1) {
         waitforjiffy();
 
+        // See if player is touching an exit
         playerTouchingExit(level, &player, &exitCollision);
+        if (exitCollision.level != NO_TILE_COLLISION) {
+            // Clean up the enemies and return the exit info
+            enemiesReset(masterEnemiesList, enemyCount);
+            return &exitCollision;
+        }
 
         enemiesMove(masterEnemiesList, enemyCount);
 
@@ -359,7 +378,7 @@ void runLevel(unsigned char nextSpriteIndex) {
 
 void main() {
     unsigned char nextSpriteIndex = 0;
-
+    Exit *exit;
     level = levelGet(1);
 
     // Configure the joysticks
@@ -368,7 +387,6 @@ void main() {
     showTitleScreen();
     
     tilesConfig();
-    layerMapsAddSomeStuff(level);
     spriteDataLoad();
     spriteIRQConfig();
 
@@ -381,7 +399,13 @@ void main() {
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
 
-    runLevel(nextSpriteIndex);
+    while(1) {
+        layerMapsAddSomeStuff(level);
+        exit = runLevel(nextSpriteIndex);
+        level = levelGet(exit->level);
+        spriteMove(&player, level->entranceList->entrances[0].x * TILE_PIXEL_WIDTH, level->entranceList->entrances[0].y * TILE_PIXEL_WIDTH);
+        x16SpriteIdxSetXY(player.index, player.x, player.y);
+    }
 
     // Disable sprite collisions before quitting
     // or the UI hangs if sprites are still touching.
