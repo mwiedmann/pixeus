@@ -33,6 +33,7 @@ typedef struct Sprite {
 } Sprite;
 
 void spriteInit(Sprite *sprite);
+void spriteMoveToTile(Sprite *sprite, short x, short y, unsigned char tileWidth, unsigned char tileHeight);
 void spriteMove(Sprite *sprite, short x, short y);
 void spriteMoveX(Sprite *sprite, short x);
 void spriteMoveY(Sprite *sprite, short y);

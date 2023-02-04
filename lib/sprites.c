@@ -22,6 +22,15 @@ void spriteMove(Sprite *sprite, short x, short y) {
     sprite->yL = y * MOVE_FACTOR;
 }
 
+void spriteMoveToTile(Sprite *sprite, short x, short y, unsigned char tileWidth, unsigned char tileHeight) {
+    sprite->x = x * tileWidth;
+    sprite->y = y * tileHeight;
+    sprite->lastX = sprite->x;
+    sprite->lastY = sprite->y;
+    sprite->xL = sprite->x * MOVE_FACTOR;
+    sprite->yL = sprite->y * MOVE_FACTOR;
+}
+
 void spriteMoveX(Sprite *sprite, short x) {
     sprite->lastX = sprite->x;
     sprite->x = x;

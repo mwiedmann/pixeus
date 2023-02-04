@@ -1,10 +1,10 @@
 #include "level.h"
 
 EnemyLayout level0Enemies[1] = {
-    {0, 0, 0, 0, 0}
+    {8, 21, 5, 3, 0}
 };
 
-EnemyLayoutList level0EnemyList = { 0, level0Enemies };
+EnemyLayoutList level0EnemyList = { 1, level0Enemies };
 
 SolidLayout level0Solids[1] = {
     { 0, 22, 40, 0}

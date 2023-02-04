@@ -204,6 +204,12 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         if (exitCollision.level != NO_TILE_COLLISION) {
             // Clean up the enemies and return the exit info
             enemiesReset(masterEnemiesList, enemyCount);
+
+            // Reset any active bullets
+            bullet.active = 0;
+            bullet.zDepth = Disabled;
+            x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+
             return &exitCollision;
         }
 
@@ -348,7 +354,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back to the start
-            spriteMove(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y);
+            spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
         } else if (collision == 0b1010) {
             // Explosion
@@ -403,7 +409,7 @@ void main() {
         layerMapsAddSomeStuff(level);
         exit = runLevel(nextSpriteIndex);
         level = levelGet(exit->level);
-        spriteMove(&player, level->entranceList->entrances[0].x * TILE_PIXEL_WIDTH, level->entranceList->entrances[0].y * TILE_PIXEL_WIDTH);
+        spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
 
