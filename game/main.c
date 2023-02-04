@@ -59,21 +59,40 @@ void layerMapsAddSomeStuff(LevelOveralLayout *level) {
     addLevelTiles(level->tilesList->length, level->tilesList->tiles);
 }
 
-void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *collisionTile) {
+void playerTouchingExit(LevelOveralLayout *level, Sprite *sprite, Exit *exitCollision) {
     unsigned char i;
-    SolidLayout standingTile;
+    Exit exitStanding;
+
+    // Special signal that all is clear
+    exitCollision->level = NO_TILE_COLLISION;
+
+    exitStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    exitStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
+
+    for (i=0; i<level->exitList->length; i++) {
+        if (exitStanding.y == level->exitList->exits[i].y &&
+            exitStanding.x >= level->exitList->exits[i].x) {
+                *exitCollision = level->exitList->exits[i];
+                return;
+            }
+    }
+}
+
+void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *tileCollision) {
+    unsigned char i;
+    SolidLayout tileStanding;
     
     // Special signal that all is clear
-    collisionTile->type = NO_TILE_COLLISION;
+    tileCollision->type = NO_TILE_COLLISION;
 
-    standingTile.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
-    standingTile.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
+    tileStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    tileStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
     for (i=0; i<level->solidList->length; i++) {
-        if (standingTile.y == level->solidList->solid[i].y &&
-            standingTile.x >= level->solidList->solid[i].x &&
-            standingTile.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
-                *collisionTile = level->solidList->solid[i];
+        if (tileStanding.y == level->solidList->solid[i].y &&
+            tileStanding.x >= level->solidList->solid[i].x &&
+            tileStanding.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
+                *tileCollision = level->solidList->solid[i];
                 return;
             }
     }
@@ -158,6 +177,7 @@ void main() {
     unsigned char releasedBtnAfterJump = 1;
     
     SolidLayout tileCollision;
+    Exit exitCollision;
     Sprite player, bullet, expSmall;
     LevelOveralLayout* level;
 
@@ -186,6 +206,8 @@ void main() {
 
     while (1) {
         waitforjiffy();
+
+        playerTouchingExit(level, &player, &exitCollision);
 
         enemiesMove(masterEnemiesList, enemyCount);
 

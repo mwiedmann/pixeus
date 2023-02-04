@@ -33,13 +33,15 @@ const createLevelCode = (levelNum, level) => {
     // console.log(JSON.stringify(enemies, undefined, 2))
 
     let enemyLayout = "";
+    let noEnemies = false
 
     const enemyKeys = Object.keys(enemies);
     // Can't have an empty array in C, so we just add a dummy record
     // the "length" field will be 0 so its ok
     if (enemyKeys.length === 0) {
       enemyLayout += `    {0, 0, 0, 0, 0}`;
-      enemyCount = 0;
+      enemyCount=1
+      noEnemies = true
     } else {
       enemyKeys.forEach((k) => {
         enemies[k].forEach((e) => {
@@ -49,7 +51,7 @@ const createLevelCode = (levelNum, level) => {
       });
     }
 
-    enemyLayout = `EnemyLayout ${levelName}Enemies[${enemyCount}] = {\n${enemyLayout}\n};\n\nEnemyLayoutList ${levelName}EnemyList = { ${enemyCount}, ${levelName}Enemies };\n\n`;
+    enemyLayout = `EnemyLayout ${levelName}Enemies[${enemyCount}] = {\n${enemyLayout}\n};\n\nEnemyLayoutList ${levelName}EnemyList = { ${noEnemies ? 0 : enemyCount}, ${levelName}Enemies };\n\n`;
 
     masterCode += enemyLayout;
 

@@ -1,6 +1,6 @@
 #include "level.h"
 
-EnemyLayout level0Enemies[0] = {
+EnemyLayout level0Enemies[1] = {
     {0, 0, 0, 0, 0}
 };
 
