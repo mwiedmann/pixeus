@@ -164,18 +164,15 @@ void main() {
     SolidLayout tileCollision;
     Sprite player, bullet, expSmall;
 
-    welcomeStart();
-
+    // Configure the joysticks
+    joy_install(cx16_std_joy);
+    
+    showTitleScreen();
+    
     tilesConfig();
-    welcomeTiles();
-
     layerMapsAddSomeStuff();
-    welcomeMaps();
-
     spriteDataLoad();
     spriteIRQConfig();
-    welcomeSprites();
-    welcomeEnd();
 
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)
@@ -187,9 +184,6 @@ void main() {
     nextSpriteIndex+= enemyCount;
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
-
-    // Configure the joysticks
-    joy_install(cx16_std_joy);
 
     while (1) {
         waitforjiffy();

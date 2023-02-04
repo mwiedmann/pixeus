@@ -1,40 +1,36 @@
-#include <stdio.h>
-#include <conio.h>
 #include <peekpoke.h>
-#include "gametiles.h"
+#include <joystick.h>
+#include "x16graphics.h"
+#include "memmap.h"
+#include "imageload.h"
 
-#define WELCOME_SPACER "  "
+void showTitleScreen() {
+    unsigned char joy = 0;
 
-void welcomeStart() {
-    clrscr();
+    // Clear the VRAM we will use for the bitmap mode title
+    clearFullVRAM(0);
+    clearVRAM(1, 0, 11264);
 
-    loadFont();
-   
+    // Set to 320x240 size
     POKE(0x9F2A, 64);
     POKE(0x9F2B, 64);
 
-    printf("\n\n%swelcome to \"pixeus\" v0.0.1\n", WELCOME_SPACER);
-    printf("%sby mark wiedmann\n\n", WELCOME_SPACER);
-    printf("%sloading tiles\n", WELCOME_SPACER);
-    printf("%sthis will take a moment...\n", WELCOME_SPACER);
-}
+    // Enable Layer 1 (probably already set this way but just in case) (leave other settings the same)
+    POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) | 0b00100000);
 
-void welcomeTiles() {
-    printf("%stiles loaded\n", WELCOME_SPACER);
-    printf("%sconfiguring tiles...\n", WELCOME_SPACER);
-}
+    // Config Layer 1 - H/W, 256clr, Bitmap Mode, 8bpp color depth
+    POKE(LAYER_1_CONFIG, 0b00001111);
 
-void welcomeMaps() {
-    printf("%stiles done\n", WELCOME_SPACER);
-    printf("%sloading sprites...\n", WELCOME_SPACER);
-}
+    // Bitmap mode loading a 320x240 image takes most of VRAM
+    // Start in VBank 0, Addr 0
+    POKE(LAYER_1_TILEBASE, 0);
 
-void welcomeSprites() {
-    printf("%ssprites done\n", WELCOME_SPACER);
-    printf("%sgame starting...\n", WELCOME_SPACER);
-}
+    imageFileLoad(2, 0, 0, "images/title.bin", 76800L);
 
-void welcomeEnd() {
-    POKE(0x9F2A, 128);
-    POKE(0x9F2B, 128);
+    while(!JOY_BTN_1(joy) && !JOY_BTN_2(joy)) {
+        joy = joy_read(0);
+    }
+
+    // Turn off Layer 1 (both layers will be off while things are loading)
+    POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) ^ 0b00100000);
 }

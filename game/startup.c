@@ -1,5 +1,5 @@
 #include <peekpoke.h>
-
+#include <conio.h>
 #include "x16graphics.h"
 #include "memmap.h"
 
@@ -17,6 +17,10 @@ void videoConfig() {
     //  Height: 00 (gives us 32 Tiles which is more than the 30 we need: 480/16=30)
     //  Width:  01 (gives us 64 Tiles which is more than the 40 we need: 640/16=40)
     // Each Map will be 4096 bytes
+
+    // Set the scaling back to 640x480
+    POKE(0x9F2A, 128);
+    POKE(0x9F2B, 128);
 
     // Enable both layers (leave other settings the same)
     POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) | 0b00110000);

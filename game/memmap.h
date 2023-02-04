@@ -2,6 +2,7 @@
 #define MEMMAP_H
 
 // Default video on X16 startup
+// $9F29 - 10100010 - Current Field:1, Sprites:0, Layer 1:On, Layer 0:Off, Unused:0, Chroma Disable:0, Output Mode: 10 (NTSC composite) 
 // Layer 1 is ON (Layer 0 is OFF)
 // $9F34 - 01100000 - 1 bpp, T256 is 0, so this is 16 color text mode, bitmap mode OFF, 128 cols (needed to show 80), 64 rows (needed to show 60) 
 // $9F35 Layer 1 - Mapbase  - 216 - 11011000 - VBank 1 - 1011000000000000 - B000 / 45056
