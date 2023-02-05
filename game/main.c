@@ -455,9 +455,9 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // Could be because there are 2 spries involved?
         // OR maybe at this point we haven't Disabled the sprite yet and its too late?
         // HACK: I check the "active" status on the bullet before considering this a valid collision
-        
-        // Player and Enemy collisions
-        if (collision == 0b1001) {
+
+        // Player and Enemy/Laser collisions
+        if (collision == 0b1001 || collision == 0b0101) {
             // Move the sprite back to the start
             spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             x16SpriteIdxSetXY(player.index, player.x, player.y);

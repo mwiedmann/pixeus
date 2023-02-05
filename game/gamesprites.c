@@ -216,7 +216,7 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
-    b->collisionMask = 0; //0b0101;
+    b->collisionMask = 0b0101;
     b->zDepth = Disabled;
     b->width = PX16;
     b->height = PX16;
