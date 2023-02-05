@@ -23,10 +23,14 @@ typedef struct Sprite {
     unsigned char animationFrame;
     short x;
     short y;
+    short startX;
+    short startY;
     short lastX;
     short lastY;
     short xL;
     short yL;
+    unsigned char lastTileX;
+    unsigned char lastTileY;
     unsigned char active;
     unsigned char going;
     unsigned char speed;

@@ -1,6 +1,8 @@
 #include <cx16.h>
 #include <joystick.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 // Libs
 #include "x16graphics.h"
 #include "sprites.h"
@@ -92,15 +94,19 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *t
     tileStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     tileStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
-    for (i=0; i<level->solidList->length; i++) {
-        if (tileStanding.y == level->solidList->solid[i].y &&
-            tileStanding.x >= level->solidList->solid[i].x &&
-            tileStanding.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
-                *tileCollision = level->solidList->solid[i];
-                return;
-            }
+    // Only check if the tile for the sprite has changed
+    if (tileStanding.x != sprite->lastTileX || tileStanding.y != sprite->lastTileY) {
+        sprite->lastTileX = tileStanding.x;
+        sprite->lastTileY = tileStanding.y;
+        for (i=0; i<level->solidList->length; i++) {
+            if (tileStanding.y == level->solidList->solid[i].y &&
+                tileStanding.x >= level->solidList->solid[i].x &&
+                tileStanding.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
+                    *tileCollision = level->solidList->solid[i];
+                    return;
+                }
+        }
     }
-
     return;
 }
 
@@ -134,6 +140,7 @@ unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsign
 void enemiesReset(AISprite enemies[], unsigned char length) {
     unsigned char i;
     AISprite *enemy;
+    Sprite *laser;
 
     // Reset enemies
     for (i=0; i<length; i++) {
@@ -142,24 +149,37 @@ void enemiesReset(AISprite enemies[], unsigned char length) {
         enemy->sprite.zDepth = Disabled;
         x16SpriteIdxSetZDepth(enemy->sprite.index, Disabled);
     }
+
+    // Reset lasers
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
+        laser->active = 0;
+        laser->zDepth = Disabled;
+        x16SpriteIdxSetZDepth(laser->index, Disabled);
+    }
 }
 
 void enemyShot(short x, short y, unsigned char direction) {
     unsigned char i;
     Sprite *laser;
 
-    for (i=0; i<16; i++) {
-        laser = &enemyLasers[i];
+    // Only shoot if the player is near
+    if (abs(player.x-x) < 200 && abs(player.y-y)<50) {
+        for (i=0; i<16; i++) {
+            laser = &enemyLasers[i];
 
-        if (laser->active == 0) {
-            laser->active = 1;
-            laser->animationDirection = direction;
-            laser->zDepth = BetweenL0L1;
-            spriteMove(laser, x, y);
-            x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
-            x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
-            x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
-            return;
+            if (laser->active == 0) {
+                laser->active = 1;
+                laser->animationDirection = direction;
+                laser->zDepth = BetweenL0L1;
+                laser->lastTileX=0;
+                laser->lastTileY=0;
+                spriteMove(laser, x, y);
+                x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+                x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
+                x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+                return;
+            }
         }
     }
 }
@@ -198,7 +218,8 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
             // Shoot
             if (enemy->framesUntilNextShot == 0) {
                 enemy->framesUntilNextShot = enemy->framesBetweenShots;
-                enemyShot(enemy->sprite.x, enemy->sprite.y, enemy->sprite.animationDirection);
+                // HACK: Move y 1px up to avoid ground collision
+                enemyShot(enemy->sprite.x, enemy->sprite.y-1, enemy->sprite.animationDirection);
             } else {
                 enemy->framesUntilNextShot--;
             }
@@ -216,12 +237,13 @@ void enemyLasersMove() {
         if (laser->active == 1) {
             spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
-            //spriteTouchingTile(level, laser, &tileCollision);
-            //if (tileCollision.type != 255 || laser->x < 0 || laser->x > 639) {
-            if (laser->x < 0 || laser->x > 639) {
+            
+            spriteTouchingTile(level, laser, &tileCollision);
+            if (tileCollision.type != NO_TILE_COLLISION || laser->x < 0 || laser->x > 639) {
+            // if (laser->x < 0 || laser->x > 639) {
                 // TODO: Explosion for enemy lasers?
                 // Need more explosion sprites
-                // if (tileCollision.type != 255) {
+                // if (tileCollision.type != NO_TILE_COLLISION) {
                 //     // Explosion
                 //     smallExplosion(&expSmall, InFrontOfL1, laser->x, laser->y);
                 // }
@@ -391,6 +413,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         if (JOY_BTN_2(joy) && bullet.active==0) {
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
+            bullet.startX = player.x;
             spriteMove(&bullet, player.x, player.y);
             // Show the bullet
             bullet.zDepth = BetweenL0L1;
@@ -402,7 +425,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // See if the player is touching any tiles left/right
         // Move back if so.
         spriteTouchingTile(level, &player, &tileCollision);
-        if (tileCollision.type != 255) {
+        if (tileCollision.type != NO_TILE_COLLISION) {
             spriteMoveBackX(&player);
         }
 
@@ -428,13 +451,17 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
         // We can then look at all the sprites that have that bit in their mask
-
+        // NOTE: Collisions seem to be triggered twice.
+        // Could be because there are 2 spries involved?
+        // OR maybe at this point we haven't Disabled the sprite yet and its too late?
+        // HACK: I check the "active" status on the bullet before considering this a valid collision
+        
         // Player and Enemy collisions
         if (collision == 0b1001) {
             // Move the sprite back to the start
             spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
-        } else if (collision == 0b1010) {
+        } else if (bullet.active == 1 && collision == 0b1010) {
             // Explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
             
@@ -452,14 +479,15 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             // Bullet hit an enemy
             bullet.active = 0;
             bullet.zDepth = Disabled;
+            x16SpriteIdxSetXY(bullet.index, 0, 0);
             x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
         }
 
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
             spriteTouchingTile(level, &bullet, &tileCollision);
-            if (tileCollision.type != 255 || bullet.x < 0 || bullet.x > 639) {
-                if (tileCollision.type != 255) {
+            if (tileCollision.type != NO_TILE_COLLISION || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
+                if (tileCollision.type != NO_TILE_COLLISION) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
                 }

@@ -54,7 +54,9 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->sprite.yL = sp->sprite.y * MOVE_FACTOR;
     sp->sprite.lastX = sp->sprite.x;
     sp->sprite.lastY = sp->sprite.y;
-    
+    sp->sprite.lastTileX = 0;
+    sp->sprite.lastTileY = 0;
+
     sp->xTileStart = layout->x;
     sp->yTileStart = layout->y;
     sp->xTileEnd = layout->x + layout->length;
@@ -107,7 +109,7 @@ void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
     snake->sprite.speed = 8;
 
     snake->health = 4;
-    snake->framesBetweenShots = 60;
+    snake->framesBetweenShots = 90;
     standardAISpriteConfig(snake, layout, index);
 }
 
@@ -123,7 +125,7 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
     bee->sprite.speed = 13;
 
     bee->health = 2;
-    bee->framesBetweenShots = 40;
+    bee->framesBetweenShots = 70;
     standardAISpriteConfig(bee, layout, index);
 }
 
@@ -139,7 +141,7 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
     ghost->sprite.speed = 3;
 
     ghost->health = 10;
-    ghost->framesBetweenShots = 240;
+    ghost->framesBetweenShots = 180;
     standardAISpriteConfig(ghost, layout, index);
 }
 
@@ -155,7 +157,7 @@ void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index
     scorpion->sprite.speed = 6;
 
     scorpion->health = 6;
-    scorpion->framesBetweenShots = 60;
+    scorpion->framesBetweenShots = 90;
     standardAISpriteConfig(scorpion, layout, index);
 }
 
