@@ -20,6 +20,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin", 1024);
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -58,8 +59,8 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->yTileStart = layout->y;
     sp->xTileEnd = layout->x + layout->length;
     sp->yTileEnd = layout->y;
-    sp->health = 5;
-    
+    sp->framesUntilNextShot = sp->framesBetweenShots;
+
     spriteInit(&sp->sprite);
     x16SpriteIdxSetXY(sp->sprite.index, sp->sprite.x, sp->sprite.y);
     x16SpriteIdxSetHFlip(sp->sprite.index, sp->sprite.animationDirection);
@@ -103,8 +104,10 @@ void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
     snake->sprite.frames = 4;
     snake->sprite.frameSize = 256; // Calculated as width * height
     snake->sprite.animationSpeed = 6;
-    snake->sprite.speed = 6;
+    snake->sprite.speed = 8;
 
+    snake->health = 4;
+    snake->framesBetweenShots = 60;
     standardAISpriteConfig(snake, layout, index);
 }
 
@@ -119,6 +122,8 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
     bee->sprite.animationSpeed = 6;
     bee->sprite.speed = 13;
 
+    bee->health = 2;
+    bee->framesBetweenShots = 40;
     standardAISpriteConfig(bee, layout, index);
 }
 
@@ -133,6 +138,8 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
     ghost->sprite.animationSpeed = 20;
     ghost->sprite.speed = 3;
 
+    ghost->health = 10;
+    ghost->framesBetweenShots = 240;
     standardAISpriteConfig(ghost, layout, index);
 }
 
@@ -145,8 +152,10 @@ void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index
     scorpion->sprite.frames = 4;
     scorpion->sprite.frameSize = 256; // Calculated as width * height
     scorpion->sprite.animationSpeed = 6;
-    scorpion->sprite.speed = 8;
+    scorpion->sprite.speed = 6;
 
+    scorpion->health = 6;
+    scorpion->framesBetweenShots = 60;
     standardAISpriteConfig(scorpion, layout, index);
 }
 
@@ -161,6 +170,8 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
     wasp->sprite.animationSpeed = 6;
     wasp->sprite.speed = 12;
 
+    wasp->health = 3;
+    wasp->framesBetweenShots = 120;
     standardAISpriteConfig(wasp, layout, index);
 }
 
@@ -191,6 +202,24 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_PLAYER_BULLET;
+    b->frames = 1;
+    b->x = 320;
+    b->y = 240;
+    b->speed = 4;
+
+    spriteInit(b);
+}
+
+void laserCreate(Sprite *b, unsigned char index) {
+    b->index = index;
+    b->active = 0;
+    b->clrMode = 1;
+    b->collisionMask = 0; //0b0101;
+    b->zDepth = Disabled;
+    b->width = PX16;
+    b->height = PX16;
+    b->graphicsBank = SPRITE_MEM_BANK;
+    b->graphicsAddress = SPRITE_MEM_LASER;
     b->frames = 1;
     b->x = 320;
     b->y = 240;

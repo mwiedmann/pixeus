@@ -11,6 +11,8 @@ typedef struct AISprite {
     unsigned char xTileEnd;
     unsigned char yTileEnd;
     unsigned char health;
+    unsigned short framesUntilNextShot;
+    unsigned short framesBetweenShots;
 } AISprite;
 
 void spriteDataLoad();
@@ -23,6 +25,7 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index);
 void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
+void laserCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
 
 #endif

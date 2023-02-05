@@ -30,6 +30,8 @@
 // TODO: Fixed array to hold AISprites
 // Need something more dynamic but this works for now
 AISprite masterEnemiesList[16];
+Sprite enemyLasers[16];
+
 Sprite player, bullet, expSmall;
 LevelOveralLayout* level;
 
@@ -142,6 +144,26 @@ void enemiesReset(AISprite enemies[], unsigned char length) {
     }
 }
 
+void enemyShot(short x, short y, unsigned char direction) {
+    unsigned char i;
+    Sprite *laser;
+
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
+
+        if (laser->active == 0) {
+            laser->active = 1;
+            laser->animationDirection = direction;
+            laser->zDepth = BetweenL0L1;
+            spriteMove(laser, x, y);
+            x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+            x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
+            x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+            return;
+        }
+    }
+}
+
 void enemiesMove(AISprite enemies[], unsigned char length) {
     unsigned char i;
     signed char tileCalc;
@@ -172,6 +194,41 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
                 x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
             }
             x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
+
+            // Shoot
+            if (enemy->framesUntilNextShot == 0) {
+                enemy->framesUntilNextShot = enemy->framesBetweenShots;
+                enemyShot(enemy->sprite.x, enemy->sprite.y, enemy->sprite.animationDirection);
+            } else {
+                enemy->framesUntilNextShot--;
+            }
+        }
+    }
+}
+
+void enemyLasersMove() {
+    unsigned char i;
+    SolidLayout tileCollision;
+    Sprite *laser;
+
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
+        if (laser->active == 1) {
+            spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
+            x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+            //spriteTouchingTile(level, laser, &tileCollision);
+            //if (tileCollision.type != 255 || laser->x < 0 || laser->x > 639) {
+            if (laser->x < 0 || laser->x > 639) {
+                // TODO: Explosion for enemy lasers?
+                // Need more explosion sprites
+                // if (tileCollision.type != 255) {
+                //     // Explosion
+                //     smallExplosion(&expSmall, InFrontOfL1, laser->x, laser->y);
+                // }
+                laser->active = 0;
+                laser->zDepth = Disabled;
+                x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+            }
         }
     }
 }
@@ -234,6 +291,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         }
 
         enemiesMove(masterEnemiesList, enemyCount);
+        enemyLasersMove();
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is "going" somewhere.
@@ -415,6 +473,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
 void main() {
     unsigned char nextSpriteIndex = 0;
+    unsigned char i;
     Exit *exit;
     level = levelGet(1);
 
@@ -435,6 +494,9 @@ void main() {
     playerCreate(&player, &level->entranceList->entrances[0], nextSpriteIndex++);
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
+    for (i=0; i<16; i++) {
+        laserCreate(&enemyLasers[i], nextSpriteIndex++);
+    }
 
     while(1) {
         layerMapsAddSomeStuff(level);
