@@ -32,6 +32,8 @@ typedef struct Sprite {
     unsigned char speed;
 } Sprite;
 
+unsigned char doOverlap(short x1, short y1, unsigned char width1, unsigned char height1,
+    short x2, short y2, unsigned char width2, unsigned char height2);
 void spriteInit(Sprite *sprite);
 void spriteMoveToTile(Sprite *sprite, short x, short y, unsigned char tileWidth, unsigned char tileHeight);
 void spriteMove(Sprite *sprite, short x, short y);

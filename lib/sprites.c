@@ -1,6 +1,20 @@
 #include "x16graphics.h"
 #include "sprites.h"
 
+unsigned char doOverlap(short x1, short y1, unsigned char width1, unsigned char height1,
+    short x2, short y2, unsigned char width2, unsigned char height2)
+{  
+    // If one rectangle is on left side of other
+    if (x1 > x2+width2 || x2 > x1+width1)
+        return 0;
+ 
+    // If one rectangle is above other
+    if (y1 > y2+height2 || y2 > y1+height1)
+        return 0;
+ 
+    return 1;
+}
+
 void spriteInit(Sprite *sprite) {
     x16SpriteInit(
         sprite->index,

@@ -10,6 +10,7 @@ typedef struct AISprite {
     unsigned char yTileStart;
     unsigned char xTileEnd;
     unsigned char yTileEnd;
+    unsigned char health;
 } AISprite;
 
 void spriteDataLoad();

@@ -37,6 +37,7 @@ void spriteIRQConfig() {
 void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char index)
 {
     sp->sprite.index = index;
+    sp->sprite.active=1;
     sp->sprite.clrMode = 1;
     
     // Possible zDepth will change but leave for now
@@ -57,7 +58,8 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->yTileStart = layout->y;
     sp->xTileEnd = layout->x + layout->length;
     sp->yTileEnd = layout->y;
-
+    sp->health = 5;
+    
     spriteInit(&sp->sprite);
     x16SpriteIdxSetXY(sp->sprite.index, sp->sprite.x, sp->sprite.y);
     x16SpriteIdxSetHFlip(sp->sprite.index, sp->sprite.animationDirection);
@@ -65,6 +67,7 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
 
 void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->index = index;
+    p->active = 1;
     p->clrMode = 1;
     p->collisionMask = 0b1101;
     p->zDepth = BetweenL0L1;
@@ -163,6 +166,7 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
 
 void explosionSmallCreate(Sprite *b, unsigned char index) {
     b->index = index;
+    b->active = 1;
     b->clrMode = 1;
     b->collisionMask = 0;
     b->zDepth = Disabled;
@@ -179,6 +183,7 @@ void explosionSmallCreate(Sprite *b, unsigned char index) {
 
 void bulletCreate(Sprite *b, unsigned char index) {
     b->index = index;
+    b->active = 1;
     b->clrMode = 1;
     b->collisionMask = 0b1010;
     b->zDepth = Disabled;

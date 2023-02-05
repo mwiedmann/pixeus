@@ -150,27 +150,29 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
     // Move enemies
     for (i=0; i<length; i++) {
         enemy = &enemies[i];
-        spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
-        enemy->sprite.animationCount++;
-        if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
-            enemy->sprite.animationCount=0;
-            enemy->sprite.animationFrame++;
-            if (enemy->sprite.animationFrame == enemy->sprite.frames) {
-                enemy->sprite.animationFrame = 0;
+        if (enemy->sprite.active == 1) {
+            spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
+            enemy->sprite.animationCount++;
+            if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
+                enemy->sprite.animationCount=0;
+                enemy->sprite.animationFrame++;
+                if (enemy->sprite.animationFrame == enemy->sprite.frames) {
+                    enemy->sprite.animationFrame = 0;
+                }
+                x16SpriteIdxSetGraphicsPointer(enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
+                    enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
             }
-            x16SpriteIdxSetGraphicsPointer(enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
-                enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
+            tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
+            // Careful, can be -1 if on left edge (signed char)
+            if (tileCalc <= (signed char)enemy->xTileStart - 1) {
+                enemy->sprite.animationDirection = 1;
+                x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+            } else if (tileCalc >= enemy->xTileEnd - 1) {
+                enemy->sprite.animationDirection = 0;
+                x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+            }
+            x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
         }
-        tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
-        // Careful, can be -1 if on left edge (signed char)
-        if (tileCalc <= (signed char)enemy->xTileStart - 1) {
-            enemy->sprite.animationDirection = 1;
-            x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
-        } else if (tileCalc >= enemy->xTileEnd - 1) {
-            enemy->sprite.animationDirection = 0;
-            x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
-        }
-        x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
     }
 }
 
@@ -185,6 +187,23 @@ void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y) {
     expSmall->animationFrame = 0;
 }
 
+AISprite *findEnemyCollision(Sprite *s) {
+    unsigned char i;
+    AISprite *enemy;
+
+    for (i=0; i<16; i++) {
+        enemy = &masterEnemiesList[i];
+        // TODO: Use the actual sprite width (need conversion function from)
+        if (doOverlap(
+            s->x, s->y, pixelSizes[s->width], pixelSizes[s->height],
+            enemy->sprite.x, enemy->sprite.y, pixelSizes[enemy->sprite.width], pixelSizes[enemy->sprite.height])) {
+                return enemy;
+            }
+    }
+
+    return NULL;
+}
+
 Exit* runLevel(unsigned char nextSpriteIndex) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
@@ -192,7 +211,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     
     SolidLayout tileCollision;
     Exit exitCollision;
-    
+    AISprite *hitEnemy;
+
     enemyCount = enemiesCreate(level, masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
 
@@ -360,6 +380,17 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             // Explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
             
+            // Find the enemy
+            hitEnemy = findEnemyCollision(&bullet);
+            if (hitEnemy != NULL) {
+                hitEnemy->health--;
+                if (hitEnemy->health == 0) {
+                    hitEnemy->sprite.active = 0;
+                    hitEnemy->sprite.zDepth = Disabled;
+                    x16SpriteIdxSetZDepth(hitEnemy->sprite.index, hitEnemy->sprite.zDepth);
+                }
+            }
+
             // Bullet hit an enemy
             bullet.active = 0;
             bullet.zDepth = Disabled;
