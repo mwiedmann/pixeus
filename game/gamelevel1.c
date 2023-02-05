@@ -11,7 +11,8 @@ EnemyLayout level1Enemies[6] = {
 
 EnemyLayoutList level1EnemyList = { 6, level1Enemies };
 
-SolidLayout level1Solids[16] = {
+SolidLayout level1Solids[17] = {
+    { 12, 2, 2, 0},
     { 10, 3, 2, 0},
     { 0, 5, 25, 0},
     { 27, 13, 13, 0},
@@ -30,15 +31,13 @@ SolidLayout level1Solids[16] = {
     { 0, 29, 40, 0}
 };
 
-SolidLayoutList level1SolidList = { 16, level1Solids };
+SolidLayoutList level1SolidList = { 17, level1Solids };
 
-TileLayout level1Tiles[388] = {
+TileLayout level1Tiles[389] = {
     { 6, 1, 1, 13, 0, 0, 0 },
     { 17, 1, 1, 160, 0, 0, 0 },
     { 30, 1, 1, 162, 0, 0, 0 },
     { 1, 2, 1, 13, 0, 0, 0 },
-    { 13, 2, 1, 14, 0, 0, 0 },
-    { 14, 2, 1, 15, 0, 0, 0 },
     { 22, 2, 1, 171, 0, 0, 0 },
     { 35, 2, 1, 121, 0, 0, 0 },
     { 36, 2, 1, 122, 0, 0, 0 },
@@ -126,6 +125,11 @@ TileLayout level1Tiles[388] = {
     { 14, 28, 1, 59, 0, 0, 0 },
     { 30, 28, 1, 37, 0, 0, 0 },
     { 32, 28, 1, 49, 0, 0, 0 },
+    { 12, 2, 1, 1, 0, 0, 0 },
+    { 13, 2, 1, 2, 0, 0, 0 },
+    { 10, 3, 1, 2, 0, 0, 0 },
+    { 11, 3, 1, 3, 0, 0, 0 },
+    { 12, 3, 1, 169, 0, 1, 1 },
     { 0, 5, 1, 2, 0, 0, 0 },
     { 1, 5, 1, 3, 0, 0, 0 },
     { 2, 5, 1, 4, 0, 0, 0 },
@@ -356,8 +360,6 @@ TileLayout level1Tiles[388] = {
     { 39, 29, 1, 2, 0, 0, 0 },
     { 3, 2, 1, 66, 1, 0, 0 },
     { 3, 3, 1, 78, 1, 0, 0 },
-    { 10, 3, 1, 2, 1, 0, 0 },
-    { 11, 3, 1, 3, 1, 0, 0 },
     { 2, 4, 1, 30, 1, 0, 0 },
     { 3, 4, 1, 90, 1, 0, 0 },
     { 5, 4, 1, 53, 1, 0, 0 },
@@ -423,7 +425,7 @@ TileLayout level1Tiles[388] = {
     { 31, 28, 1, 89, 1, 0, 0 }
 };
 
-TileLayoutList level1TilesList = { 388, level1Tiles };
+TileLayoutList level1TilesList = { 389, level1Tiles };
 
 Entrance level1Entrances[1] = {
     { 1, 4, "TopLeft" }

@@ -8,6 +8,11 @@
 #include "level.h"
 #include "imageload.h"
 
+#define ENEMY_COLLISION_MASK 0b1011 // [Enemy] | 0 | Player Bullets | Player
+#define ENEMY_LASER_COLLISION_MASK 0b0101 // 0 | [Enemy Laser] | 0 | Player
+#define PLAYER_COLLISION_MASK 0b1101 // Enemy | Enemy Laser | 0 | [Player]
+#define PLAYER_BULLET_COLLISION_MASK 0b1010 // Enemy | 0 | [Player Bullet] | 0
+
 // Not sure how big the stack needs to be. Unclear how this works.
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
@@ -72,7 +77,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->index = index;
     p->active = 1;
     p->clrMode = 1;
-    p->collisionMask = 0b1101;
+    p->collisionMask = PLAYER_COLLISION_MASK;
     p->zDepth = BetweenL0L1;
     p->width = PX16;
     p->height = PX16;
@@ -99,7 +104,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
 
 void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
 {
-    snake->sprite.collisionMask = 0b1011;
+    snake->sprite.collisionMask = ENEMY_COLLISION_MASK;
     snake->sprite.width = PX16;
     snake->sprite.height = PX16;
     snake->sprite.graphicsAddress = SPRITE_MEM_SNAKE;
@@ -115,7 +120,7 @@ void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
 
 void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
 {
-    bee->sprite.collisionMask = 0b1011;
+    bee->sprite.collisionMask = ENEMY_COLLISION_MASK;
     bee->sprite.width = PX16;
     bee->sprite.height = PX16;
     bee->sprite.graphicsAddress = SPRITE_MEM_BEE;
@@ -131,7 +136,7 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
 
 void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 {
-    ghost->sprite.collisionMask = 0b1011;
+    ghost->sprite.collisionMask = ENEMY_COLLISION_MASK;
     ghost->sprite.width = PX16;
     ghost->sprite.height = PX16;
     ghost->sprite.graphicsAddress = SPRITE_MEM_GHOST;
@@ -147,7 +152,7 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 
 void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index)
 {
-    scorpion->sprite.collisionMask = 0b1011;
+    scorpion->sprite.collisionMask = ENEMY_COLLISION_MASK;
     scorpion->sprite.width = PX16;
     scorpion->sprite.height = PX16;
     scorpion->sprite.graphicsAddress = SPRITE_MEM_SCORPION;
@@ -163,7 +168,7 @@ void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index
 
 void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
 {
-    wasp->sprite.collisionMask = 0b1011;
+    wasp->sprite.collisionMask = ENEMY_COLLISION_MASK;
     wasp->sprite.width = PX16;
     wasp->sprite.height = PX16;
     wasp->sprite.graphicsAddress = SPRITE_MEM_WASP;
@@ -198,7 +203,7 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->index = index;
     b->active = 1;
     b->clrMode = 1;
-    b->collisionMask = 0b1010;
+    b->collisionMask = PLAYER_BULLET_COLLISION_MASK;
     b->zDepth = Disabled;
     b->width = PX16;
     b->height = PX16;
@@ -216,7 +221,7 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
-    b->collisionMask = 0b0101;
+    b->collisionMask = ENEMY_LASER_COLLISION_MASK;
     b->zDepth = Disabled;
     b->width = PX16;
     b->height = PX16;

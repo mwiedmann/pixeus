@@ -84,7 +84,7 @@ void playerTouchingExit(LevelOveralLayout *level, Sprite *sprite, Exit *exitColl
     }
 }
 
-void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *tileCollision) {
+void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *tileCollision, unsigned char checkEveryFrame) {
     unsigned char i;
     SolidLayout tileStanding;
     
@@ -95,7 +95,7 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *t
     tileStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
     // Only check if the tile for the sprite has changed
-    if (tileStanding.x != sprite->lastTileX || tileStanding.y != sprite->lastTileY) {
+    if (checkEveryFrame == 1 || tileStanding.x != sprite->lastTileX || tileStanding.y != sprite->lastTileY) {
         sprite->lastTileX = tileStanding.x;
         sprite->lastTileY = tileStanding.y;
         for (i=0; i<level->solidList->length; i++) {
@@ -124,7 +124,7 @@ unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsign
         );
 
         // Get the current ground tile the AI is standing on and patrol its entire length
-        spriteTouchingTile(level, &enemies[length].sprite, &si);
+        spriteTouchingTile(level, &enemies[length].sprite, &si, 0);
         if (si.type != NO_TILE_COLLISION) {
             enemies[length].xTileStart = si.x;
             enemies[length].yTileStart = si.y;
@@ -145,17 +145,21 @@ void enemiesReset(AISprite enemies[], unsigned char length) {
     // Reset enemies
     for (i=0; i<length; i++) {
         enemy = &enemies[i];
+        spriteMove(&enemy->sprite, 0, 0);
         enemy->sprite.active = 0;
         enemy->sprite.zDepth = Disabled;
         x16SpriteIdxSetZDepth(enemy->sprite.index, Disabled);
+        x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
     }
 
     // Reset lasers
     for (i=0; i<16; i++) {
         laser = &enemyLasers[i];
+        spriteMove(laser, 0, 0);
         laser->active = 0;
         laser->zDepth = Disabled;
         x16SpriteIdxSetZDepth(laser->index, Disabled);
+        x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
     }
 }
 
@@ -238,7 +242,7 @@ void enemyLasersMove() {
             spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             
-            spriteTouchingTile(level, laser, &tileCollision);
+            spriteTouchingTile(level, laser, &tileCollision, 0);
             if (tileCollision.type != NO_TILE_COLLISION || laser->x < 0 || laser->x > 639) {
             // if (laser->x < 0 || laser->x > 639) {
                 // TODO: Explosion for enemy lasers?
@@ -249,7 +253,9 @@ void enemyLasersMove() {
                 // }
                 laser->active = 0;
                 laser->zDepth = Disabled;
+                spriteMove(laser, 0, 0);
                 x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+                x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             }
         }
     }
@@ -335,7 +341,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             // Inefficient: We are checking here AND after moving X
             // Might be ok and makes it easier to deal with moving him back
             spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
-            spriteTouchingTile(level, &player, &tileCollision);
+            spriteTouchingTile(level, &player, &tileCollision, 1);
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != NO_TILE_COLLISION) {
@@ -424,7 +430,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // See if the player is touching any tiles left/right
         // Move back if so.
-        spriteTouchingTile(level, &player, &tileCollision);
+        spriteTouchingTile(level, &player, &tileCollision, 1);
         if (tileCollision.type != NO_TILE_COLLISION) {
             spriteMoveBackX(&player);
         }
@@ -458,9 +464,13 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Player and Enemy/Laser collisions
         if (collision == 0b1001 || collision == 0b0101) {
+            // TODO: Getting some false collisions, check the collisions here to make sure its valid
             // Move the sprite back to the start
             spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
+
+            // TODO: If laser hit, find and reset that laser
+            // Right now it just kills the player so its ok if it continues and dies when it runs out of steam
         } else if (bullet.active == 1 && collision == 0b1010) {
             // Explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
@@ -485,7 +495,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
-            spriteTouchingTile(level, &bullet, &tileCollision);
+            spriteTouchingTile(level, &bullet, &tileCollision, 0);
             if (tileCollision.type != NO_TILE_COLLISION || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
                 if (tileCollision.type != NO_TILE_COLLISION) {
                     // Explosion
