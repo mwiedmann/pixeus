@@ -1487,29 +1487,6 @@
 								"id": "V_String",
 								"params": ["Right"]
 							}] }]
-						},
-						{
-							"__identifier": "Enemy",
-							"__grid": [9,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#F77622",
-							"iid": "d7fa59a0-9f30-11ed-80db-7f63e04e3f9a",
-							"width": 16,
-							"height": 16,
-							"defUid": 19,
-							"px": [144,336],
-							"fieldInstances": [
-								{ "__identifier": "type", "__value": "Scorpion", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Scorpion"]
-								}] },
-								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
-								{ "__identifier": "patrolA", "__value": 6, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },
-								{ "__identifier": "patrolB", "__value": 27, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [27] }] },
-								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
-							]
 						}
 					]
 				},

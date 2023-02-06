@@ -41,9 +41,9 @@ const createLevelCode = (levelNum, level) => {
     });
   };
 
-  let entrancesCodeAll;
-  let exitsCodeAll;
-  let enemiesCodeAll;
+  let entrancesCodeAll = '';
+  let exitsCodeAll = '';
+  let enemiesCodeAll = '';
 
   const addEntities = (entityInstances) => {
     const fiGet = (fi, id) => {
@@ -119,9 +119,11 @@ const createLevelCode = (levelNum, level) => {
       })
       .join(",\n");
 
-    // TODO: handle 0 enemies 
-    enemiesCodeAll = `EnemyLayout ${levelName}Enemies[${enemies.length}] = {\n${enemiesCode}\n};\n\n`;
-    enemiesCodeAll = `${enemiesCodeAll}EnemyLayoutList ${levelName}EnemyList = { ${enemies.length}, ${levelName}Enemies };\n\n`;
+    if (enemies.length > 0) {
+      enemiesCodeAll = `EnemyLayout ${levelName}Enemies[${enemies.length}] = {\n${enemiesCode}\n};\n\n`;
+    }
+
+    enemiesCodeAll = `${enemiesCodeAll}EnemyLayoutList ${levelName}EnemyList = { ${enemies.length}, ${enemies.length > 0 ? `${levelName}Enemies` : '0'} };\n\n`;
   };
 
   level.layerInstances.forEach((li) => {

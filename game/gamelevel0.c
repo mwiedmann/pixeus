@@ -91,11 +91,7 @@ Exit level0Exits[1] = {
 
 ExitList level0ExitList = { 1, level0Exits };
 
-EnemyLayout level0Enemies[1] = {
-    { 9, 21, 0, 6, 27, 0, Scorpion, 0 }
-};
-
-EnemyLayoutList level0EnemyList = { 1, level0Enemies };
+EnemyLayoutList level0EnemyList = { 0, 0 };
 
 LevelOveralLayout level0 = {
     &level0TilesList,

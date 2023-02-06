@@ -1,6 +1,6 @@
 #include <cx16.h>
 #include <joystick.h>
-#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 // Libs
@@ -78,7 +78,7 @@ Exit *playerTouchingExit(LevelOveralLayout *level, Sprite *sprite) {
             }
     }
 
-    return NULL;
+    return 0;
 }
 
 void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision) {
@@ -252,7 +252,7 @@ AISprite *findEnemyCollision(Sprite *s) {
             }
     }
 
-    return NULL;
+    return 0;
 }
 
 Exit* runLevel(unsigned char nextSpriteIndex) {
@@ -272,7 +272,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // See if player is touching an exit
         exitCollision = playerTouchingExit(level, &player);
-        if (exitCollision != NULL) {
+        if (exitCollision != 0) {
             // Clean up the enemies and return the exit info
             enemiesReset(masterEnemiesList, enemyCount);
 
@@ -443,7 +443,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             
             // Find the enemy
             hitEnemy = findEnemyCollision(&bullet);
-            if (hitEnemy != NULL) {
+            if (hitEnemy != 0) {
                 hitEnemy->health--;
                 if (hitEnemy->health == 0) {
                     hitEnemy->sprite.active = 0;
@@ -475,10 +475,23 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     }
 }
 
+Entrance *findEntraceForExit(EntranceList *entranceList, Exit *exit) {
+    unsigned char i;
+
+    for (i=0; i<entranceList->length; i++) {
+        if (strcmp(entranceList->entrances[i].name, exit->entrance) == 0) {
+            return &entranceList->entrances[i];
+        }
+    }
+
+    return 0;
+}
+
 void main() {
     unsigned char nextSpriteIndex = 0;
     unsigned char i;
     Exit *exit;
+    Entrance *entrace;
     level = levelGet(1);
 
     // Configure the joysticks
@@ -506,7 +519,9 @@ void main() {
         layerMapsAddSomeStuff(level);
         exit = runLevel(nextSpriteIndex);
         level = levelGet(exit->level);
-        spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
+        entrace = findEntraceForExit(level->entranceList, exit);
+
+        spriteMoveToTile(&player, entrace->x, entrace->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
 
