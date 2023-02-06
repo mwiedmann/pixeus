@@ -21,7 +21,7 @@ unsigned char level0MovementTypes[30][40] = {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -33,7 +33,9 @@ unsigned char level0MovementTypes[30][40] = {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
-TileLayout level0Tiles[108] = {
+TileLayout level0Tiles[113] = {
+    { 7, 19, 1, 154, 0, 0, 0 },
+    { 24, 19, 1, 154, 0, 0, 0 },
     { 10, 26, 1, 29, 0, 0, 0 },
     { 11, 26, 1, 30, 0, 0, 0 },
     { 21, 12, 1, 44, 1, 0, 0 },
@@ -66,6 +68,9 @@ TileLayout level0Tiles[108] = {
     { 23, 18, 1, 44, 1, 1, 0 },
     { 24, 18, 1, 44, 1, 1, 0 },
     { 25, 18, 1, 44, 1, 1, 0 },
+    { 5, 20, 1, 2, 1, 0, 0 },
+    { 6, 20, 1, 3, 1, 0, 0 },
+    { 7, 20, 1, 4, 1, 0, 0 },
     { 22, 20, 1, 2, 1, 0, 0 },
     { 23, 20, 1, 3, 1, 0, 0 },
     { 24, 20, 1, 4, 1, 0, 0 },
@@ -144,24 +149,29 @@ TileLayout level0Tiles[108] = {
     { 15, 26, 1, 177, 1, 0, 0 }
 };
 
-TileLayoutList level0TilesList = { 108, level0Tiles };
+TileLayoutList level0TilesList = { 113, level0Tiles };
 
-Entrance level0Entrances[2] = {
+Entrance level0Entrances[4] = {
     { 19, 21, "GameStart" },
-    { 38, 21, "Right" }
+    { 38, 21, "Right" },
+    { 5, 19, "LeftPlatform" },
+    { 22, 19, "RightPlatform" }
 };
 
-EntranceList level0EntranceList = { 2, level0Entrances };
+EntranceList level0EntranceList = { 4, level0Entrances };
 
-Exit level0Exits[1] = {
-    { 39, 21, 1, "TopLeft" }
+Exit level0Exits[3] = {
+    { 39, 21, 1, "TopLeft" },
+    { 24, 19, 0, "LeftPlatform" },
+    { 7, 19, 0, "RightPlatform" }
 };
 
-ExitList level0ExitList = { 1, level0Exits };
+ExitList level0ExitList = { 3, level0Exits };
 
 EnemyLayoutList level0EnemyList = { 0, 0 };
 
 LevelOveralLayout level0 = {
+    0,
     &level0TilesList,
     &level0EnemyList,
     &level0EntranceList,

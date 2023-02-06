@@ -164,7 +164,7 @@ const createLevelCode = (levelNum, level) => {
   masterCode += exitsCodeAll;
   masterCode += enemiesCodeAll;
 
-  masterCode += `LevelOveralLayout ${levelName} = {\n    &${levelName}TilesList,\n    &${levelName}EnemyList,\n    &${levelName}EntranceList,\n    &${levelName}ExitList,\n    (unsigned char *)${levelName}MovementTypes,\n};\n`;
+  masterCode += `LevelOveralLayout ${levelName} = {\n    ${levelNum},\n    &${levelName}TilesList,\n    &${levelName}EnemyList,\n    &${levelName}EntranceList,\n    &${levelName}ExitList,\n    (unsigned char *)${levelName}MovementTypes,\n};\n`;
 
   const outputFilename = `../game/game${levelName}.c`;
   fs.writeFileSync(outputFilename, masterCode);

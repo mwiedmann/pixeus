@@ -451,6 +451,7 @@ EnemyLayout level1Enemies[6] = {
 EnemyLayoutList level1EnemyList = { 6, level1Enemies };
 
 LevelOveralLayout level1 = {
+    1,
     &level1TilesList,
     &level1EnemyList,
     &level1EntranceList,

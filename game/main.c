@@ -259,6 +259,18 @@ AISprite *findEnemyCollision(Sprite *s) {
     return 0;
 }
 
+Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char *entranceName) {
+    unsigned char i;
+
+    for (i=0; i<entranceList->length; i++) {
+        if (strcmp(entranceList->entrances[i].name, entranceName) == 0) {
+            return &entranceList->entrances[i];
+        }
+    }
+
+    return 0;
+}
+
 Exit* runLevel(unsigned char nextSpriteIndex) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
@@ -267,6 +279,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     TileInfo tileCollision;
     Exit *exitCollision;
     AISprite *hitEnemy;
+    Entrance *entrance;
 
     enemyCount = enemiesCreate(level, masterEnemiesList, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
@@ -277,15 +290,23 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // See if player is touching an exit
         exitCollision = playerTouchingExit(level, &player);
         if (exitCollision != 0) {
-            // Clean up the enemies and return the exit info
-            enemiesReset(masterEnemiesList, enemyCount);
+            // If this jumps somewhere on the same level, just move the player
+            if (exitCollision->level == level->levelNum) {
+                entrance = findEntranceForExit(level->entranceList, exitCollision->entrance);
+                spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
+                x16SpriteIdxSetXY(player.index, player.x, player.y);
+            } else {
+                // This is jumping to another level. We need to cleanup this level.
+                // Clean up the enemies and return the exit info
+                enemiesReset(masterEnemiesList, enemyCount);
 
-            // Reset any active bullets
-            bullet.active = 0;
-            bullet.zDepth = Disabled;
-            x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+                // Reset any active bullets
+                bullet.active = 0;
+                bullet.zDepth = Disabled;
+                x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
 
-            return exitCollision;
+                return exitCollision;
+            }
         }
 
         enemiesMove(masterEnemiesList, enemyCount);
@@ -488,27 +509,15 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     }
 }
 
-Entrance *findEntraceForExit(EntranceList *entranceList, unsigned char *entranceName) {
-    unsigned char i;
-
-    for (i=0; i<entranceList->length; i++) {
-        if (strcmp(entranceList->entrances[i].name, entranceName) == 0) {
-            return &entranceList->entrances[i];
-        }
-    }
-
-    return 0;
-}
-
 void main() {
     unsigned char nextSpriteIndex = 0;
     unsigned char i;
-    Exit *exit;
-    Entrance *entrace;
+    Exit *exitCollision;
+    Entrance *entrance;
     
     // Get the starting level and main entrance
     level = levelGet(0);
-    entrace = findEntraceForExit(level->entranceList, "GameStart");
+    entrance = findEntranceForExit(level->entranceList, "GameStart");
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -524,7 +533,7 @@ void main() {
     videoConfig();
 
     // Create the sprites
-    playerCreate(&player, entrace, nextSpriteIndex++);
+    playerCreate(&player, entrance, nextSpriteIndex++);
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     for (i=0; i<16; i++) {
@@ -533,11 +542,11 @@ void main() {
 
     while(1) {
         layerMapsAddSomeStuff(level);
-        exit = runLevel(nextSpriteIndex);
-        level = levelGet(exit->level);
-        entrace = findEntraceForExit(level->entranceList, exit->entrance);
+        exitCollision = runLevel(nextSpriteIndex);
+        level = levelGet(exitCollision->level);
+        entrance = findEntranceForExit(level->entranceList, exitCollision->entrance);
 
-        spriteMoveToTile(&player, entrace->x, entrace->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
+        spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
 

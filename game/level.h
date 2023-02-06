@@ -64,6 +64,7 @@ typedef struct ExitList {
 } ExitList;
 
 typedef struct LevelOveralLayout {
+    unsigned char levelNum;
     TileLayoutList *tilesList;
     EnemyLayoutList *enemiesList;
     EntranceList *entranceList;

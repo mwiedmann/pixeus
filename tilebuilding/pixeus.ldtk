@@ -1391,7 +1391,7 @@
 						2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,
@@ -1487,6 +1487,80 @@
 								"id": "V_String",
 								"params": ["Right"]
 							}] }]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [24,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "d8f38310-9f30-11ed-80db-ffc70030a64b",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [384,304],
+							"fieldInstances": [
+								{ "__identifier": "Entrance", "__value": "LeftPlatform", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["LeftPlatform"]
+								}] },
+								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [7,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "e2137ae0-9f30-11ed-80db-f7358a3eb5a8",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [112,304],
+							"fieldInstances": [
+								{ "__identifier": "Entrance", "__value": "RightPlatform", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RightPlatform"]
+								}] },
+								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [5,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "ee4805b0-9f30-11ed-80db-654813e2d600",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [80,304],
+							"fieldInstances": [{ "__identifier": "Name", "__value": "LeftPlatform", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["LeftPlatform"]
+							}] }]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [22,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "f2d7ee10-9f30-11ed-80db-99a78be41d89",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [352,304],
+							"fieldInstances": [{ "__identifier": "Name", "__value": "RightPlatform", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["RightPlatform"]
+							}] }]
 						}
 					]
 				},
@@ -1513,6 +1587,8 @@
 					"seed": 846280,
 					"overrideTilesetUid": null,
 					"gridTiles": [
+						{ "px": [112,304], "src": [144,192], "f": 0, "t": 153, "d": [767] },
+						{ "px": [384,304], "src": [144,192], "f": 0, "t": 153, "d": [784] },
 						{ "px": [160,416], "src": [64,32], "f": 0, "t": 28, "d": [1050] },
 						{ "px": [176,416], "src": [80,32], "f": 0, "t": 29, "d": [1051] }
 					],
@@ -1571,6 +1647,9 @@
 						{ "px": [368,288], "src": [112,48], "f": 2, "t": 43, "d": [743] },
 						{ "px": [384,288], "src": [112,48], "f": 2, "t": 43, "d": [744] },
 						{ "px": [400,288], "src": [112,48], "f": 2, "t": 43, "d": [745] },
+						{ "px": [80,320], "src": [16,0], "f": 0, "t": 1, "d": [805] },
+						{ "px": [96,320], "src": [32,0], "f": 0, "t": 2, "d": [806] },
+						{ "px": [112,320], "src": [48,0], "f": 0, "t": 3, "d": [807] },
 						{ "px": [352,320], "src": [16,0], "f": 0, "t": 1, "d": [822] },
 						{ "px": [368,320], "src": [32,0], "f": 0, "t": 2, "d": [823] },
 						{ "px": [384,320], "src": [48,0], "f": 0, "t": 3, "d": [824] },
