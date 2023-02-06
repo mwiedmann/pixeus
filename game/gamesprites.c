@@ -25,6 +25,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin", 1024);
 
     // Back to memory bank 1
@@ -187,6 +188,22 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
     wasp->health = 3;
     wasp->framesBetweenShots = 120;
     standardAISpriteConfig(wasp, layout, index);
+}
+
+void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index)
+{
+    fish->sprite.collisionMask = ENEMY_COLLISION_MASK;
+    fish->sprite.width = PX16;
+    fish->sprite.height = PX16;
+    fish->sprite.graphicsAddress = SPRITE_MEM_FISH1;
+    fish->sprite.frames = 4;
+    fish->sprite.frameSize = 256; // Calculated as width * height
+    fish->sprite.animationSpeed = 30;
+    fish->sprite.speed = 3;
+
+    fish->health = 3;
+    fish->framesBetweenShots = 120;
+    standardAISpriteConfig(fish, layout, index);
 }
 
 void explosionSmallCreate(Sprite *b, unsigned char index) {

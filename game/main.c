@@ -96,7 +96,7 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tile
 unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsigned char nextSpriteIndex) {
     unsigned char i;
     void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
-        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
+        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate, fish1Create
     };
 
     for (i=0; i<level->enemiesList->length; i++) {
@@ -184,7 +184,7 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
             if (tileCalc <= (signed char)enemy->xTileStart - 1) {
                 enemy->sprite.animationDirection = 1;
                 x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
-            } else if (tileCalc >= enemy->xTileEnd - 1) {
+            } else if (tileCalc >= enemy->xTileEnd) {
                 enemy->sprite.animationDirection = 0;
                 x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
             }

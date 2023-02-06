@@ -168,7 +168,11 @@ Exit level0Exits[3] = {
 
 ExitList level0ExitList = { 3, level0Exits };
 
-EnemyLayoutList level0EnemyList = { 0, 0 };
+EnemyLayout level0Enemies[1] = {
+    { 10, 25, 0, 0, 6, 0, Fish1, 0 }
+};
+
+EnemyLayoutList level0EnemyList = { 1, level0Enemies };
 
 LevelOveralLayout level0 = {
     0,

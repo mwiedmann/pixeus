@@ -24,6 +24,7 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index);
 void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index);
 void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index);
+void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
