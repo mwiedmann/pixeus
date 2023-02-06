@@ -22,7 +22,7 @@
 
 #define PLAYER_FALL_SPEED 2
 #define PLAYER_JUMP_SPEED 2
-#define PLAYER_JUMP_FRAMES 14
+#define PLAYER_JUMP_FRAMES 16
 #define NO_TILE_COLLISION 0
 
 // Import the levels
@@ -334,6 +334,10 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             jumpFrames--;
             player.going==1;
             spriteMoveY(&player, player.y-PLAYER_JUMP_SPEED);
+            spriteTouchingTile(level, &player, &tileCollision);
+            if (tileCollision.type != NO_TILE_COLLISION) {
+                spriteMoveBackY(&player);
+            }
         }
 
         // Check if player is moving left/right
