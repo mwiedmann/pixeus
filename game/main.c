@@ -479,11 +479,11 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     }
 }
 
-Entrance *findEntraceForExit(EntranceList *entranceList, Exit *exit) {
+Entrance *findEntraceForExit(EntranceList *entranceList, unsigned char *entranceName) {
     unsigned char i;
 
     for (i=0; i<entranceList->length; i++) {
-        if (strcmp(entranceList->entrances[i].name, exit->entrance) == 0) {
+        if (strcmp(entranceList->entrances[i].name, entranceName) == 0) {
             return &entranceList->entrances[i];
         }
     }
@@ -496,8 +496,11 @@ void main() {
     unsigned char i;
     Exit *exit;
     Entrance *entrace;
-    level = levelGet(1);
-
+    
+    // Get the starting level and main entrance
+    level = levelGet(0);
+    entrace = findEntraceForExit(level->entranceList, "GameStart");
+    
     // Configure the joysticks
     joy_install(cx16_std_joy);
     
@@ -512,7 +515,7 @@ void main() {
     videoConfig();
 
     // Create the sprites
-    playerCreate(&player, &level->entranceList->entrances[0], nextSpriteIndex++);
+    playerCreate(&player, entrace, nextSpriteIndex++);
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     for (i=0; i<16; i++) {
@@ -523,7 +526,7 @@ void main() {
         layerMapsAddSomeStuff(level);
         exit = runLevel(nextSpriteIndex);
         level = levelGet(exit->level);
-        entrace = findEntraceForExit(level->entranceList, exit);
+        entrace = findEntraceForExit(level->entranceList, exit->entrance);
 
         spriteMoveToTile(&player, entrace->x, entrace->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
