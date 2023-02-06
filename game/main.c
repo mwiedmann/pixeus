@@ -259,11 +259,11 @@ AISprite *findEnemyCollision(Sprite *s) {
     return 0;
 }
 
-Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char *entranceName) {
+Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char entranceId) {
     unsigned char i;
 
     for (i=0; i<entranceList->length; i++) {
-        if (strcmp(entranceList->entrances[i].name, entranceName) == 0) {
+        if (entranceList->entrances[i].id == entranceId) {
             return &entranceList->entrances[i];
         }
     }
@@ -292,7 +292,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         if (exitCollision != 0) {
             // If this jumps somewhere on the same level, just move the player
             if (exitCollision->level == level->levelNum) {
-                entrance = findEntranceForExit(level->entranceList, exitCollision->entrance);
+                entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
                 spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                 x16SpriteIdxSetXY(player.index, player.x, player.y);
             } else {
@@ -517,7 +517,7 @@ void main() {
     
     // Get the starting level and main entrance
     level = levelGet(0);
-    entrance = findEntranceForExit(level->entranceList, "GameStart");
+    entrance = findEntranceForExit(level->entranceList, 0);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -544,7 +544,7 @@ void main() {
         layerMapsAddSomeStuff(level);
         exitCollision = runLevel(nextSpriteIndex);
         level = levelGet(exitCollision->level);
-        entrance = findEntranceForExit(level->entranceList, exitCollision->entrance);
+        entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
 
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);

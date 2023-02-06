@@ -428,13 +428,13 @@ TileLayout level1Tiles[389] = {
 TileLayoutList level1TilesList = { 389, level1Tiles };
 
 Entrance level1Entrances[1] = {
-    { 1, 4, "TopLeft" }
+    { 1, 4, 0 }
 };
 
 EntranceList level1EntranceList = { 1, level1Entrances };
 
 Exit level1Exits[1] = {
-    { 0, 4, 0, "Right" }
+    { 0, 4, 1, 3 }
 };
 
 ExitList level1ExitList = { 1, level1Exits };

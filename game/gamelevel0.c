@@ -152,18 +152,18 @@ TileLayout level0Tiles[113] = {
 TileLayoutList level0TilesList = { 113, level0Tiles };
 
 Entrance level0Entrances[4] = {
-    { 19, 21, "GameStart" },
-    { 38, 21, "Right" },
-    { 5, 19, "LeftPlatform" },
-    { 22, 19, "RightPlatform" }
+    { 19, 21, 0 },
+    { 38, 21, 3 },
+    { 5, 19, 1 },
+    { 22, 19, 2 }
 };
 
 EntranceList level0EntranceList = { 4, level0Entrances };
 
 Exit level0Exits[3] = {
-    { 39, 21, 1, "TopLeft" },
-    { 24, 19, 0, "LeftPlatform" },
-    { 7, 19, 0, "RightPlatform" }
+    { 39, 21, 1, 0 },
+    { 24, 19, 0, 1 },
+    { 7, 19, 0, 2 }
 };
 
 ExitList level0ExitList = { 3, level0Exits };

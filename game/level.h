@@ -43,7 +43,7 @@ typedef struct EnemyLayoutList {
 typedef struct Entrance {
     unsigned short x;
     unsigned short y;
-    unsigned char *name;
+    unsigned char id;
 } Entrance;
 
 typedef struct EntranceList {
@@ -55,7 +55,7 @@ typedef struct Exit {
     unsigned short x;
     unsigned short y;
     unsigned char level;
-    unsigned char *entrance;
+    unsigned char entranceId;
 } Exit;
 
 typedef struct ExitList {

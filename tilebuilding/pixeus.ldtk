@@ -11,7 +11,7 @@
 	"iid": "38da7de0-9f30-11ed-80de-216c9d08ad4a",
 	"jsonVersion": "1.2.5",
 	"appBuildId": 464870,
-	"nextUid": 26,
+	"nextUid": 28,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -208,16 +208,16 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "Name",
+					"identifier": "Id",
 					"doc": null,
-					"__type": "String",
-					"uid": 13,
-					"type": "F_String",
+					"__type": "Int",
+					"uid": 26,
+					"type": "F_Int",
 					"isArray": false,
-					"canBeNull": true,
+					"canBeNull": false,
 					"arrayMinLength": null,
 					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
+					"editorDisplayMode": "ValueOnly",
 					"editorDisplayPos": "Above",
 					"editorLinkStyle": "StraightArrow",
 					"editorAlwaysShow": false,
@@ -270,13 +270,13 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "Entrance",
+					"identifier": "Level",
 					"doc": null,
-					"__type": "String",
-					"uid": 14,
-					"type": "F_String",
+					"__type": "Int",
+					"uid": 15,
+					"type": "F_Int",
 					"isArray": false,
-					"canBeNull": true,
+					"canBeNull": false,
 					"arrayMinLength": null,
 					"arrayMaxLength": null,
 					"editorDisplayMode": "Hidden",
@@ -302,10 +302,10 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "Level",
+					"identifier": "EntranceId",
 					"doc": null,
 					"__type": "Int",
-					"uid": 15,
+					"uid": 27,
 					"type": "F_Int",
 					"isArray": false,
 					"canBeNull": false,
@@ -694,10 +694,7 @@
 							"height": 16,
 							"defUid": 9,
 							"px": [16,64],
-							"fieldInstances": [{ "__identifier": "Name", "__value": "TopLeft", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["TopLeft"]
-							}] }]
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "LevelExit",
@@ -712,11 +709,8 @@
 							"defUid": 11,
 							"px": [0,64],
 							"fieldInstances": [
-								{ "__identifier": "Entrance", "__value": "Right", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Right"]
-								}] },
-								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+								{ "__identifier": "Level", "__value": 1, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "EntranceId", "__value": 3, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
 							]
 						},
 						{
@@ -1447,10 +1441,7 @@
 							"height": 16,
 							"defUid": 9,
 							"px": [304,336],
-							"fieldInstances": [{ "__identifier": "Name", "__value": "GameStart", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["GameStart"]
-							}] }]
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }]
 						},
 						{
 							"__identifier": "LevelExit",
@@ -1465,11 +1456,8 @@
 							"defUid": 11,
 							"px": [624,336],
 							"fieldInstances": [
-								{ "__identifier": "Entrance", "__value": "TopLeft", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["TopLeft"]
-								}] },
-								{ "__identifier": "Level", "__value": 1, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+								{ "__identifier": "Level", "__value": 1, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
 							]
 						},
 						{
@@ -1484,10 +1472,7 @@
 							"height": 16,
 							"defUid": 9,
 							"px": [608,336],
-							"fieldInstances": [{ "__identifier": "Name", "__value": "Right", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Right"]
-							}] }]
+							"fieldInstances": [{ "__identifier": "Id", "__value": 3, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }]
 						},
 						{
 							"__identifier": "LevelExit",
@@ -1502,11 +1487,8 @@
 							"defUid": 11,
 							"px": [384,304],
 							"fieldInstances": [
-								{ "__identifier": "Entrance", "__value": "LeftPlatform", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["LeftPlatform"]
-								}] },
-								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] }
+								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] },
+								{ "__identifier": "EntranceId", "__value": 1, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							]
 						},
 						{
@@ -1522,11 +1504,8 @@
 							"defUid": 11,
 							"px": [112,304],
 							"fieldInstances": [
-								{ "__identifier": "Entrance", "__value": "RightPlatform", "__type": "String", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RightPlatform"]
-								}] },
-								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] }
+								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [] },
+								{ "__identifier": "EntranceId", "__value": 2, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							]
 						},
 						{
@@ -1541,10 +1520,7 @@
 							"height": 16,
 							"defUid": 9,
 							"px": [80,304],
-							"fieldInstances": [{ "__identifier": "Name", "__value": "LeftPlatform", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["LeftPlatform"]
-							}] }]
+							"fieldInstances": [{ "__identifier": "Id", "__value": 1, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }]
 						},
 						{
 							"__identifier": "LevelEntrance",
@@ -1558,10 +1534,7 @@
 							"height": 16,
 							"defUid": 9,
 							"px": [352,304],
-							"fieldInstances": [{ "__identifier": "Name", "__value": "RightPlatform", "__type": "String", "__tile": null, "defUid": 13, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["RightPlatform"]
-							}] }]
+							"fieldInstances": [{ "__identifier": "Id", "__value": 2, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }]
 						},
 						{
 							"__identifier": "Enemy",

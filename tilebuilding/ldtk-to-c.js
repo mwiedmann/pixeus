@@ -56,7 +56,7 @@ const createLevelCode = (levelNum, level) => {
       .filter((e) => e.__identifier === "LevelEntrance")
       .map((e) => {
         return {
-          name: fiGet(e.fieldInstances, 'Name'),
+          id: fiGet(e.fieldInstances, 'Id'),
           x: e.__grid[0],
           y: e.__grid[1],
         };
@@ -67,7 +67,7 @@ const createLevelCode = (levelNum, level) => {
 
     let entranceCode = entrances
       .map((e) => {
-        return `    { ${e.x}, ${e.y}, "${e.name}" }`;
+        return `    { ${e.x}, ${e.y}, ${e.id} }`;
       })
       .join(",\n");
 
@@ -79,7 +79,7 @@ const createLevelCode = (levelNum, level) => {
       .filter((e) => e.__identifier === "LevelExit")
       .map((e) => {
         return {
-          entrance: fiGet(e.fieldInstances, "Entrance"),
+          entrance: fiGet(e.fieldInstances, "EntranceId"),
           level: fiGet(e.fieldInstances, "Level"),
           x: e.__grid[0],
           y: e.__grid[1],
@@ -91,7 +91,7 @@ const createLevelCode = (levelNum, level) => {
 
     let exitsCode = exits
       .map((e) => {
-        return `    { ${e.x}, ${e.y}, ${e.level}, "${e.entrance}" }`;
+        return `    { ${e.x}, ${e.y}, ${e.level}, ${e.entrance} }`;
       })
       .join(",\n");
 
