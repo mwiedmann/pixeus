@@ -23,7 +23,7 @@
 #define PLAYER_FALL_SPEED 2
 #define PLAYER_JUMP_SPEED 2
 #define PLAYER_JUMP_FRAMES 14
-#define NO_TILE_COLLISION 255
+#define NO_TILE_COLLISION 0
 
 // Import the levels
 // extern GameLayout gameLayout;
@@ -65,76 +65,42 @@ void layerMapsAddSomeStuff(LevelOveralLayout *level) {
     addLevelTiles(level->tilesList->length, level->tilesList->tiles);
 }
 
-void playerTouchingExit(LevelOveralLayout *level, Sprite *sprite, Exit *exitCollision) {
-    unsigned char i;
-    Exit exitStanding;
-
-    // Special signal that all is clear
-    exitCollision->level = NO_TILE_COLLISION;
-
-    exitStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
-    exitStanding.y = ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT);
+Exit *playerTouchingExit(LevelOveralLayout *level, Sprite *sprite) {
+    unsigned char i,x,y;
+    
+    x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    y = ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT);
 
     for (i=0; i<level->exitList->length; i++) {
-        if (exitStanding.y == level->exitList->exits[i].y &&
-            exitStanding.x == level->exitList->exits[i].x) {
-                *exitCollision = level->exitList->exits[i];
-                return;
+        if (y == level->exitList->exits[i].y &&
+            x == level->exitList->exits[i].x) {
+                return &level->exitList->exits[i];
             }
     }
+
+    return NULL;
 }
 
-void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, SolidLayout *tileCollision, unsigned char checkEveryFrame) {
-    unsigned char i;
-    SolidLayout tileStanding;
-    
-    // Special signal that all is clear
-    tileCollision->type = NO_TILE_COLLISION;
+void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision) {
+    tileCollision->x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    tileCollision->y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
-    tileStanding.x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
-    tileStanding.y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
-
-    // Only check if the tile for the sprite has changed
-    if (checkEveryFrame == 1 || tileStanding.x != sprite->lastTileX || tileStanding.y != sprite->lastTileY) {
-        sprite->lastTileX = tileStanding.x;
-        sprite->lastTileY = tileStanding.y;
-        for (i=0; i<level->solidList->length; i++) {
-            if (tileStanding.y == level->solidList->solid[i].y &&
-                tileStanding.x >= level->solidList->solid[i].x &&
-                tileStanding.x <= level->solidList->solid[i].x + (level->solidList->solid[i].length-1)) {
-                    *tileCollision = level->solidList->solid[i];
-                    return;
-                }
-        }
-    }
-    return;
+    tileCollision->type = ((unsigned char[30][40])level->movementTypes)[tileCollision->y][tileCollision->x];
 }
 
 unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsigned char nextSpriteIndex) {
     unsigned char i;
-    unsigned char length = 0;
-    SolidLayout si;
     void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
         snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate
     };
 
     for (i=0; i<level->enemiesList->length; i++) {
         (*enemyCreate[level->enemiesList->enemies[i].enemyType])(
-            &enemies[length], &level->enemiesList->enemies[i], nextSpriteIndex+length
+            &enemies[i], &level->enemiesList->enemies[i], nextSpriteIndex+i
         );
-
-        // Get the current ground tile the AI is standing on and patrol its entire length
-        spriteTouchingTile(level, &enemies[length].sprite, &si, 0);
-        if (si.type != NO_TILE_COLLISION) {
-            enemies[length].xTileStart = si.x;
-            enemies[length].yTileStart = si.y;
-            enemies[length].xTileEnd = si.x + si.length;
-            enemies[length].yTileEnd = si.y + si.length;
-        }
-        length++;
     }
 
-    return length;
+    return level->enemiesList->length;
 }
 
 void enemiesReset(AISprite enemies[], unsigned char length) {
@@ -233,7 +199,7 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
 
 void enemyLasersMove() {
     unsigned char i;
-    SolidLayout tileCollision;
+    TileInfo tileCollision;
     Sprite *laser;
 
     for (i=0; i<16; i++) {
@@ -242,7 +208,7 @@ void enemyLasersMove() {
             spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             
-            spriteTouchingTile(level, laser, &tileCollision, 0);
+            spriteTouchingTile(level, laser, &tileCollision);
             if (tileCollision.type != NO_TILE_COLLISION || laser->x < 0 || laser->x > 639) {
             // if (laser->x < 0 || laser->x > 639) {
                 // TODO: Explosion for enemy lasers?
@@ -294,8 +260,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     
-    SolidLayout tileCollision;
-    Exit exitCollision;
+    TileInfo tileCollision;
+    Exit *exitCollision;
     AISprite *hitEnemy;
 
     enemyCount = enemiesCreate(level, masterEnemiesList, nextSpriteIndex);
@@ -305,8 +271,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         waitforjiffy();
 
         // See if player is touching an exit
-        playerTouchingExit(level, &player, &exitCollision);
-        if (exitCollision.level != NO_TILE_COLLISION) {
+        exitCollision = playerTouchingExit(level, &player);
+        if (exitCollision != NULL) {
             // Clean up the enemies and return the exit info
             enemiesReset(masterEnemiesList, enemyCount);
 
@@ -315,7 +281,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             bullet.zDepth = Disabled;
             x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
 
-            return &exitCollision;
+            return exitCollision;
         }
 
         enemiesMove(masterEnemiesList, enemyCount);
@@ -341,7 +307,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             // Inefficient: We are checking here AND after moving X
             // Might be ok and makes it easier to deal with moving him back
             spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
-            spriteTouchingTile(level, &player, &tileCollision, 1);
+            spriteTouchingTile(level, &player, &tileCollision);
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != NO_TILE_COLLISION) {
@@ -430,7 +396,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // See if the player is touching any tiles left/right
         // Move back if so.
-        spriteTouchingTile(level, &player, &tileCollision, 1);
+        spriteTouchingTile(level, &player, &tileCollision);
         if (tileCollision.type != NO_TILE_COLLISION) {
             spriteMoveBackX(&player);
         }
@@ -495,7 +461,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
-            spriteTouchingTile(level, &bullet, &tileCollision, 0);
+            spriteTouchingTile(level, &bullet, &tileCollision);
             if (tileCollision.type != NO_TILE_COLLISION || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
                 if (tileCollision.type != NO_TILE_COLLISION) {
                     // Explosion

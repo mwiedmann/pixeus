@@ -51,7 +51,7 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->sprite.graphicsBank = SPRITE_MEM_BANK;
     sp->sprite.animationCount = 0;    
     sp->sprite.animationStopFrame = 0;
-    sp->sprite.animationDirection = 1;
+    sp->sprite.animationDirection = layout->moveDir;
     sp->sprite.animationFrame = 0;
     sp->sprite.x = layout->x * TILE_PIXEL_WIDTH;
     sp->sprite.y = layout->y * TILE_PIXEL_HEIGHT;
@@ -62,9 +62,10 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->sprite.lastTileX = 0;
     sp->sprite.lastTileY = 0;
 
-    sp->xTileStart = layout->x;
+    // TODO: patrolDir can move up/down too
+    sp->xTileStart = layout->x - layout->patrolA;
     sp->yTileStart = layout->y;
-    sp->xTileEnd = layout->x + layout->length;
+    sp->xTileEnd = layout->x + layout->patrolB;
     sp->yTileEnd = layout->y;
     sp->framesUntilNextShot = sp->framesBetweenShots;
 

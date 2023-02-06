@@ -6,112 +6,23 @@ const d = JSON.parse(rawText);
 
 const createLevelCode = (levelNum, level) => {
   let levelName = `level${levelNum}`;
-  let masterCode = `#include "level.h"
+  let masterCode = `#include "level.h"\n\n`;
 
-`;
-  let enemyCount = 0;
+  let movementTypesCode = `unsigned char ${levelName}MovementTypes[30][40] = {\n`
 
-  const createEnemies = (intGridCsv) => {
-    let i = 0;
-    const enemies = {};
-    const lengthHardCoded = 5;
-
-    for (let y = 0; y < 30; y++) {
-      for (let x = 0; x < 40; x++, i++) {
-        let enemyId = intGridCsv[i];
-
-        if (enemyId !== 0) {
-          const enemyEntries = enemies[enemyId] || [];
-          enemyEntries.push(
-            `{${x}, ${y}, ${lengthHardCoded}, ${enemyId - 1}, 0}`
-          );
-          enemies[enemyId] = enemyEntries;
-        }
+  const createMovementTypes = (grid) => {
+    let count=0
+    for (let y=0; y<30; y++) {
+      const row = []
+      for (let x=0; x<40; x++,count++) {
+        row.push(grid[count])
       }
+      movementTypesCode += `    {${row.join(',')}}${y<29 ? ',' : ''}\n`
     }
 
-    // console.log(JSON.stringify(enemies, undefined, 2))
+    movementTypesCode+= '};\n\n'
 
-    let enemyLayout = "";
-    let noEnemies = false
-
-    const enemyKeys = Object.keys(enemies);
-    // Can't have an empty array in C, so we just add a dummy record
-    // the "length" field will be 0 so its ok
-    if (enemyKeys.length === 0) {
-      enemyLayout += `    {0, 0, 0, 0, 0}`;
-      enemyCount=1
-      noEnemies = true
-    } else {
-      enemyKeys.forEach((k) => {
-        enemies[k].forEach((e) => {
-          enemyLayout += `${enemyCount > 0 ? ",\n" : ""}    ${e}`;
-          enemyCount++;
-        });
-      });
-    }
-
-    enemyLayout = `EnemyLayout ${levelName}Enemies[${enemyCount}] = {\n${enemyLayout}\n};\n\nEnemyLayoutList ${levelName}EnemyList = { ${noEnemies ? 0 : enemyCount}, ${levelName}Enemies };\n\n`;
-
-    masterCode += enemyLayout;
-
-    // console.log(masterCode)s
-  };
-
-  // { "px": [0,80], "src": [0,0], "f": 0, "t": 0, "d": [200] },
-  let runCount = 0;
-
-  const createSolidGround = (gridTiles) => {
-    let solidCode = "";
-    let xStart = undefined;
-    let xPrev = undefined;
-    let yStart = undefined;
-    let length = 0;
-
-    const printLengthRun = (skipComma) => {
-      runCount++;
-      solidCode += `    { ${xStart}, ${yStart}, ${length}, 0}${
-        !skipComma ? "," : ""
-      }\n`;
-
-      // Reset tracking after printing code
-      xStart = undefined;
-      xPrev = undefined;
-      yStart = undefined;
-      length = 0;
-    };
-
-    const startLengthRun = (x, y) => {
-      xStart = x;
-      yStart = y;
-      xPrev = x;
-      length = 0;
-    };
-
-    gridTiles.forEach((g) => {
-      const x = parseInt(g.px[0] / 16);
-      const y = parseInt(g.px[1] / 16);
-
-      // See if we are in a length run
-      if (xStart !== undefined) {
-        // If we moved Y or there is an X gap, then the run is over
-        if (y !== yStart || x !== xPrev + 1) {
-          printLengthRun();
-          startLengthRun(x, y);
-        }
-      } else {
-        startLengthRun(x, y);
-      }
-      xPrev = x;
-      length++;
-    });
-
-    printLengthRun(true);
-
-    solidCode = `SolidLayout ${levelName}Solids[${runCount}] = {\n${solidCode}};\n\n`;
-    solidCode = `${solidCode}SolidLayoutList ${levelName}SolidList = { ${runCount}, ${levelName}Solids };\n\n`;
-
-    masterCode += solidCode;
+    masterCode += movementTypesCode;
 
     // console.log(masterCode)
   };
@@ -132,15 +43,20 @@ const createLevelCode = (levelNum, level) => {
 
   let entrancesCodeAll;
   let exitsCodeAll;
+  let enemiesCodeAll;
 
   const addEntities = (entityInstances) => {
+    const fiGet = (fi, id) => {
+      return fi.find((fi) => fi.__identifier === id)
+            .__value
+    }
+
     // Entrances
     const entrances = entityInstances
       .filter((e) => e.__identifier === "LevelEntrance")
       .map((e) => {
         return {
-          name: e.fieldInstances.find((fi) => fi.__identifier === "Name")
-            .__value,
+          name: fiGet(e.fieldInstances, 'Name'),
           x: e.__grid[0],
           y: e.__grid[1],
         };
@@ -163,11 +79,8 @@ const createLevelCode = (levelNum, level) => {
       .filter((e) => e.__identifier === "LevelExit")
       .map((e) => {
         return {
-          entrance: e.fieldInstances.find(
-            (fi) => fi.__identifier === "Entrance"
-          ).__value,
-          level: e.fieldInstances.find((fi) => fi.__identifier === "Level")
-            .__value,
+          entrance: fiGet(e.fieldInstances, "Entrance"),
+          level: fiGet(e.fieldInstances, "Level"),
           x: e.__grid[0],
           y: e.__grid[1],
         };
@@ -184,18 +97,37 @@ const createLevelCode = (levelNum, level) => {
 
     exitsCodeAll = `Exit ${levelName}Exits[${exits.length}] = {\n${exitsCode}\n};\n\n`;
     exitsCodeAll = `${exitsCodeAll}ExitList ${levelName}ExitList = { ${exits.length}, ${levelName}Exits };\n\n`;
+
+    // Enemies
+    const enemies = entityInstances
+      .filter((e) => e.__identifier === "Enemy")
+      .map((e) => {
+        return {
+          type: fiGet(e.fieldInstances, 'type'),
+          moveDir: fiGet(e.fieldInstances, 'moveDir'),
+          patrolA: fiGet(e.fieldInstances, 'patrolA'),
+          patrolB: fiGet(e.fieldInstances, 'patrolB'),
+          patrolDir: fiGet(e.fieldInstances, 'patrolDir'),
+          x: e.__grid[0],
+          y: e.__grid[1],
+        };
+      });
+
+    let enemiesCode = enemies
+      .map((e) => {
+        return `    { ${e.x}, ${e.y}, ${e.moveDir}, ${e.patrolA}, ${e.patrolB}, ${e.patrolDir}, ${e.type}, 0 }`;
+      })
+      .join(",\n");
+
+    // TODO: handle 0 enemies 
+    enemiesCodeAll = `EnemyLayout ${levelName}Enemies[${enemies.length}] = {\n${enemiesCode}\n};\n\n`;
+    enemiesCodeAll = `${enemiesCodeAll}EnemyLayoutList ${levelName}EnemyList = { ${enemies.length}, ${levelName}Enemies };\n\n`;
   };
 
   level.layerInstances.forEach((li) => {
     switch (li.__identifier) {
-      case "Enemies":
-        createEnemies(li.intGridCsv);
-        break;
-      case "Solid_Ground":
-        createSolidGround(li.gridTiles);
-        break;
-      case "Tiles_Background":
-        addTiles(li.gridTiles, 0);
+      case "MovementTypes":
+        createMovementTypes(li.intGridCsv);
         break;
 
       // Background and ground tiles are both layer 0
@@ -228,14 +160,15 @@ const createLevelCode = (levelNum, level) => {
 
   masterCode += entrancesCodeAll;
   masterCode += exitsCodeAll;
+  masterCode += enemiesCodeAll;
 
-  masterCode += `LevelOveralLayout ${levelName} = {\n    &${levelName}SolidList,\n    &${levelName}TilesList,\n    &${levelName}EnemyList,\n    &${levelName}EntranceList,\n    &${levelName}ExitList\n};\n`;
+  masterCode += `LevelOveralLayout ${levelName} = {\n    &${levelName}TilesList,\n    &${levelName}EnemyList,\n    &${levelName}EntranceList,\n    &${levelName}ExitList,\n    (unsigned char *)${levelName}MovementTypes,\n};\n`;
 
   const outputFilename = `../game/game${levelName}.c`;
   fs.writeFileSync(outputFilename, masterCode);
 
   console.log(
-    `Created ${outputFilename} with enemies:${enemyCount}, solidGround:${runCount}, tiles:${allGridTiles.length}`
+    `Created ${outputFilename} with tiles:${allGridTiles.length}`
   );
 };
 

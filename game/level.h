@@ -3,12 +3,11 @@
 
 #include "enemies.h"
 
-typedef struct SolidLayout {
+typedef struct TileInfo {
     unsigned char x;
     unsigned char y;
-    unsigned char length;
     unsigned char type;
-} SolidLayout;
+} TileInfo;
 
 typedef struct TileLayout {
     unsigned char x;
@@ -23,15 +22,13 @@ typedef struct TileLayout {
 typedef struct EnemyLayout {
     unsigned char x;
     unsigned char y;
-    unsigned char length;
+    unsigned char moveDir;
+    unsigned char patrolA;
+    unsigned char patrolB;
+    unsigned char patrolDir;
     EnemyType enemyType;
     EnemyMoveType moveType;
 } EnemyLayout;
-
-typedef struct SolidLayoutList {
-    unsigned short length;
-    SolidLayout *solid;
-} SolidLayoutList;
 
 typedef struct TileLayoutList {
     unsigned short length;
@@ -67,11 +64,11 @@ typedef struct ExitList {
 } ExitList;
 
 typedef struct LevelOveralLayout {
-    SolidLayoutList *solidList;
     TileLayoutList *tilesList;
     EnemyLayoutList *enemiesList;
     EntranceList *entranceList;
     ExitList *exitList;
+    unsigned char *movementTypes;
 } LevelOveralLayout;
 
 void addLevelTiles(unsigned short length, TileLayout layout[]);
