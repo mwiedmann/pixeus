@@ -709,7 +709,7 @@
 							"defUid": 11,
 							"px": [0,64],
 							"fieldInstances": [
-								{ "__identifier": "Level", "__value": 1, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "Level", "__value": 0, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [0] }] },
 								{ "__identifier": "EntranceId", "__value": 3, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
 							]
 						},

@@ -434,7 +434,7 @@ Entrance level1Entrances[1] = {
 EntranceList level1EntranceList = { 1, level1Entrances };
 
 Exit level1Exits[1] = {
-    { 0, 4, 1, 3 }
+    { 0, 4, 0, 3 }
 };
 
 ExitList level1ExitList = { 1, level1Exits };
