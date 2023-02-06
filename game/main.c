@@ -13,6 +13,7 @@
 #include "gamesprites.h"
 #include "memmap.h"
 #include "level.h"
+#include "layoutdefs.h"
 #include "welcome.h"
 #include "gameoverall.h"
 
@@ -20,10 +21,14 @@
 // People say to use this until fixed
 #include "waitforjiffy.h"
 
-#define PLAYER_FALL_SPEED 2
-#define PLAYER_JUMP_SPEED 2
+#define PLAYER_FALL_SPEED 20
+#define PLAYER_WATER_FALL_SPEED 4
+
+#define PLAYER_JUMP_SPEED 20
+#define PLAYER_WATER_JUMP_SPEED 12
+
 #define PLAYER_JUMP_FRAMES 16
-#define NO_TILE_COLLISION 0
+#define PLAYER_WATER_JUMP_FRAMES 16
 
 // Import the levels
 // extern GameLayout gameLayout;
@@ -209,11 +214,10 @@ void enemyLasersMove() {
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             
             spriteTouchingTile(level, laser, &tileCollision);
-            if (tileCollision.type != NO_TILE_COLLISION || laser->x < 0 || laser->x > 639) {
-            // if (laser->x < 0 || laser->x > 639) {
+            if (tileCollision.type = Ground || laser->x < 0 || laser->x > 639) {
                 // TODO: Explosion for enemy lasers?
                 // Need more explosion sprites
-                // if (tileCollision.type != NO_TILE_COLLISION) {
+                // if (tileCollision.type == Ground) {
                 //     // Explosion
                 //     smallExplosion(&expSmall, InFrontOfL1, laser->x, laser->y);
                 // }
@@ -304,22 +308,27 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // jumpFrames are the number of frames the player moves UP (jumps)
         // At 0, the player is always falling, even if on the ground.
         if (jumpFrames == 0) {
-            // Inefficient: We are checking here AND after moving X
-            // Might be ok and makes it easier to deal with moving him back
-            spriteMoveY(&player, player.y+PLAYER_FALL_SPEED);
+            // See what the player is currently touching to see his fall (or swim-fall) speed
+            spriteTouchingTile(level, &player, &tileCollision);
+
+            // The player falls in water too, just more slowly
+            spriteMoveYL(&player, player.yL + (tileCollision.type == Empty ? PLAYER_FALL_SPEED : PLAYER_WATER_FALL_SPEED));
             spriteTouchingTile(level, &player, &tileCollision);
 
             // If the player is standing on a tile, a few things happen
-            if (tileCollision.type != NO_TILE_COLLISION) {
+            if (tileCollision.type != Empty) {
                 // Move the player to the top of the tile
                 // We do this because as the player falls they may end up wedged a few pixels into a tile
-                spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
-                // Player is on solid ground, see if they pressed jump button
+                if (tileCollision.type == Ground) {
+                    spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
+                }
+
+                // Player is touching something, see if they pressed jump button
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
                     if (releasedBtnAfterJump == 1) {
-                        jumpFrames = PLAYER_JUMP_FRAMES;
+                        jumpFrames = tileCollision.type == Water ? PLAYER_WATER_JUMP_FRAMES : PLAYER_JUMP_FRAMES;
                         releasedBtnAfterJump = 0;
                         // The jump animation wasn't great. The normal animation is fine
                     }
@@ -333,9 +342,9 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             // Player is jumping, move them up
             jumpFrames--;
             player.going==1;
-            spriteMoveY(&player, player.y-PLAYER_JUMP_SPEED);
+            spriteMoveYL(&player, player.yL-(tileCollision.type == Water ? PLAYER_WATER_JUMP_SPEED : PLAYER_JUMP_SPEED));
             spriteTouchingTile(level, &player, &tileCollision);
-            if (tileCollision.type != NO_TILE_COLLISION) {
+            if (tileCollision.type == Ground) {
                 spriteMoveBackY(&player);
             }
         }
@@ -348,7 +357,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL-player.speed);
+            spriteMoveXL(&player, player.xL-(tileCollision.type == Water ? player.swimSpeed : player.speed));
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -356,7 +365,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL+player.speed);
+            spriteMoveXL(&player, player.xL+(tileCollision.type == Water ? player.swimSpeed : player.speed));
         }
 
         // Change animation if jumping or moving and hit loop count
@@ -401,7 +410,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // See if the player is touching any tiles left/right
         // Move back if so.
         spriteTouchingTile(level, &player, &tileCollision);
-        if (tileCollision.type != NO_TILE_COLLISION) {
+        if (tileCollision.type == Ground) {
             spriteMoveBackX(&player);
         }
 
@@ -466,8 +475,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
             spriteTouchingTile(level, &bullet, &tileCollision);
-            if (tileCollision.type != NO_TILE_COLLISION || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
-                if (tileCollision.type != NO_TILE_COLLISION) {
+            if (tileCollision.type == Ground || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
+                if (tileCollision.type == Ground) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
                 }

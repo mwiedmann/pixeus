@@ -62,6 +62,11 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->sprite.lastTileX = 0;
     sp->sprite.lastTileY = 0;
 
+    // Default for now
+    if (sp->sprite.swimSpeed == 0) {
+        sp->sprite.swimSpeed = sp->sprite.speed;
+    }
+
     // TODO: patrolDir can move up/down too
     sp->xTileStart = layout->x - layout->patrolA;
     sp->yTileStart = layout->y;
@@ -98,6 +103,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->lastX = p->x;
     p->lastY = p->y;
     p->speed = 12;
+    p->swimSpeed = 6;
 
     spriteInit(p);
     x16SpriteIdxSetXY(p->index, p->x, p->y);
@@ -214,6 +220,7 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->x = 320;
     b->y = 240;
     b->speed = 4;
+    b->swimSpeed = 3;
 
     spriteInit(b);
 }
@@ -232,6 +239,7 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->x = 320;
     b->y = 240;
     b->speed = 4;
+    b->swimSpeed = 3;
 
     spriteInit(b);
 }

@@ -1,7 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "enemies.h"
+#include "layoutdefs.h"
 
 typedef struct TileInfo {
     unsigned char x;

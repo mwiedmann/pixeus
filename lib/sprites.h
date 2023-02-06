@@ -34,6 +34,7 @@ typedef struct Sprite {
     unsigned char active;
     unsigned char going;
     unsigned char speed;
+    unsigned char swimSpeed;
 } Sprite;
 
 unsigned char doOverlap(short x1, short y1, unsigned char width1, unsigned char height1,
