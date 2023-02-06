@@ -135,10 +135,10 @@ const createLevelCode = (levelNum, level) => {
       // Background and ground tiles are both layer 0
       // For ground tiles this allows the player to jump in front of them
       case "Tiles_Background":
-      case "Tiles_Ground":
         addTiles(li.gridTiles, 0);
         break;
       case "Tiles_Foreground":
+      case "Tiles_Ground":
         addTiles(li.gridTiles, 1);
         break;
 
