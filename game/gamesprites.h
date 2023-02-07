@@ -13,6 +13,8 @@ typedef struct AISprite {
     unsigned char health;
     unsigned short framesUntilNextShot;
     unsigned short framesBetweenShots;
+    unsigned short framesUntilFacePlayer;
+    unsigned short framesBetweenFacePlayer;
 } AISprite;
 
 void spriteDataLoad();

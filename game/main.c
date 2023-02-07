@@ -134,27 +134,32 @@ void enemiesReset(AISprite enemies[], unsigned char length) {
     }
 }
 
+unsigned char playerNear(short x, short y) {
+    return (abs(player.x-x) <= 170 && abs(player.y-y)<=40) ? 1 : 0;
+}
+
+unsigned char facePlayer(short x) {
+    return x > player.x ? 0 : 1;
+}
+
 void enemyShot(short x, short y, unsigned char direction) {
     unsigned char i;
     Sprite *laser;
 
-    // Only shoot if the player is near
-    if (abs(player.x-x) < 200 && abs(player.y-y)<50) {
-        for (i=0; i<16; i++) {
-            laser = &enemyLasers[i];
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
 
-            if (laser->active == 0) {
-                laser->active = 1;
-                laser->animationDirection = direction;
-                laser->zDepth = BetweenL0L1;
-                laser->lastTileX=0;
-                laser->lastTileY=0;
-                spriteMove(laser, x, y);
-                x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
-                x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
-                x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
-                return;
-            }
+        if (laser->active == 0) {
+            laser->active = 1;
+            laser->animationDirection = direction;
+            laser->zDepth = BetweenL0L1;
+            laser->lastTileX=0;
+            laser->lastTileY=0;
+            spriteMove(laser, x, y);
+            x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+            x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
+            x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+            return;
         }
     }
 }
@@ -190,13 +195,30 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
             }
             x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
 
-            // Shoot
-            if (enemy->framesUntilNextShot == 0) {
-                enemy->framesUntilNextShot = enemy->framesBetweenShots;
-                // HACK: Move y 1px up to avoid ground collision
-                enemyShot(enemy->sprite.x, enemy->sprite.y-1, enemy->sprite.animationDirection);
+            if (playerNear(enemy->sprite.x, enemy->sprite.y)) {
+                // Player is near, face him
+                if (enemy->framesUntilFacePlayer == 0) {
+                    // Can't face player again until this hits 0
+                    enemy->framesUntilFacePlayer = enemy->framesBetweenFacePlayer;
+
+                    // Flip the enemy towards the player
+                    enemy->sprite.animationDirection = facePlayer(enemy->sprite.x);
+                    x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+                }
+                // Shoot
+                if (enemy->framesUntilNextShot == 0) {
+                    enemy->framesUntilNextShot = enemy->framesBetweenShots;
+                    // HACK: Move y 1px up to avoid ground collision
+                    enemyShot(enemy->sprite.x, enemy->sprite.y-1, enemy->sprite.animationDirection);
+                } else {
+                    enemy->framesUntilNextShot--;
+                }
+
+                // Enemy can face the player again when this hits 0
+                enemy->framesUntilFacePlayer--;
             } else {
-                enemy->framesUntilNextShot--;
+                // Can face the player immediately next time in range
+                enemy->framesUntilFacePlayer = 0;
             }
         }
     }
