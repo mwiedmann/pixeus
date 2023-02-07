@@ -218,7 +218,7 @@ void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
     ghost->sprite.graphicsAddress = SPRITE_MEM_BIG_GHOST;
     ghost->sprite.frames = 4;
     ghost->sprite.frameSize = 1024; // Calculated as width * height
-    ghost->sprite.animationSpeed = 15;
+    ghost->sprite.animationSpeed = 30;
     ghost->sprite.speed = 3;
 
     ghost->health = 20;
