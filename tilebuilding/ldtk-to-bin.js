@@ -7,7 +7,7 @@ const fs = require("fs");
 const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
-const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5 }
+const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
 
 const shortHi = (s) => s>>8
 const shortLo = (s) => s&255

@@ -15,6 +15,7 @@ typedef struct AISprite {
     unsigned short framesBetweenShots;
     unsigned short framesUntilFacePlayer;
     unsigned short framesBetweenFacePlayer;
+    unsigned short yLaserAdjust;
 } AISprite;
 
 void spriteDataLoad();
@@ -27,6 +28,7 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index);
 void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index);
 void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index);
+void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);

@@ -96,7 +96,7 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tile
 unsigned char enemiesCreate(LevelOveralLayout *level, AISprite enemies[], unsigned char nextSpriteIndex) {
     unsigned char i;
     void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
-        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate, fish1Create
+        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate, fish1Create, bigGhostCreate
     };
 
     for (i=0; i<level->enemiesList->length; i++) {
@@ -164,6 +164,29 @@ void enemyShot(short x, short y, unsigned char direction) {
     }
 }
 
+void resetClosestLaser(short x, short y) {
+    unsigned char i;
+    Sprite *laser;
+
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
+
+        if (laser->active == 1 && abs(laser->x-x) <= TILE_PIXEL_WIDTH && abs(laser->y-y) <= TILE_PIXEL_HEIGHT) {
+            break;
+        } else {
+            laser = 0;
+        }
+    }
+
+    if (laser) {
+        laser->active = 0;
+        laser->zDepth = Disabled;
+        spriteMove(laser, 0, 0);
+        x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+        x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+    }
+}
+
 void enemiesMove(AISprite enemies[], unsigned char length) {
     unsigned char i;
     signed char tileCalc;
@@ -209,7 +232,7 @@ void enemiesMove(AISprite enemies[], unsigned char length) {
                 if (enemy->framesUntilNextShot == 0) {
                     enemy->framesUntilNextShot = enemy->framesBetweenShots;
                     // HACK: Move y 1px up to avoid ground collision
-                    enemyShot(enemy->sprite.x, enemy->sprite.y-1, enemy->sprite.animationDirection);
+                    enemyShot(enemy->sprite.x, (enemy->sprite.y + enemy->yLaserAdjust)-1, enemy->sprite.animationDirection);
                 } else {
                     enemy->framesUntilNextShot--;
                 }
@@ -486,13 +509,16 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Player and Enemy/Laser collisions
         if (collision == 0b1001 || collision == 0b0101) {
+            // TODO: If laser hit, find and reset that laser
+            // Right now it just kills the player so its ok if it continues and dies when it runs out of steam
+            resetClosestLaser(player.x, player.y);
+
             // TODO: Getting some false collisions, check the collisions here to make sure its valid
             // Move the sprite back to the start
             spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             x16SpriteIdxSetXY(player.index, player.x, player.y);
 
-            // TODO: If laser hit, find and reset that laser
-            // Right now it just kills the player so its ok if it continues and dies when it runs out of steam
+            
         } else if (bullet.active == 1 && collision == 0b1010) {
             // Explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);

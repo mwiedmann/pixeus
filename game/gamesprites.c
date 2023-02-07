@@ -26,6 +26,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin", 4096);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin", 1024);
 
     // Back to memory bank 1
@@ -206,6 +207,25 @@ void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index)
     fish->health = 3;
     fish->framesBetweenShots = 120;
     standardAISpriteConfig(fish, layout, index);
+}
+
+void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
+{
+    ghost->sprite.collisionMask = ENEMY_COLLISION_MASK;
+    ghost->sprite.width = PX32;
+    ghost->sprite.height = PX32;
+    ghost->sprite.graphicsAddress = SPRITE_MEM_BIG_GHOST;
+    ghost->sprite.frames = 4;
+    ghost->sprite.frameSize = 1024; // Calculated as width * height
+    ghost->sprite.animationSpeed = 15;
+    ghost->sprite.speed = 3;
+
+    ghost->health = 20;
+    ghost->framesBetweenShots = 120;
+
+    // The ghost is tall, shoot lasers out of his bottom half
+    ghost->yLaserAdjust = TILE_PIXEL_HEIGHT;
+    standardAISpriteConfig(ghost, layout, index);
 }
 
 void explosionSmallCreate(Sprite *b, unsigned char index) {
