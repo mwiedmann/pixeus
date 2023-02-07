@@ -415,6 +415,18 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             }
         }
 
+        // Check the final tile to see if the graphics need to change to scuba or back to running
+        spriteTouchingTile(level, &player, &tileCollision);
+        if ((tileCollision.type == Ground || tileCollision.type == Empty) && player.graphicsAddress != SPRITE_MEM_PLAYER) {
+            player.graphicsAddress = SPRITE_MEM_PLAYER;
+            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
+                player.graphicsAddress);
+        } else if (tileCollision.type == Water && player.graphicsAddress != SPRITE_MEM_PLAYER_SCUBA) {
+            player.graphicsAddress = SPRITE_MEM_PLAYER_SCUBA;
+            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
+                player.graphicsAddress);
+        }
+
         // Check if player is moving left/right
         if (JOY_LEFT(joy)) {
             player.going=1;

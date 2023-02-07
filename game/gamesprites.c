@@ -19,6 +19,7 @@ unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
 void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 1536);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER_SCUBA, "images/guyscuba.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 1024);
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 1024);
