@@ -26,8 +26,8 @@ typedef struct EnemyLayout {
     unsigned char patrolA;
     unsigned char patrolB;
     unsigned char patrolDir;
-    EnemyType enemyType;
-    EnemyMoveType moveType;
+    unsigned char enemyType;
+    unsigned char moveType;
 } EnemyLayout;
 
 typedef struct TileLayoutList {
@@ -36,7 +36,7 @@ typedef struct TileLayoutList {
 } TileLayoutList;
 
 typedef struct EnemyLayoutList {
-    unsigned short length;
+    unsigned char length;
     EnemyLayout *enemies;
 } EnemyLayoutList;
 
@@ -47,7 +47,7 @@ typedef struct Entrance {
 } Entrance;
 
 typedef struct EntranceList {
-    unsigned short length;
+    unsigned char length;
     Entrance *entrances;
 } EntranceList;
 
@@ -59,7 +59,7 @@ typedef struct Exit {
 } Exit;
 
 typedef struct ExitList {
-    unsigned short length;
+    unsigned char length;
     Exit *exits;
 } ExitList;
 

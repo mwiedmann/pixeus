@@ -15,7 +15,7 @@
 #include "level.h"
 #include "layoutdefs.h"
 #include "welcome.h"
-#include "gameoverall.h"
+#include "levelmgr.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -543,9 +543,13 @@ void main() {
     while(1) {
         layerMapsAddSomeStuff(level);
         exitCollision = runLevel(nextSpriteIndex);
-        level = levelGet(exitCollision->level);
-        entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
 
+        // Free the memory for the last level and load the next one
+        freeLevel(level);
+        level = levelGet(exitCollision->level);
+
+        // Find the entrance the player is linking to and place them there
+        entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
