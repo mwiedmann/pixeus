@@ -9,6 +9,7 @@
 
 LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned short x,y;
+    unsigned char tilesetId;
     unsigned short tilesLength;
     unsigned char entrancesLength;
     unsigned char exitsLength;
@@ -37,14 +38,15 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
     // The level file has a structure that starts with
     // the lengths of everything.
-    tilesLength = *(unsigned short*)ramstart;
-    entrancesLength = *(unsigned char*)(ramstart+2);
-    exitsLength = *(unsigned char*)(ramstart+3);
-    enemiesLength = *(unsigned char*)(ramstart+4);
+    tilesetId = *(unsigned char*)(ramstart);
+    tilesLength = *(unsigned short*)(ramstart+1);
+    entrancesLength = *(unsigned char*)(ramstart+3);
+    exitsLength = *(unsigned char*)(ramstart+4);
+    enemiesLength = *(unsigned char*)(ramstart+5);
     
     // Movement Types is always a fixed 40x30 size so we don't need a length
     movementTypes = malloc(1200);
-    ramstart+= 5;
+    ramstart+= 6;
     for (y=0; y<30; y++) {
         for (x=0; x<40; x++) {
             ((unsigned char[30][40])movementTypes)[y][x] = *(unsigned char*)(ramstart);
@@ -57,7 +59,8 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     for (x=0; x<tilesLength * sizeof(TileLayout); x++) {
         ((unsigned char*)tiles)[x] = *(unsigned char*)(ramstart+x);
     }
-    tilesList = malloc(4);
+    tilesList = malloc(5);
+    tilesList->tilesetId = tilesetId;
     tilesList->length = tilesLength;
     tilesList->tiles = tiles;
 

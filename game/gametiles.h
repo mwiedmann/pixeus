@@ -13,7 +13,7 @@
 #define TILE_PIXEL_HEIGHT 16
 #define TILE_PIXEL_HEIGHT_HALF 8
 
-void tilesConfig();
+void tilesConfig(unsigned char tilesetId);
 void loadFont();
 
 #endif

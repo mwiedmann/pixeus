@@ -45,7 +45,7 @@ LevelOveralLayout* level;
  * Parse the current level, draw the tiles, create the enemies,
  * and run the level until the player hits an exit.
 */
-Exit* runLevel(unsigned char nextSpriteIndex) {
+Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
@@ -54,6 +54,13 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     Exit *exitCollision;
     AISprite *hitEnemy;
     Entrance *entrance;
+
+    // Load the tileset for this level if it changed
+    if (lastTilesetId != level->tilesList->tilesetId) {
+        tilesConfig(level->tilesList->tilesetId);
+    }
+
+    lastTilesetId = level->tilesList->tilesetId;
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
@@ -309,6 +316,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
 void main() {
     unsigned char nextSpriteIndex = 0;
+    unsigned char lastTilesetId = 0;
     Exit exitCollision;
     Entrance *entrance;
     
@@ -322,8 +330,6 @@ void main() {
     
     showTitleScreen();
     
-    tilesConfig();
-
     // Load all the sprites
     // TODO: Currently we load all possible sprites for the game. Refactor?
     // Currently we have enough memory for this BUT as the game grows...
@@ -341,7 +347,7 @@ void main() {
 
     while(1) {
         // Get a copy of the exitCollision because we will free the level next
-        exitCollision = *runLevel(nextSpriteIndex);
+        exitCollision = *runLevel(nextSpriteIndex, lastTilesetId);
 
         // Free the memory for the last level and load the next one
         freeLevel(level);

@@ -13,6 +13,7 @@ const shortHi = (s) => s>>8
 const shortLo = (s) => s&255
 
 const createLevelCode = (levelNum, level) => {
+  let tilesetId;
   const movementTypeBytes = []
 
   const createMovementTypes = (grid) => {
@@ -139,6 +140,8 @@ const createLevelCode = (levelNum, level) => {
         break;
       case "Tiles_Foreground":
       case "Tiles_Ground":
+        // We force all layers to use the same tileset as defined in the Tiles_Ground layer
+        tilesetId = li.__tilesetDefUid;
         addTiles(li.gridTiles, 1);
         break;
 
@@ -162,6 +165,7 @@ const createLevelCode = (levelNum, level) => {
 
   const output = new Uint8Array([
     0, 0,
+    tilesetId,
     shortLo(tilesLength),
     shortHi(tilesLength),
     entrancesBytes.length/3,

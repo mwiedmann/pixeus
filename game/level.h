@@ -31,6 +31,7 @@ typedef struct EnemyLayout {
 } EnemyLayout;
 
 typedef struct TileLayoutList {
+    unsigned char tilesetId;
     unsigned short length;
     TileLayout *tiles;
 } TileLayoutList;

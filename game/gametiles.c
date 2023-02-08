@@ -1,10 +1,12 @@
+#include <stdio.h>
 #include "x16graphics.h"
 #include "memmap.h"
 #include "imageload.h"
 
-void tilesConfig() {
+void tilesConfig(unsigned char tilesetId) {
     unsigned short x;
     unsigned short y;
+    char filename[32];
 
     // Create some tiles
     vMemSetBank(TILE_MEM_BANK);
@@ -18,7 +20,11 @@ void tilesConfig() {
         }
     }
 
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, "images/tileset1.bin", 46080L);
+    sprintf(filename, "images/tileset%d.bin", tilesetId);
+
+    // TODO: The length of the data needs to be dynamic
+    // The imageload gets back a mem location, we should be able to calc from there
+    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename, 46080L);
 }
 
 void loadFont() {
