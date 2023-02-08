@@ -278,7 +278,7 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->frames = 1;
     b->x = 320;
     b->y = 240;
-    b->speed = 4;
+    b->speed = 2;
     b->swimSpeed = 3;
 
     spriteInit(b);

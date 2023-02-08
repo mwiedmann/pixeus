@@ -16,6 +16,10 @@ unsigned char doOverlap(short x1, short y1, unsigned char width1, unsigned char 
 }
 
 void spriteInit(Sprite *sprite) {
+    // This sets the current frame to something different for each sprite
+    sprite->animationFrame = sprite->index % sprite->frames;
+    sprite->animationCount = (sprite->index * 4) % sprite->animationSpeed;
+
     x16SpriteInit(
         sprite->index,
         sprite->clrMode,

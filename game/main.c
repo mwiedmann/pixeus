@@ -30,6 +30,8 @@
 #define PLAYER_JUMP_FRAMES 16
 #define PLAYER_WATER_JUMP_FRAMES 16
 
+#define INVINCIBLE 1
+
 // Import the levels
 // extern GameLayout gameLayout;
 // extern LevelOveralLayout level1;
@@ -521,16 +523,15 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Player and Enemy/Laser collisions
         if (collision == 0b1001 || collision == 0b0101) {
-            // TODO: If laser hit, find and reset that laser
-            // Right now it just kills the player so its ok if it continues and dies when it runs out of steam
+            // If laser hit, find and reset that laser
             resetClosestLaser(player.x, player.y);
 
             // TODO: Getting some false collisions, check the collisions here to make sure its valid
             // Move the sprite back to the start
-            spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
-            x16SpriteIdxSetXY(player.index, player.x, player.y);
-
-            
+            if (!INVINCIBLE) {
+                spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
+                x16SpriteIdxSetXY(player.index, player.x, player.y);
+            }
         } else if (bullet.active == 1 && collision == 0b1010) {
             // Explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
@@ -572,7 +573,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 void main() {
     unsigned char nextSpriteIndex = 0;
     unsigned char i;
-    Exit *exitCollision;
+    Exit exitCollision;
     Entrance *entrance;
     
     // Get the starting level and main entrance
@@ -602,14 +603,16 @@ void main() {
 
     while(1) {
         layerMapsAddSomeStuff(level);
-        exitCollision = runLevel(nextSpriteIndex);
+
+        // Get a copy of the exitCollision because we will free the level next
+        exitCollision = *runLevel(nextSpriteIndex);
 
         // Free the memory for the last level and load the next one
         freeLevel(level);
-        level = levelGet(exitCollision->level);
+        level = levelGet(exitCollision.level);
 
         // Find the entrance the player is linking to and place them there
-        entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
+        entrance = findEntranceForExit(level->entranceList, exitCollision.entranceId);
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
