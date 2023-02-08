@@ -60,3 +60,6 @@ If changed, the main title image also needs to be converted in a similar way as 
 ```
 node gimp-convert-bin.js title.data
 ```
+
+## License
+See the [license file](./license.md)
