@@ -19,17 +19,17 @@
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
 void spriteDataLoad() {
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin", 1536);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER_SCUBA, "images/guyscuba.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin", 1024);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin", 4096);
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin", 1024);
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER_SCUBA, "images/guyscuba.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin");
 
     // Back to memory bank 1
     POKE(0, 1);

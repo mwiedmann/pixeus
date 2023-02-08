@@ -25,7 +25,7 @@ void showTitleScreen() {
     // Start in VBank 0, Addr 0
     POKE(LAYER_1_TILEBASE, 0);
 
-    imageFileLoad(2, 0, 0, "images/title.bin", 76800L);
+    imageFileLoad(2, 0, 0, "images/title.bin");
 
     while(!JOY_BTN_1(joy) && !JOY_BTN_2(joy)) {
         joy = joy_read(0);

@@ -54,8 +54,12 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
     }
 }
 
-void imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, unsigned char *filename, unsigned long length)
+unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, unsigned char *filename)
 {
+    unsigned char endingMemBank;
+    unsigned short finalmem;
+    unsigned long length;
+
     // The memory bank to start loading data into.
     // The bank will auto-jump to the next bank when this bank is full (pretty neat).
     POKE(0, startMemBank);
@@ -68,7 +72,11 @@ void imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned 
     cbm_k_setlfs(0, 8, 0);
 
     // This uses a kernal function which automatically switches to the next 8k Bank as they run out of space
-    cbm_k_load(0, (unsigned int)BANK_RAM);
+    finalmem = cbm_k_load(0, (unsigned int)BANK_RAM);
+
+    // The load rolls through banks, so get the ending bank and calc the total bytes read
+    endingMemBank = PEEK(0);
+    length = ((endingMemBank - startMemBank) * 8192UL) + (finalmem - (unsigned int)BANK_RAM);
 
     // Copy the image from RAM to VRAM
     // TODO: This routine is already super fast BUT forum guys say you can load DIRECTLY to VRAM.
@@ -84,4 +92,6 @@ void imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned 
         If the A register is 3, the kernal loads into VRAM, starting from $10000 + the specified starting address.
     */
     copyBankedRAMToVRAM(startMemBank, vramBank, vramAddr, length, (unsigned short)BANK_RAM);
+
+    return length;
 }

@@ -18,8 +18,8 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
 
 /**
  * Load an image file into VRAM. Used to load sprites and tilesets.
- * WARN: Large files will load across RAM Banks. This works but is slower to load into VRAM. Consider files no larger than 8k bytes to avoid this.
+ * Returns the number of bytes read (excluding the 2 byte header)
 */
-void imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, unsigned char *filename, unsigned long length);
+unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, unsigned char *filename);
 
 #endif

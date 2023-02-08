@@ -21,12 +21,9 @@ void tilesConfig(unsigned char tilesetId) {
     }
 
     sprintf(filename, "images/tileset%d.bin", tilesetId);
-
-    // TODO: The length of the data needs to be dynamic
-    // The imageload gets back a mem location, we should be able to calc from there
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename, 46080L);
+    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
 }
 
 void loadFont() {
-    imageFileLoad(2, FONT_MEM_BANK, FONT_MEM, "images/fontsimple.bin", 208);
+    imageFileLoad(2, FONT_MEM_BANK, FONT_MEM, "images/fontsimple.bin");
 }
