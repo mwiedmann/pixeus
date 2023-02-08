@@ -9,11 +9,34 @@
 // As I collect more functions in here its worth going through and seeing
 // if we have enough related functions to make a new file.
 
+/**
+ * Return any exit the player is touching
+*/
 Exit *playerTouchingExit(LevelOveralLayout *level, Sprite *sprite);
+
+/**
+ * Get the TileInfo for the current tile a sprite is touching
+*/
 void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision);
+
+/**
+ * Return if the player is "near" to a sprite
+*/
 unsigned char playerNear(Sprite *player, short x, short y);
+
+/**
+ * Get the animation direction for a sprite to face towards the player
+*/
 unsigned char facePlayer(Sprite *player, short x);
+
+/**
+ * Show a small explosion
+*/
 void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y);
+
+/**
+ * Find the Entrance by entranceId
+*/
 Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char entranceId);
 
 #endif

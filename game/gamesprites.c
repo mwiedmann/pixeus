@@ -4,6 +4,7 @@
 #include "gamesprites.h"
 #include "x16graphics.h"
 #include "memmap.h"
+#include "gametiles.h"
 #include "sprites.h"
 #include "level.h"
 #include "imageload.h"

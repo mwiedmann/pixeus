@@ -2,7 +2,7 @@
 
 #include "x16graphics.h"
 #include "gamesprites.h"
-#include "memmap.h"
+#include "gametiles.h"
 #include "level.h"
 #include "levelutils.h"
 

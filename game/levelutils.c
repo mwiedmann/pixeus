@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
 #include "level.h"
-#include "memmap.h"
 #include "sprites.h"
+#include "gametiles.h"
 
 Exit *playerTouchingExit(LevelOveralLayout *level, Sprite *sprite) {
     unsigned char i,x,y;
@@ -24,10 +24,14 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tile
     tileCollision->x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     tileCollision->y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
+    // NOTE: Some IDEs complain about this array cast but it compiles
     tileCollision->type = ((unsigned char[30][40])level->movementTypes)[tileCollision->y][tileCollision->x];
 }
 
 unsigned char playerNear(Sprite *player, short x, short y) {
+    // TODO: Eventually we will want the distance here to come from the specific enemy
+    // Some enemies may be dumber and not see the player until very close and others smarter
+    // this works fine as a general AI awareness routine for now.
     return (abs(player->x-x) <= 170 && abs(player->y-y)<=40) ? 1 : 0;
 }
 

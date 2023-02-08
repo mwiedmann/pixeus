@@ -1,6 +1,7 @@
 #include "x16graphics.h"
 #include "level.h"
 #include "memmap.h"
+#include "gametiles.h"
 
 void addLevelTiles(unsigned short length, TileLayout layout[]) {
     unsigned short layerMem, i;
