@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <peekpoke.h>
+#include "x16graphics.h"
+#include "memmap.h"
 #include "level.h"
 
 LevelOveralLayout *levelGet(unsigned char levelNum) {
@@ -118,3 +120,32 @@ void freeLevel(LevelOveralLayout *level) {
     free(level->exitList);
     free(level);
 }
+
+void layerMapsLevelInit(LevelOveralLayout *level) {
+    unsigned short x, y;
+    
+    vMemSetIncMode(1);
+
+    // Clear Layer 0 (background)
+    vMemSetBank(LAYER0_MAP_MEM_BANK);
+    vMemSetAddr(LAYER0_MAP_MEM);
+    for (y=0; y<32; y++) {
+        for (x=0; x<64; x++) {
+            vMemSetData0(0);
+            vMemSetData0(0);
+        }
+    }
+
+    // Clear Layer 1 (foreground)
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    vMemSetAddr(LAYER1_MAP_MEM);
+    for (y=0; y<32; y++) {
+        for (x=0; x<64; x++) {     
+            vMemSetData0(0);
+            vMemSetData0(0);
+        }
+    }
+
+    addLevelTiles(level->tilesList->length, level->tilesList->tiles);
+}
+

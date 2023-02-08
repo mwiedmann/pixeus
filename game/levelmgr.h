@@ -5,5 +5,6 @@
 
 LevelOveralLayout *levelGet(unsigned char levelNum);
 void freeLevel(LevelOveralLayout *level);
+void layerMapsLevelInit(LevelOveralLayout *level);
 
 #endif
