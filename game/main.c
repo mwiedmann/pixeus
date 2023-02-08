@@ -41,6 +41,10 @@
 Sprite player, bullet, expSmall;
 LevelOveralLayout* level;
 
+/**
+ * Parse the current level, draw the tiles, create the enemies,
+ * and run the level until the player hits an exit.
+*/
 Exit* runLevel(unsigned char nextSpriteIndex) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
@@ -51,11 +55,13 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
     AISprite *hitEnemy;
     Entrance *entrance;
 
+    // Draw the tiles and create enemies
+    layerMapsLevelInit(level);
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
 
     while (1) {
-        waitforjiffy();
+        waitforjiffy(); // Wait for screen to finish drawing
 
         // See if player is touching an exit
         exitCollision = playerTouchingExit(level, &player);
@@ -83,7 +89,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         enemyLasersMove(level);
 
         // Count game loops so we can animate sprites.
-        // Only animate if the guy is "going" somewhere.
+        // Only animate if the guy is "going" somewhere (don't shuffle his feet if standing still!)
         player.going=0;
         player.animationCount++;
 
@@ -114,7 +120,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
                     spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
                 }
 
-                // Player is touching something, see if they pressed jump button
+                // Since the player is touching something, see if they pressed jump button
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
@@ -134,13 +140,16 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
             jumpFrames--;
             player.going==1;
             spriteMoveYL(&player, player.yL-(tileCollision.type == Water ? PLAYER_WATER_JUMP_SPEED : PLAYER_JUMP_SPEED));
+            
+            // Don't let the player jump through solid ground
+            // Move them back if they hit something
             spriteTouchingTile(level, &player, &tileCollision);
             if (tileCollision.type == Ground) {
                 spriteMoveBackY(&player);
             }
         }
 
-        // Check the final tile to see if the graphics need to change to scuba or back to running
+        // Check the final tile the player is touching to see if the graphics need to change to scuba or back to running
         spriteTouchingTile(level, &player, &tileCollision);
         if ((tileCollision.type == Ground || tileCollision.type == Empty) && player.graphicsAddress != SPRITE_MEM_PLAYER) {
             player.graphicsAddress = SPRITE_MEM_PLAYER;
@@ -173,7 +182,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // Change animation if jumping or moving and hit loop count
         if (jumpFrames > 0) {
-            // No animation change because it looked dumb
+            // No "jump" animation because it looked kinda dumb
+            // Leaving this here though in case I change my mind later
         } else if (player.going==1 && player.animationCount == player.animationSpeed) {
             player.animationCount=0;
             player.animationFrame++;
@@ -185,13 +195,13 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         } else if (player.animationCount == player.animationSpeed && player.animationFrame != player.animationStopFrame) {
             // If the guy is standing still, always show a certain frame
             // In future this could be a totally different animation
-            // We have a yawn animation for instance for when waiting too long.
+            // We could have a yawn animation for instance for when waiting too long.
             player.animationFrame = player.animationStopFrame;
             x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
         }
         
-        // Move the bullet
+        // Move the bullet (yes, the player can only have 1 active bullet right now)
         if (bullet.active == 1) {
             spriteMoveX(&bullet, bullet.animationDirection == 0 ? bullet.x-bullet.speed : bullet.x+bullet.speed);
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
@@ -212,6 +222,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
 
         // See if the player is touching any tiles left/right
         // Move back if so.
+        // With the current code we may end up checking tiles more than needed
+        // but it's an O(1) operation since the tiles are in an array, so it should be fine. 
         spriteTouchingTile(level, &player, &tileCollision);
         if (tileCollision.type == Ground) {
             spriteMoveBackX(&player);
@@ -240,9 +252,10 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
         // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
         // We can then look at all the sprites that have that bit in their mask
         // NOTE: Collisions seem to be triggered twice.
-        // Could be because there are 2 spries involved?
+        // Could be because there are 2 sprites involved?
         // OR maybe at this point we haven't Disabled the sprite yet and its too late?
         // HACK: I check the "active" status on the bullet before considering this a valid collision
+        // The collision system still helps a TON even with this.
 
         // Player and Enemy/Laser collisions
         if (collision == 0b1001 || collision == 0b0101) {
@@ -256,7 +269,8 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
                 x16SpriteIdxSetXY(player.index, player.x, player.y);
             }
         } else if (bullet.active == 1 && collision == 0b1010) {
-            // Explosion
+            // This is a player bullet/enemy collision
+            // Show explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
             
             // Find the enemy
@@ -270,7 +284,7 @@ Exit* runLevel(unsigned char nextSpriteIndex) {
                 }
             }
 
-            // Bullet hit an enemy
+            // Deactivate the bullet so player can fire again
             bullet.active = 0;
             bullet.zDepth = Disabled;
             x16SpriteIdxSetXY(bullet.index, 0, 0);
@@ -299,6 +313,7 @@ void main() {
     Entrance *entrance;
     
     // Get the starting level and main entrance
+    // It loads quickly but do it before showing title to minimize time after title screen
     level = levelGet(0);
     entrance = findEntranceForExit(level->entranceList, 0);
     
@@ -308,22 +323,23 @@ void main() {
     showTitleScreen();
     
     tilesConfig();
+
+    // Load all the sprites
+    // TODO: Currently we load all possible sprites for the game. Refactor?
+    // Currently we have enough memory for this BUT as the game grows...
+    // Maybe refactor to load just the needed sprites with each level?
     spriteDataLoad();
     spriteIRQConfig();
-
-    // Wait to switch to game mode until everything is loaded
-    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
-    videoConfig();
-
-    // Create the sprites
     playerCreate(&player, entrance, nextSpriteIndex++);
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
 
-    while(1) {
-        layerMapsLevelInit(level);
+    // Wait to switch to game mode until everything is loaded
+    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
+    videoConfig();
 
+    while(1) {
         // Get a copy of the exitCollision because we will free the level next
         exitCollision = *runLevel(nextSpriteIndex);
 
@@ -338,6 +354,7 @@ void main() {
     }
 
     // Disable sprite collisions before quitting
-    // or the UI hangs if sprites are still touching.
     x16SpriteCollisionsDisable();
+
+    // TODO: Restore the text video mode
 }
