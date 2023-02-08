@@ -3,7 +3,7 @@
  * a .bin file that can be loaded with cbm_k_load.
  * This keeps the same order of the bytes which requires extracting tiles/frames in code.
  *
- * Usage: `node gimp-convert.js imagefile.data`
+ * Usage: `node gimp-convert-bin.js imagefile.data`
  *
  * It attempts to match colors to the default palette by chosing the closest.
  * Improvements may be needed in the algorith but it works pretty well.
