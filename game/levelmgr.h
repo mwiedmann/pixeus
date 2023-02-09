@@ -14,6 +14,12 @@ LevelOveralLayout *levelGet(unsigned char levelNum);
 void freeLevel(LevelOveralLayout *level);
 
 /**
+ * Blanks out the layer maps.
+ * Good to do this before loading new tiles otherwise the sceen goes wild!
+*/
+void layerMapsClear();
+
+/**
  * Draw the tiles for the current level into the layer maps
  * We use both layer 0 and 1
 */

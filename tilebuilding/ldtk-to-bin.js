@@ -8,6 +8,12 @@ const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
+const TilesImageMap = {
+  "foresttiles.png": 1,
+  "deserttiles.png": 2,
+  "wintertiles.png": 3,
+  "firetiles.png": 4
+}
 
 const shortHi = (s) => s>>8
 const shortLo = (s) => s&255
@@ -141,7 +147,7 @@ const createLevelCode = (levelNum, level) => {
       case "Tiles_Foreground":
       case "Tiles_Ground":
         // We force all layers to use the same tileset as defined in the Tiles_Ground layer
-        tilesetId = li.__tilesetDefUid;
+        tilesetId = TilesImageMap[li.__tilesetRelPath];
         addTiles(li.gridTiles, 1);
         break;
 

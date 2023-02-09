@@ -55,6 +55,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId) {
     AISprite *hitEnemy;
     Entrance *entrance;
 
+    layerMapsClear();
+
     // Load the tileset for this level if it changed
     if (lastTilesetId != level->tilesList->tilesetId) {
         tilesConfig(level->tilesList->tilesetId);
@@ -315,8 +317,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId) {
 }
 
 void main() {
+    // CX16 has 128 sprites for us to use. Each has an id/index.
+    // As we create sprites we increase this value so we know what the next
+    // available sprite index is.
     unsigned char nextSpriteIndex = 0;
-    unsigned char lastTilesetId = 0;
+
+    // When we go to the next level, we may need to load a new tileset
+    // Use this to track the last tileset so we know if we need to load
+    unsigned char lastTilesetId = 255;
+
     Exit exitCollision;
     Entrance *entrance;
     
@@ -330,6 +339,9 @@ void main() {
     
     showTitleScreen();
     
+    // Clear the maps to remove the title screen junk
+    layerMapsClear();
+
     // Load all the sprites
     // TODO: Currently we load all possible sprites for the game. Refactor?
     // Currently we have enough memory for this BUT as the game grows...

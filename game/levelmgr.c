@@ -124,7 +124,7 @@ void freeLevel(LevelOveralLayout *level) {
     free(level);
 }
 
-void layerMapsLevelInit(LevelOveralLayout *level) {
+void layerMapsClear() {
     unsigned short x, y;
     
     vMemSetIncMode(1);
@@ -148,7 +148,10 @@ void layerMapsLevelInit(LevelOveralLayout *level) {
             vMemSetData0(0);
         }
     }
+}
 
+void layerMapsLevelInit(LevelOveralLayout *level) {
+    vMemSetIncMode(1);
     addLevelTiles(level->tilesList->length, level->tilesList->tiles);
 }
 
