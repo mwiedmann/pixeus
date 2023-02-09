@@ -31,6 +31,7 @@ void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index);
 void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
+void shipCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
 
 #endif

@@ -732,7 +732,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "LevelEntrance",
-							"__grid": [22,21],
+							"__grid": [20,20],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -741,7 +741,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 9,
-							"px": [352,336],
+							"px": [320,320],
 							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
 						},
 						{

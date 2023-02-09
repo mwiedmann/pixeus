@@ -38,18 +38,18 @@
 
 // A few top level structs to hold things that stay
 // active throughout the game life
-Sprite player, bullet, expSmall;
+Sprite player, bullet, expSmall, ship;
 LevelOveralLayout* level;
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
  * and run the level until the player hits an exit.
 */
-Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId) {
+Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
     unsigned char collision, joy, enemyCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
-    
+
     TileInfo tileCollision;
     Exit *exitCollision;
     AISprite *hitEnemy;
@@ -69,8 +69,41 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId) {
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
 
+    if (showShipScene) {
+        // bulletCreate(ship, nextSpriteIndex++);
+        shipCreate(&ship, nextSpriteIndex++);
+        player.zDepth = Disabled;
+        x16SpriteIdxSetZDepth(player.index, player.zDepth);
+    }
+    
     while (1) {
         waitforjiffy(); // Wait for screen to finish drawing
+
+        if (showShipScene) {
+            spriteMoveYL(&ship, ship.yL+ship.speed);
+            x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
+            if (ship.y >= 288) {
+                showShipScene = 0;
+                ship.animationFrame = ship.animationStopFrame;
+                x16SpriteIdxSetGraphicsPointer(ship.index, ship.clrMode, ship.graphicsBank,
+                    ship.graphicsAddress+(ship.animationFrame * ship.frameSize));
+
+                player.zDepth = BetweenL0L1;
+                x16SpriteIdxSetZDepth(player.index, player.zDepth);
+                continue;
+            }
+            ship.animationCount++;
+            if (ship.animationCount == ship.animationSpeed) {
+                ship.animationCount=0;
+                ship.animationFrame++;
+                if (ship.animationFrame == ship.frames) {
+                    ship.animationFrame = 0;
+                }
+                x16SpriteIdxSetGraphicsPointer(ship.index, ship.clrMode, ship.graphicsBank,
+                    ship.graphicsAddress+(ship.animationFrame * ship.frameSize));
+            }
+            continue;
+        }
 
         // See if player is touching an exit
         exitCollision = playerTouchingExit(level, &player);
@@ -322,6 +355,9 @@ void main() {
     // available sprite index is.
     unsigned char nextSpriteIndex = 0;
 
+    // On the 1st level we show the ship landing before the game starts
+    unsigned char showShipScene = 1;
+
     // When we go to the next level, we may need to load a new tileset
     // Use this to track the last tileset so we know if we need to load
     unsigned char lastTilesetId = 255;
@@ -359,7 +395,8 @@ void main() {
 
     while(1) {
         // Get a copy of the exitCollision because we will free the level next
-        exitCollision = *runLevel(nextSpriteIndex, lastTilesetId);
+        exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
+        showShipScene = 0;
 
         // Free the memory for the last level and load the next one
         freeLevel(level);
