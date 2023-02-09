@@ -304,7 +304,7 @@ void shipCreate(Sprite *b, unsigned char index) {
     b->animationStopFrame=3;
     b->animationCount=0;
     b->animationFrame=0;
-    b->speed = 5;
-    
+    b->speed = 8;
+
     spriteInit(b);
 }

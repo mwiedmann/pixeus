@@ -74,11 +74,16 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         shipCreate(&ship, nextSpriteIndex++);
         player.zDepth = Disabled;
         x16SpriteIdxSetZDepth(player.index, player.zDepth);
+    } else if (level->levelNum == 0) {
+        // On level 0 we need to show the ship
+        ship.zDepth = BetweenL0L1;
+        x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
     }
-    
+
     while (1) {
         waitforjiffy(); // Wait for screen to finish drawing
 
+        // Special ship landing scene before the player can move
         if (showShipScene) {
             spriteMoveYL(&ship, ship.yL+ship.speed);
             x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
@@ -117,7 +122,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 // This is jumping to another level. We need to cleanup this level.
                 // Clean up the enemies and return the exit info
                 enemiesReset(enemyCount);
-
+                
+                // Hide the ship if leaving level 0
+                if (level->levelNum == 0) {
+                    ship.zDepth = Disabled;
+                    x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
+                }
                 // Reset any active bullets
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
