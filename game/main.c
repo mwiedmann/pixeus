@@ -35,7 +35,9 @@
 #define PLAYER_JUMP_FRAMES 16
 #define PLAYER_WATER_JUMP_FRAMES 16
 
-#define INVINCIBLE 1
+#define DEATH_PAUSE_FRAMES = 120
+
+unsigned char testMode = 0;
 
 // A few top level structs to hold things that stay
 // active throughout the game life
@@ -46,6 +48,11 @@ LevelOveralLayout* level;
 unsigned char energy = 0;
 unsigned short score = 0;
 unsigned char lives = 2;
+
+// This is a "fake" exit returned when the player has died
+Exit playerDied = {
+    255
+};
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
@@ -92,7 +99,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
-            spriteMoveYL(&ship, ship.yL+ship.speed);
+            // testMode will speed up the ship so the intro doesn't last so long
+            spriteMoveYL(&ship, ship.yL+(ship.speed+(ship.speed * testMode)));
             x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
             if (ship.y >= 288) {
                 showShipScene = 0;
@@ -323,10 +331,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // TODO: Getting some false collisions, check the collisions here to make sure its valid
             // Move the sprite back to the start
-            if (!INVINCIBLE) {
-                // TODO: Need to remember the entrance the player came in on. Send them back to that one.
-                // spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
-                // x16SpriteIdxSetXY(player.index, player.x, player.y);
+            if (!testMode) {
+                // Exit the level. The outer loop will reset.
+                return &playerDied;
+                
             }
         } else if (bullet.active == 1 && collision == 0b1010) {
             // This is a player bullet/enemy collision
@@ -393,7 +401,7 @@ void main() {
     // Configure the joysticks
     joy_install(cx16_std_joy);
     
-    showTitleScreen();
+    testMode = showTitleScreen();
     
     // Clear the maps to remove the title screen junk
     layerMapsClear();
@@ -421,12 +429,23 @@ void main() {
         exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
         showShipScene = 0;
 
-        // Free the memory for the last level and load the next one
-        freeLevel(level);
-        level = levelGet(exitCollision.level);
+        // If this was a normal level exit (not a player death)
+        // The load the next level
+        if (exitCollision.entityType != 255) {
+            // Free the memory for the last level and load the next one
+            freeLevel(level);
+            level = levelGet(exitCollision.level);
 
-        // Find the entrance the player is linking to and place them there
-        entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
+            // Find the entrance the player is linking to and place them there
+            entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
+        } else {
+            // Pause the game for a moment since player died
+            // TODO: Come up with something better
+            for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
+                waitforjiffy();
+            }
+        }
+
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }

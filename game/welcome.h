@@ -1,6 +1,6 @@
 #ifndef WELCOME_H
 #define WELCOME_H
 
-void showTitleScreen();
+unsigned char showTitleScreen();
 
 #endif

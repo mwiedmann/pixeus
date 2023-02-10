@@ -4,8 +4,9 @@
 #include "memmap.h"
 #include "imageload.h"
 
-void showTitleScreen() {
+unsigned char showTitleScreen() {
     unsigned char joy = 0;
+    unsigned char testMode = 0;
 
     // Clear the VRAM we will use for the bitmap mode title
     clearFullVRAM(0);
@@ -27,10 +28,21 @@ void showTitleScreen() {
 
     imageFileLoad(2, 0, 0, "images/title.bin");
 
-    while(!JOY_BTN_1(joy) && !JOY_BTN_2(joy)) {
+    while(1) {
         joy = joy_read(0);
+
+        // Exit when either button is pressed
+        // Exit with testMode ON if UP is pressed
+        if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+            break;
+        } else if (JOY_UP(joy)) {
+            testMode = 1;
+            break;
+        }
     }
 
     // Turn off Layer 1 (both layers will be off while things are loading)
     POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) ^ 0b00100000);
+
+    return testMode;
 }
