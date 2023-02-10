@@ -25,11 +25,11 @@ unsigned char letterToTile(unsigned char letter) {
     return tile;
 }
 
-void drawGameHeader(unsigned short score, unsigned char energy, unsigned char lives) {
+void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives) {
     unsigned char i;
     unsigned char text[40];
 
-    sprintf(text, "SCORE:%06u   ENERGY:%03u       LIVES:%u", score, energy, lives);
+    sprintf(text, "GOLD:%06u    ENERGY:%03u       LIVES:%u", gold, energy, lives);
 
     vMemSetBank(LAYER0_MAP_MEM_BANK);
     vMemSetAddr(LAYER0_MAP_MEM);

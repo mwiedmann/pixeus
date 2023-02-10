@@ -21,6 +21,7 @@
 #include "enemymgr.h"
 #include "levelutils.h"
 #include "fontmgr.h"
+#include "entitymgr.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -42,11 +43,10 @@ unsigned char testMode = 0;
 // A few top level structs to hold things that stay
 // active throughout the game life
 Sprite player, bullet, expSmall, ship;
-Sprite energies[4];
 LevelOveralLayout* level;
 
 unsigned char energy = 0;
-unsigned short score = 0;
+unsigned short gold = 0;
 unsigned char lives = 2;
 
 // This is a "fake" exit returned when the player has died
@@ -59,12 +59,17 @@ Exit playerDied = {
  * and run the level until the player hits an exit.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, enemyCount;
+    unsigned char collision, joy, enemyCount, entityCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
+    unsigned char updateHeader = 0;
 
     TileInfo tileCollision;
+    Entity *entityCollision;
     Exit *exitCollision;
+    Energy *energyCollision;
+    Gold *goldCollision;
+
     AISprite *hitEnemy;
     Entrance *entrance;
 
@@ -79,9 +84,11 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
-    drawGameHeader(score, energy, lives);
+    drawGameHeader(gold, energy, lives);
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
+    entityCount = entitiesCreate(level, nextSpriteIndex);
+    nextSpriteIndex+= entityCount;
 
     if (showShipScene) {
         // bulletCreate(ship, nextSpriteIndex++);
@@ -126,34 +133,44 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         }
 
         // See if player is touching an exit
-        exitCollision = playerTouchingExit((ExitList*)(level->entityList), &player);
-        if (exitCollision != 0) {
-            // If this jumps somewhere on the same level, just move the player
-            if (exitCollision->level == level->levelNum) {
-                entrance = findEntranceForExit((EntranceList*)(level->entityList), exitCollision->entranceId);
-                spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
-                x16SpriteIdxSetXY(player.index, player.x, player.y);
-            } else {
-                // This is jumping to another level. We need to cleanup this level.
-                // Clean up the enemies and return the exit info
-                enemiesReset(enemyCount);
-                
-                // Hide the ship if leaving level 0
-                if (level->levelNum == 0) {
-                    ship.zDepth = Disabled;
-                    x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
-                }
-                // Reset any active bullets
-                bullet.active = 0;
-                bullet.zDepth = Disabled;
-                x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+        entityCollision = playerTouchingEntity(level->entityList, &player);
+        if (entityCollision != 0) {
+            if (entityCollision->entityType == ExitEnum) {
+                exitCollision = (Exit*)entityCollision;
+                // If this jumps somewhere on the same level, just move the player
+                if (exitCollision->level == level->levelNum) {
+                    entrance = findEntranceForExit((EntranceList*)(level->entityList), exitCollision->entranceId);
+                    spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
+                    x16SpriteIdxSetXY(player.index, player.x, player.y);
+                } else {
+                    // This is jumping to another level. We need to cleanup this level.
+                    // Clean up the enemies and return the exit info
+                    enemiesReset(enemyCount);
+                    entitiesReset(entityCount);
 
-                return exitCollision;
+                    // Hide the ship if leaving level 0
+                    if (level->levelNum == 0) {
+                        ship.zDepth = Disabled;
+                        x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
+                    }
+                    // Reset any active bullets
+                    bullet.active = 0;
+                    bullet.zDepth = Disabled;
+                    x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+
+                    return exitCollision;
+                }
+            } else if (entityCollision->entityType == EnergyEnum) {
+                energyCollision = (Energy*)entityCollision;
+                energy+= energyCollision->amount;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
             }
         }
 
         enemiesMove(&player, enemyCount);
         enemyLasersMove(level);
+        entitiesAnimate(entityCount);
 
         // Count game loops so we can animate sprites.
         // Only animate if the guy is "going" somewhere (don't shuffle his feet if standing still!)
@@ -372,6 +389,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
             }
         }
+
+        // If anything in the header changes (gold, energy, lives, etc.), redraw it
+        if (updateHeader) {
+            updateHeader = 0;
+            drawGameHeader(gold, energy, lives);
+        }
     }
 }
 
@@ -416,9 +439,6 @@ void main() {
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
-    for (i=0; i<4; i++) {
-        energyCreate(&energies[i], nextSpriteIndex++);
-    }
 
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)

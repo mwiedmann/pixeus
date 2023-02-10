@@ -4,17 +4,17 @@
 #include "sprites.h"
 #include "gametiles.h"
 
-Exit *playerTouchingExit(ExitList *exitList, Sprite *sprite) {
+Entity *playerTouchingEntity(EntityList *entityList, Sprite *sprite) {
     unsigned char i,x,y;
     
     x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     y = ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT);
 
-    for (i=0; i<exitList->length; i++) {
-        if (exitList->exits[i].entityType == ExitEnum &&
-            y == exitList->exits[i].y &&
-            x == exitList->exits[i].x) {
-                return &exitList->exits[i];
+    for (i=0; i<entityList->length; i++) {
+        if (entityList->entities[i].entityType != 0 &&
+            y == entityList->entities[i].y &&
+            x == entityList->entities[i].x) {
+                return &entityList->entities[i];
             }
     }
 

@@ -8,7 +8,7 @@ const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
-const EntityTypeEnum = { Entrance: 0, Exit: 1, Energy: 3, Gold: 4 }
+const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4 }
 
 const TilesImageMap = {
   "foresttiles.png": 1,

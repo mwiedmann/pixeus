@@ -10,9 +10,9 @@
 // if we have enough related functions to make a new file.
 
 /**
- * Return any exit the player is touching
+ * Return any entity the player is touching
 */
-Exit *playerTouchingExit(ExitList *exitList, Sprite *sprite);
+Entity *playerTouchingEntity(EntityList *entityList, Sprite *sprite);
 
 /**
  * Get the TileInfo for the current tile a sprite is touching
