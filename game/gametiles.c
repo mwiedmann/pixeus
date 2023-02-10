@@ -3,6 +3,8 @@
 #include "memmap.h"
 #include "imageload.h"
 
+unsigned char standardTilesLoaded = 0;
+
 void tilesConfig(unsigned char tilesetId) {
     unsigned short x;
     unsigned short y;
@@ -13,13 +15,20 @@ void tilesConfig(unsigned char tilesetId) {
     vMemSetAddr(TILE_MEM);
     vMemSetIncMode(1);
 
-    // Empty tile
-    for (y=0; y < 16; y++) {
-        for (x=0; x < 16; x++) {
-            vMemSetData0(0);
+    // Only need to load these once
+    if (!standardTilesLoaded) {
+        // Empty tile
+        for (y=0; y < 16; y++) {
+            for (x=0; x < 16; x++) {
+                vMemSetData0(0);
+            }
         }
-    }
 
+        imageFileLoad(2, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");
+
+        standardTilesLoaded = 1;
+    }
+    
     sprintf(filename, "images/tileset%d.bin", tilesetId);
     imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
 }

@@ -40,6 +40,7 @@
 #define SPRITE_MEM_BIG_GHOST SPRITE_MEM_FISH1 + 1024
 #define SPRITE_MEM_LASER SPRITE_MEM_BIG_GHOST + 4096
 #define SPRITE_MEM_SHIP SPRITE_MEM_LASER + 256
+#define SPRITE_MEM_ENERGY SPRITE_MEM_SHIP + 16384L
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0
@@ -47,7 +48,8 @@
 // We will need to figure something out if it exceeds 64k
 #define TILE_MEM 0
 #define TILE_EMPTY_MEM TILE_MEM
-#define TILE_SET_1_MEM TILE_EMPTY_MEM + 256
+#define TILE_SET_FONT TILE_EMPTY_MEM + 256
+#define TILE_SET_1_MEM TILE_SET_FONT + 10240L
 #define TILE_MEM_BANK 0
 
 #define FONT_LETTER_START 8

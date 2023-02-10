@@ -20,6 +20,7 @@
 #include "levelmgr.h"
 #include "enemymgr.h"
 #include "levelutils.h"
+#include "fontmgr.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
@@ -39,7 +40,12 @@
 // A few top level structs to hold things that stay
 // active throughout the game life
 Sprite player, bullet, expSmall, ship;
+Sprite energies[4];
 LevelOveralLayout* level;
+
+unsigned char energy = 0;
+unsigned short score = 0;
+unsigned char lives = 2;
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
@@ -66,6 +72,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
+    drawGameHeader(score, energy, lives);
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
 
@@ -360,6 +367,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 }
 
 void main() {
+    unsigned char i;
+
     // CX16 has 128 sprites for us to use. Each has an id/index.
     // As we create sprites we increase this value so we know what the next
     // available sprite index is.
@@ -398,6 +407,9 @@ void main() {
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
+    for (i=0; i<4; i++) {
+        energyCreate(&energies[i], nextSpriteIndex++);
+    }
 
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)

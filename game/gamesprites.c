@@ -31,6 +31,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SHIP, "images/ship.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_ENERGY, "images/energy.bin");
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -282,6 +283,21 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->y = 240;
     b->speed = 2;
     b->swimSpeed = 3;
+
+    spriteInit(b);
+}
+
+void energyCreate(Sprite *b, unsigned char index) {
+    b->index = index;
+    b->active = 0;
+    b->clrMode = 1;
+    b->collisionMask = 0;
+    b->zDepth = Disabled;
+    b->width = PX16;
+    b->height = PX16;
+    b->graphicsBank = SPRITE_MEM_BANK;
+    b->graphicsAddress = SPRITE_MEM_ENERGY;
+    b->frames = 4;
 
     spriteInit(b);
 }

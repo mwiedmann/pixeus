@@ -41,7 +41,7 @@ const createLevelCode = (levelNum, level) => {
       tilesBytes.push(parseInt(g.px[0] / 16));
       tilesBytes.push(parseInt(g.px[1] / 16));
       tilesBytes.push(1)
-      tilesBytes.push(g.t + 1); // Add 1 because the game adds Tile:0 as an empty tile
+      tilesBytes.push(g.t + 41); // Add 1 because the game adds Tile:0 as an empty tile + the font tileset
       tilesBytes.push(layer)
       tilesBytes.push(g.f === 2 || g.f === 3 ? 1 : 0);
       tilesBytes.push(g.f === 1 || g.f === 3 ? 1 : 0);
