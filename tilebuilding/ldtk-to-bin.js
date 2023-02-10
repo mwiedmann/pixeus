@@ -8,6 +8,8 @@ const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
+const EntityTypeEnum = { Entrance: 0, Exit: 1, Energy: 3, Gold: 4 }
+
 const TilesImageMap = {
   "foresttiles.png": 1,
   "deserttiles.png": 2,
@@ -50,8 +52,7 @@ const createLevelCode = (levelNum, level) => {
     });
   };
 
-  const entrancesBytes = []
-  const exitsBytes = []
+  const entityBytes = []
   const enemiesBytes = []
 
   const addEntities = (entityInstances) => {
@@ -60,14 +61,50 @@ const createLevelCode = (levelNum, level) => {
             .__value
     }
 
+    // Energies
+    const energies = entityInstances
+      .filter((e) => e.__identifier === "Energy")
+      .map((e) => {
+        return {
+          entityType: EntityTypeEnum['Energy'],
+          x: e.__grid[0],
+          y: e.__grid[1],
+          amount: fiGet(e.fieldInstances, 'amount'),
+          unused1: 0
+        };
+      });
+
+      energies.forEach((e) => {
+        entityBytes.push(...[e.entityType, e.x, e.y, e.amount, e.unused1])
+      })
+
+    // Gold
+    const goldpiles = entityInstances
+      .filter((e) => e.__identifier === "Gold")
+      .map((e) => {
+        return {
+          entityType: EntityTypeEnum['Gold'],
+          x: e.__grid[0],
+          y: e.__grid[1],
+          amount: fiGet(e.fieldInstances, 'amount'),
+          unused1: 0
+        };
+      });
+
+      goldpiles.forEach((e) => {
+        entityBytes.push(...[e.entityType, e.x, e.y, e.amount, e.unused1])
+      })
+
     // Entrances
     const entrances = entityInstances
       .filter((e) => e.__identifier === "LevelEntrance")
       .map((e) => {
         return {
-          id: fiGet(e.fieldInstances, 'Id'),
+          entityType: EntityTypeEnum['Entrance'],
           x: e.__grid[0],
           y: e.__grid[1],
+          id: fiGet(e.fieldInstances, 'Id'),
+          unused1: 0
         };
       });
     if (entrances.length === 0) {
@@ -75,21 +112,19 @@ const createLevelCode = (levelNum, level) => {
     }
 
     entrances.forEach((e) => {
-        entrancesBytes.push(e.x)
-        entrancesBytes.push(e.y)
-        entrancesBytes.push(e.id)
-        //return `    { ${e.x}, ${e.y}, ${e.id} }`;
-      })
+      entityBytes.push(...[e.entityType, e.x, e.y, e.id, e.unused1])
+    })
 
     // Exits
     const exits = entityInstances
       .filter((e) => e.__identifier === "LevelExit")
       .map((e) => {
         return {
-          entrance: fiGet(e.fieldInstances, "EntranceId"),
-          level: fiGet(e.fieldInstances, "Level"),
+          entityType: EntityTypeEnum['Exit'],
           x: e.__grid[0],
           y: e.__grid[1],
+          level: fiGet(e.fieldInstances, "Level"),
+          entrance: fiGet(e.fieldInstances, "EntranceId")
         };
       });
     if (exits.length === 0) {
@@ -97,12 +132,8 @@ const createLevelCode = (levelNum, level) => {
     }
 
     exits.forEach((e) => {
-        exitsBytes.push(e.x)
-        exitsBytes.push(e.y)
-        exitsBytes.push(e.level)
-        exitsBytes.push(e.entrance)
-        //return `    { ${e.x}, ${e.y}, ${e.level}, ${e.entrance} }`;
-      })
+      entityBytes.push(...[e.entityType, e.x, e.y, e.level, e.entrance])
+    })
 
     // Enemies
     const enemies = entityInstances
@@ -120,14 +151,7 @@ const createLevelCode = (levelNum, level) => {
       });
 
     enemies.forEach((e) => {
-        enemiesBytes.push(e.x)
-        enemiesBytes.push(e.y)
-        enemiesBytes.push(e.moveDir)
-        enemiesBytes.push(e.patrolA)
-        enemiesBytes.push(e.patrolB)
-        enemiesBytes.push(e.patrolDir)
-        enemiesBytes.push(e.type)
-        enemiesBytes.push(0)
+        enemiesBytes.push(...[e.x, e.y, e.moveDir, e.patrolA, e.patrolB, e.patrolDir, e.type, 0])
         //return `    { ${e.x}, ${e.y}, ${e.moveDir}, ${e.patrolA}, ${e.patrolB}, ${e.patrolDir}, ${e.type}, 0 }`;
       })
 
@@ -161,9 +185,8 @@ const createLevelCode = (levelNum, level) => {
   // Its an optional address to load into. We don't use it but its required
   /*
   const movementTypeBytes = []
-  const tilesBytes = [];
-  const entrancesBytes = []
-  const exitsBytes = []
+  const tilesBytes = []
+  const entityBytes = []
   const enemiesBytes = []
   */
 
@@ -174,13 +197,11 @@ const createLevelCode = (levelNum, level) => {
     tilesetId,
     shortLo(tilesLength),
     shortHi(tilesLength),
-    entrancesBytes.length/3,
-    exitsBytes.length/4,
+    entityBytes.length/5,
     enemiesBytes.length/8,
     ...movementTypeBytes,
     ...tilesBytes,
-    ...entrancesBytes,
-    ...exitsBytes,
+    ...entityBytes,
     ...enemiesBytes
   ]);
 

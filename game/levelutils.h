@@ -12,7 +12,7 @@
 /**
  * Return any exit the player is touching
 */
-Exit *playerTouchingExit(LevelOveralLayout *level, Sprite *sprite);
+Exit *playerTouchingExit(ExitList *exitList, Sprite *sprite);
 
 /**
  * Get the TileInfo for the current tile a sprite is touching

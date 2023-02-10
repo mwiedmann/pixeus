@@ -11,18 +11,15 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned short x,y;
     unsigned char tilesetId;
     unsigned short tilesLength;
-    unsigned char entrancesLength;
-    unsigned char exitsLength;
+    unsigned char entitiesLength;
     unsigned char enemiesLength;
     char filename[32];
     unsigned char *movementTypes;
 
     TileLayout *tiles;
     TileLayoutList *tilesList;
-    Entrance *entrances;
-    EntranceList *entranceList;
-    Exit *exits;
-    ExitList *exitList;
+    Entity *entities;
+    EntityList *entityList;
     EnemyLayout *enemies;
     EnemyLayoutList *enemyList;
     LevelOveralLayout *level;
@@ -40,13 +37,12 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     // the lengths of everything.
     tilesetId = *(unsigned char*)(ramstart);
     tilesLength = *(unsigned short*)(ramstart+1);
-    entrancesLength = *(unsigned char*)(ramstart+3);
-    exitsLength = *(unsigned char*)(ramstart+4);
-    enemiesLength = *(unsigned char*)(ramstart+5);
+    entitiesLength = *(unsigned char*)(ramstart+3);
+    enemiesLength = *(unsigned char*)(ramstart+4);
     
     // Movement Types is always a fixed 40x30 size so we don't need a length
     movementTypes = malloc(1200);
-    ramstart+= 6;
+    ramstart+= 5;
     for (y=0; y<30; y++) {
         for (x=0; x<40; x++) {
             ((unsigned char[30][40])movementTypes)[y][x] = *(unsigned char*)(ramstart);
@@ -66,27 +62,16 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
     ramstart+= tilesLength * sizeof(TileLayout);
 
-    // Entrances
-    entrances = malloc(entrancesLength * sizeof(Entrance));
-    for (x=0; x<entrancesLength * sizeof(Entrance); x++) {
-        ((unsigned char*)entrances)[x] = *(unsigned char*)(ramstart+x);
+    // Entities
+    entities = malloc(entitiesLength * sizeof(Entity));
+    for (x=0; x<entitiesLength * sizeof(Entity); x++) {
+        ((unsigned char*)entities)[x] = *(unsigned char*)(ramstart+x);
     }
-    entranceList = malloc(4);
-    entranceList->length = entrancesLength;
-    entranceList->entrances = entrances;
+    entityList = malloc(4);
+    entityList->length = entitiesLength;
+    entityList->entities = entities;
 
-    ramstart+= entrancesLength * sizeof(Entrance);
-
-    // Exits
-    exits = malloc(exitsLength * sizeof(Exit));
-    for (x=0; x<exitsLength * sizeof(Exit); x++) {
-        ((unsigned char*)exits)[x] = *(unsigned char*)(ramstart+x);
-    }
-    exitList = malloc(4);
-    exitList->length = exitsLength;
-    exitList->exits = exits;
-    
-    ramstart+= exitsLength * sizeof(Exit);
+    ramstart+= entitiesLength * sizeof(Entity);
 
     // Enemies
     enemies = malloc(enemiesLength * sizeof(EnemyLayout));
@@ -104,8 +89,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     level->levelNum = levelNum;
     level->tilesList = tilesList;
     level->enemiesList = enemyList;
-    level->entranceList = entranceList;
-    level->exitList = exitList;
+    level->entityList = entityList;
     level->movementTypes = movementTypes;
 
     return level;
@@ -117,10 +101,8 @@ void freeLevel(LevelOveralLayout *level) {
     free(level->tilesList);
     free(level->enemiesList->enemies);
     free(level->enemiesList);
-    free(level->entranceList->entrances);
-    free(level->entranceList);
-    free(level->exitList->exits);
-    free(level->exitList);
+    free(level->entityList->entities);
+    free(level->entityList);
     free(level);
 }
 

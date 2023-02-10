@@ -118,11 +118,11 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         }
 
         // See if player is touching an exit
-        exitCollision = playerTouchingExit(level, &player);
+        exitCollision = playerTouchingExit((ExitList*)(level->entityList), &player);
         if (exitCollision != 0) {
             // If this jumps somewhere on the same level, just move the player
             if (exitCollision->level == level->levelNum) {
-                entrance = findEntranceForExit(level->entranceList, exitCollision->entranceId);
+                entrance = findEntranceForExit((EntranceList*)(level->entityList), exitCollision->entranceId);
                 spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                 x16SpriteIdxSetXY(player.index, player.x, player.y);
             } else {
@@ -324,8 +324,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // TODO: Getting some false collisions, check the collisions here to make sure its valid
             // Move the sprite back to the start
             if (!INVINCIBLE) {
-                spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
-                x16SpriteIdxSetXY(player.index, player.x, player.y);
+                // TODO: Need to remember the entrance the player came in on. Send them back to that one.
+                // spriteMoveToTile(&player, level->entranceList->entrances[0].x, level->entranceList->entrances[0].y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
+                // x16SpriteIdxSetXY(player.index, player.x, player.y);
             }
         } else if (bullet.active == 1 && collision == 0b1010) {
             // This is a player bullet/enemy collision
@@ -387,7 +388,7 @@ void main() {
     // Get the starting level and main entrance
     // It loads quickly but do it before showing title to minimize time after title screen
     level = levelGet(0);
-    entrance = findEntranceForExit(level->entranceList, 0);
+    entrance = findEntranceForExit(((EntranceList*)level->entityList), 0);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -425,7 +426,7 @@ void main() {
         level = levelGet(exitCollision.level);
 
         // Find the entrance the player is linking to and place them there
-        entrance = findEntranceForExit(level->entranceList, exitCollision.entranceId);
+        entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }

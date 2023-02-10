@@ -19,6 +19,12 @@ typedef struct TileLayout {
     unsigned char hFlip;
 } TileLayout;
 
+typedef struct TileLayoutList {
+    unsigned char tilesetId;
+    unsigned short length;
+    TileLayout *tiles;
+} TileLayoutList;
+
 typedef struct EnemyLayout {
     unsigned char x;
     unsigned char y;
@@ -30,21 +36,34 @@ typedef struct EnemyLayout {
     unsigned char moveType;
 } EnemyLayout;
 
-typedef struct TileLayoutList {
-    unsigned char tilesetId;
-    unsigned short length;
-    TileLayout *tiles;
-} TileLayoutList;
-
 typedef struct EnemyLayoutList {
     unsigned char length;
     EnemyLayout *enemies;
 } EnemyLayoutList;
 
+typedef enum { EntranceEnum = 0, ExitEnum = 1, EnergyEnum = 3, GoldEnum = 4 } EntityType;
+
+typedef struct Entity {
+    unsigned char entityType;
+    unsigned char x;
+    unsigned char y;
+    unsigned char arg0;
+    unsigned char arg1;
+} Entity;
+
+typedef struct EntityList {
+    unsigned char length;
+    Entity *entities;
+} EntityList;
+
+// Entity can be cast to any of the specialized structs here for clarity
+
 typedef struct Entrance {
+    unsigned char entityType;
     unsigned char x;
     unsigned char y;
     unsigned char id;
+    unsigned char unused1;
 } Entrance;
 
 typedef struct EntranceList {
@@ -53,6 +72,7 @@ typedef struct EntranceList {
 } EntranceList;
 
 typedef struct Exit {
+    unsigned char entityType;
     unsigned char x;
     unsigned char y;
     unsigned char level;
@@ -64,12 +84,37 @@ typedef struct ExitList {
     Exit *exits;
 } ExitList;
 
+typedef struct Energy {
+    unsigned char entityType;
+    unsigned char x;
+    unsigned char y;
+    unsigned char amount;
+    unsigned char unused1;
+} Energy;
+
+typedef struct EnergyList {
+    unsigned char length;
+    Energy *energies;
+} EnergyList;
+
+typedef struct Gold {
+    unsigned char entityType;
+    unsigned char x;
+    unsigned char y;
+    unsigned char amount;
+    unsigned char unused1;
+} Gold;
+
+typedef struct GoldList {
+    unsigned char length;
+    Gold *goldpiles;
+} GoldList;
+
 typedef struct LevelOveralLayout {
     unsigned char levelNum;
     TileLayoutList *tilesList;
     EnemyLayoutList *enemiesList;
-    EntranceList *entranceList;
-    ExitList *exitList;
+    EntityList *entityList;
     unsigned char *movementTypes;
 } LevelOveralLayout;
 
