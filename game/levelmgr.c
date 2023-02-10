@@ -17,7 +17,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned char *movementTypes;
 
     TileLayout *tiles;
-    TileLayoutList *tilesList;
+    TileLayoutList *tileList;
     Entity *entities;
     EntityList *entityList;
     EnemyLayout *enemies;
@@ -55,10 +55,10 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     for (x=0; x<tilesLength * sizeof(TileLayout); x++) {
         ((unsigned char*)tiles)[x] = *(unsigned char*)(ramstart+x);
     }
-    tilesList = malloc(5);
-    tilesList->tilesetId = tilesetId;
-    tilesList->length = tilesLength;
-    tilesList->tiles = tiles;
+    tileList = malloc(5);
+    tileList->tilesetId = tilesetId;
+    tileList->length = tilesLength;
+    tileList->tiles = tiles;
 
     ramstart+= tilesLength * sizeof(TileLayout);
 
@@ -87,8 +87,8 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     // Overall
     level = malloc(sizeof(LevelOveralLayout));
     level->levelNum = levelNum;
-    level->tilesList = tilesList;
-    level->enemiesList = enemyList;
+    level->tileList = tileList;
+    level->enemyList = enemyList;
     level->entityList = entityList;
     level->movementTypes = movementTypes;
 
@@ -97,10 +97,10 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
 void freeLevel(LevelOveralLayout *level) {
     free(level->movementTypes);
-    free(level->tilesList->tiles);
-    free(level->tilesList);
-    free(level->enemiesList->enemies);
-    free(level->enemiesList);
+    free(level->tileList->tiles);
+    free(level->tileList);
+    free(level->enemyList->enemies);
+    free(level->enemyList);
     free(level->entityList->entities);
     free(level->entityList);
     free(level);
@@ -134,6 +134,6 @@ void layerMapsClear() {
 
 void layerMapsLevelInit(LevelOveralLayout *level) {
     vMemSetIncMode(1);
-    addLevelTiles(level->tilesList->length, level->tilesList->tiles);
+    addLevelTiles(level->tileList->length, level->tileList->tiles);
 }
 

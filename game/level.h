@@ -112,8 +112,8 @@ typedef struct GoldList {
 
 typedef struct LevelOveralLayout {
     unsigned char levelNum;
-    TileLayoutList *tilesList;
-    EnemyLayoutList *enemiesList;
+    TileLayoutList *tileList;
+    EnemyLayoutList *enemyList;
     EntityList *entityList;
     unsigned char *movementTypes;
 } LevelOveralLayout;

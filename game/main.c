@@ -64,11 +64,11 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     layerMapsClear();
 
     // Load the tileset for this level if it changed
-    if (lastTilesetId != level->tilesList->tilesetId) {
-        tilesConfig(level->tilesList->tilesetId);
+    if (lastTilesetId != level->tileList->tilesetId) {
+        tilesConfig(level->tileList->tilesetId);
     }
 
-    lastTilesetId = level->tilesList->tilesetId;
+    lastTilesetId = level->tileList->tilesetId;
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);

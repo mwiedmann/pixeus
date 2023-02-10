@@ -31,13 +31,13 @@ unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIn
         snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate, fish1Create, bigGhostCreate
     };
 
-    for (i=0; i<level->enemiesList->length; i++) {
-        (*enemyCreate[level->enemiesList->enemies[i].enemyType])(
-            &masterEnemiesList[i], &level->enemiesList->enemies[i], nextSpriteIndex+i
+    for (i=0; i<level->enemyList->length; i++) {
+        (*enemyCreate[level->enemyList->enemies[i].enemyType])(
+            &masterEnemiesList[i], &level->enemyList->enemies[i], nextSpriteIndex+i
         );
     }
 
-    return level->enemiesList->length;
+    return level->enemyList->length;
 }
 
 
