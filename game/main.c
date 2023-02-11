@@ -416,6 +416,11 @@ void main() {
     Exit exitCollision;
     Entrance *entrance;
     
+    // Clear the cache
+    // We cache some level data (entities) because certain things don't respawn (energy, gold)
+    // so we need to remember which ones are gone
+    initCachedLevelData();
+
     // Get the starting level and main entrance
     // It loads quickly but do it before showing title to minimize time after title screen
     level = levelGet(0);

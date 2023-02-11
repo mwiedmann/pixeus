@@ -6,6 +6,28 @@
 
 Sprite entitySprites[16];
 
+// Increase this size if we have more than 32 levels
+#define CACHED_ENTITY_LIST_LENGTH 32
+
+EntityList *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
+
+void initCachedLevelData() {
+    unsigned char i;
+
+    for (i=0; i<CACHED_ENTITY_LIST_LENGTH; i++) {
+        cachedEntityLists[i] = 0;
+    }
+}
+void cacheLevelData(LevelOveralLayout *level) {
+    if (cachedEntityLists[level->levelNum] == 0) {
+        cachedEntityLists[level->levelNum] = level->entityList;
+    }
+}
+
+EntityList *cachedEntityListGet(unsigned char levelNum) {
+    return cachedEntityLists[levelNum];
+}
+
 unsigned char entitiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i, index;
 

@@ -6,6 +6,7 @@
 #include "x16graphics.h"
 #include "memmap.h"
 #include "level.h"
+#include "entitymgr.h"
 
 LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned short x,y;
@@ -63,14 +64,19 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     ramstart+= tilesLength * sizeof(TileLayout);
 
     // Entities
-    entities = malloc(entitiesLength * sizeof(Entity));
-    for (x=0; x<entitiesLength * sizeof(Entity); x++) {
-        ((unsigned char*)entities)[x] = *(unsigned char*)(ramstart+x);
+    // See if we have already cached the entity list
+    // Use it if we have
+    // We cache this because entities like energy and gold don't respawn
+    entityList = cachedEntityListGet(levelNum);
+    if (entityList == 0) {
+        entities = malloc(entitiesLength * sizeof(Entity));
+        for (x=0; x<entitiesLength * sizeof(Entity); x++) {
+            ((unsigned char*)entities)[x] = *(unsigned char*)(ramstart+x);
+        }
+        entityList = malloc(4);
+        entityList->length = entitiesLength;
+        entityList->entities = entities;
     }
-    entityList = malloc(4);
-    entityList->length = entitiesLength;
-    entityList->entities = entities;
-
     ramstart+= entitiesLength * sizeof(Entity);
 
     // Enemies
@@ -92,6 +98,9 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     level->entityList = entityList;
     level->movementTypes = movementTypes;
 
+    // Cache any new level data
+    cacheLevelData(level);
+
     return level;
 }
 
@@ -101,8 +110,11 @@ void freeLevel(LevelOveralLayout *level) {
     free(level->tileList);
     free(level->enemyList->enemies);
     free(level->enemyList);
-    free(level->entityList->entities);
-    free(level->entityList);
+
+    // Not freeing this because we cache it now
+    // free(level->entityList->entities);
+    // free(level->entityList);
+    
     free(level);
 }
 
