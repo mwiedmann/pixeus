@@ -1,8 +1,11 @@
+#include <stdio.h>
+
 #include <peekpoke.h>
 #include <joystick.h>
 #include "x16graphics.h"
 #include "memmap.h"
 #include "imageload.h"
+#include "fontmgr.h"
 
 unsigned char showTitleScreen() {
     unsigned char joy = 0;
@@ -46,3 +49,18 @@ unsigned char showTitleScreen() {
 
     return testMode;
 }
+
+// void showIntroScene() {
+//     unsigned char i;
+//     unsigned char text[40];
+
+//     sprintf(text, "LOST IN SPACE AND LOW ON ENERGY");
+//     sprintf(text, "");
+
+//     vMemSetBank(LAYER0_MAP_MEM_BANK);
+//     vMemSetAddr(LAYER0_MAP_MEM);
+//     for (i=0; i<40; i++) {
+//         vMemSetData0(letterToTile(text[i]));
+//         vMemSetData0(0);
+//     }
+// }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "memmap.h"
+#include "gametiles.h"
 #include "x16graphics.h"
 
 unsigned char letterToTile(unsigned char letter) {
@@ -25,16 +26,20 @@ unsigned char letterToTile(unsigned char letter) {
     return tile;
 }
 
-void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives) {
+void drawTextRow(unsigned char* text, unsigned char length, unsigned char row, unsigned char col) {
     unsigned char i;
-    unsigned char text[40];
-
-    sprintf(text, "GOLD:%06u    ENERGY:%03u       LIVES:%u", gold, energy, lives);
 
     vMemSetBank(LAYER0_MAP_MEM_BANK);
-    vMemSetAddr(LAYER0_MAP_MEM);
-    for (i=0; i<40; i++) {
+    vMemSetAddr(LAYER0_MAP_MEM + (row * TILES_ACROSS * 2) + (col * 2));
+    for (i=0; i<length; i++) {
         vMemSetData0(letterToTile(text[i]));
         vMemSetData0(0);
     }
+}
+
+void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives) {
+    unsigned char text[40];
+
+    sprintf(text, " GOLD:%05u    ENERGY:%03u      LIVES:%02u ", gold, energy, lives);
+    drawTextRow(text, 40, 0, 0);
 }

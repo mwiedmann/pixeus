@@ -7,6 +7,7 @@
 #include "memmap.h"
 #include "level.h"
 #include "entitymgr.h"
+#include "gametiles.h"
 
 LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned short x,y;
@@ -114,7 +115,7 @@ void freeLevel(LevelOveralLayout *level) {
     // Not freeing this because we cache it now
     // free(level->entityList->entities);
     // free(level->entityList);
-    
+
     free(level);
 }
 
@@ -126,8 +127,8 @@ void layerMapsClear() {
     // Clear Layer 0 (background)
     vMemSetBank(LAYER0_MAP_MEM_BANK);
     vMemSetAddr(LAYER0_MAP_MEM);
-    for (y=0; y<32; y++) {
-        for (x=0; x<64; x++) {
+    for (y=0; y<TILES_DOWN; y++) {
+        for (x=0; x<TILES_ACROSS; x++) {
             vMemSetData0(0);
             vMemSetData0(0);
         }
@@ -136,8 +137,8 @@ void layerMapsClear() {
     // Clear Layer 1 (foreground)
     vMemSetBank(LAYER1_MAP_MEM_BANK);
     vMemSetAddr(LAYER1_MAP_MEM);
-    for (y=0; y<32; y++) {
-        for (x=0; x<64; x++) {     
+    for (y=0; y<TILES_DOWN; y++) {
+        for (x=0; x<TILES_ACROSS; x++) {     
             vMemSetData0(0);
             vMemSetData0(0);
         }
