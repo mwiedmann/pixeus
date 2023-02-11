@@ -6,9 +6,9 @@
 #include "level.h"
 
 void main() {
-    unsigned char letter = ':';
+    unsigned char letter = '!';
 
-    printf("%06u", 123);
+    printf("%u", letter);
 }
 
 // cl65 -o testload.prg -t cx16 testload.c

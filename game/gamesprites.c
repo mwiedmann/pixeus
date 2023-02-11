@@ -100,7 +100,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->active = 1;
     p->clrMode = 1;
     p->collisionMask = PLAYER_COLLISION_MASK;
-    p->zDepth = BetweenL0L1;
+    p->zDepth = Disabled;
     p->width = PX16;
     p->height = PX16;
     p->graphicsBank = SPRITE_MEM_BANK;
@@ -321,7 +321,7 @@ void shipCreate(Sprite *b, unsigned char index) {
     b->active = 1;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
+    b->zDepth = Disabled;
     b->width = PX64;
     b->height = PX64;
     b->graphicsBank = SPRITE_MEM_BANK;

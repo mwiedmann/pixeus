@@ -2,10 +2,12 @@
 
 #include <peekpoke.h>
 #include <joystick.h>
+#include "waitforjiffy.h"
 #include "x16graphics.h"
 #include "memmap.h"
 #include "imageload.h"
 #include "fontmgr.h"
+#include "sprites.h"
 
 unsigned char showTitleScreen() {
     unsigned char joy = 0;
@@ -36,9 +38,20 @@ unsigned char showTitleScreen() {
 
         // Exit when either button is pressed
         // Exit with testMode ON if UP is pressed
-        if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+        if (JOY_BTN_1(joy)) {
+            while(JOY_BTN_1(joy)) {
+                joy = joy_read(0);
+            }
             break;
-        } else if (JOY_UP(joy)) {
+        } else if (JOY_BTN_2(joy)) {
+            while(JOY_BTN_2(joy)) {
+                joy = joy_read(0);
+            }
+            break;
+        } if (JOY_UP(joy)) {
+            while(JOY_UP(joy)) {
+                joy = joy_read(0);
+            }
             testMode = 1;
             break;
         }
@@ -50,17 +63,57 @@ unsigned char showTitleScreen() {
     return testMode;
 }
 
-// void showIntroScene() {
-//     unsigned char i;
-//     unsigned char text[40];
+void showIntroScene(Sprite *ship) {
+    unsigned char joy = 0;
 
-//     sprintf(text, "LOST IN SPACE AND LOW ON ENERGY");
-//     sprintf(text, "");
+    drawTextRow("        LOST IN SPACE IN A      ", 32, 3, 3);
+    drawTextRow("        SHIP LOW ON ENERGY      ", 32, 4, 3);
+    drawTextRow("      PIXEUS MUST CRASH LAND.   ", 32, 6, 3);
+    drawTextRow("     ALTHOUGH THERE IS HOPE...  ", 32, 8, 3);
+    drawTextRow("  WHILE THIS PLANET IS DANGEROUS", 32, 11, 3);
+    drawTextRow("            AND STRANGE         ", 32, 12, 3);
+    drawTextRow("    PIXEUS HAS DETECTED ENERGY  ", 32, 13, 3);
+    drawTextRow("             AND GOLD!!!        ", 32, 14, 3);
+    drawTextRow("      CAN PIXEUS MAKE IT HOME   ", 32, 16, 3);
+    drawTextRow("       AND SAVE HIS COLONY?     ", 32, 17, 3);
 
-//     vMemSetBank(LAYER0_MAP_MEM_BANK);
-//     vMemSetAddr(LAYER0_MAP_MEM);
-//     for (i=0; i<40; i++) {
-//         vMemSetData0(letterToTile(text[i]));
-//         vMemSetData0(0);
-//     }
-// }
+    spriteMove(ship, 288, 350);
+    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
+    ship->zDepth = BetweenL0L1;
+    x16SpriteIdxSetZDepth(ship->index, ship->zDepth);
+        
+    while(1) {
+        // Wait for screen to finish drawing since we are animating the ship
+        waitforjiffy();
+
+        joy = joy_read(0);
+
+        ship->animationCount++;
+        if (ship->animationCount == ship->animationSpeed) {
+            ship->animationCount=0;
+            ship->animationFrame++;
+            if (ship->animationFrame == ship->frames) {
+                ship->animationFrame = 0;
+            }
+            x16SpriteIdxSetGraphicsPointer(ship->index, ship->clrMode, ship->graphicsBank,
+                ship->graphicsAddress+(ship->animationFrame * ship->frameSize));
+        }
+
+        // Exit when either button is pressed
+        // Exit with testMode ON if UP is pressed
+        if (JOY_BTN_1(joy)) {
+            while(JOY_BTN_1(joy)) {
+                joy = joy_read(0);
+            }
+            break;
+        } else if (JOY_BTN_2(joy)) {
+            while(JOY_BTN_2(joy)) {
+                joy = joy_read(0);
+            }
+            break;
+        }
+    }
+
+    spriteMoveBack(ship);
+    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
+}

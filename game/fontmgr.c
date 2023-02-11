@@ -3,7 +3,7 @@
 #include "memmap.h"
 #include "gametiles.h"
 #include "x16graphics.h"
-
+// ! = 33
 unsigned char letterToTile(unsigned char letter) {
     unsigned char tile;
 
@@ -19,6 +19,8 @@ unsigned char letterToTile(unsigned char letter) {
         tile = 39;
     } else if (letter == 45) {
         tile = 40;
+    } else if (letter == 33) {
+        tile = 41;
     } else {
         tile = 0;
     }

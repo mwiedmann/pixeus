@@ -90,12 +90,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     entityCount = entitiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= entityCount;
 
-    if (showShipScene) {
-        // bulletCreate(ship, nextSpriteIndex++);
-        shipCreate(&ship, nextSpriteIndex++);
-        player.zDepth = Disabled;
-        x16SpriteIdxSetZDepth(player.index, player.zDepth);
-    } else if (level->levelNum == 0) {
+    if (level->levelNum == 0) {
         // On level 0 we need to show the ship
         ship.zDepth = BetweenL0L1;
         x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
@@ -430,7 +425,7 @@ void main() {
     joy_install(cx16_std_joy);
     
     testMode = showTitleScreen();
-    
+
     // Clear the maps to remove the title screen junk
     layerMapsClear();
 
@@ -444,10 +439,19 @@ void main() {
     bulletCreate(&bullet, nextSpriteIndex++);
     explosionSmallCreate(&expSmall, nextSpriteIndex++);
     nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
+    shipCreate(&ship, nextSpriteIndex++);
 
     // Wait to switch to game mode until everything is loaded
     // If you switch video modes first, you get crazy stuff on screen (kind cool?)
     videoConfig();
+
+    // Load some standard tiles (font)
+    // These stay in the Tileset RAM for the entire game
+    // Level tilesets are loaded in RAM after
+    standardTilesLoad();
+
+    // Show the intro screen before starting the level
+    showIntroScene(&ship);
 
     while(1) {
         // Get a copy of the exitCollision because we will free the level next
