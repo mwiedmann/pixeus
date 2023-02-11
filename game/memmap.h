@@ -41,6 +41,7 @@
 #define SPRITE_MEM_LASER SPRITE_MEM_BIG_GHOST + 4096
 #define SPRITE_MEM_SHIP SPRITE_MEM_LASER + 256
 #define SPRITE_MEM_ENERGY SPRITE_MEM_SHIP + 16384L
+#define SPRITE_MEM_GOLD SPRITE_MEM_ENERGY + 1024
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0

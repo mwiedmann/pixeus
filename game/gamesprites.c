@@ -32,6 +32,7 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SHIP, "images/ship.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_ENERGY, "images/energy.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GOLD, "images/gold.bin");
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -305,6 +306,27 @@ void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_ENERGY;
+    b->frames = 4;
+    b->frameSize = 256; // Calculated as width * height
+    b->animationSpeed = 10;
+
+    b->x = entityInfo->x * TILE_PIXEL_WIDTH;
+    b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
+
+    spriteInit(b);
+    x16SpriteIdxSetXY(b->index, b->x, b->y);
+}
+
+void goldCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    b->index = index;
+    b->active = 0;
+    b->clrMode = 1;
+    b->collisionMask = 0;
+    b->zDepth = BetweenL0L1;
+    b->width = PX16;
+    b->height = PX16;
+    b->graphicsBank = SPRITE_MEM_BANK;
+    b->graphicsAddress = SPRITE_MEM_GOLD;
     b->frames = 4;
     b->frameSize = 256; // Calculated as width * height
     b->animationSpeed = 10;

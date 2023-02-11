@@ -160,6 +160,11 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 energy+= energyCollision->amount;
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
+            } else if (entityCollision->entityType == GoldEnum) {
+                goldCollision = (Gold*)entityCollision;
+                gold+= goldCollision->amount;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
             }
         }
 

@@ -32,6 +32,7 @@ void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
 void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index);
+void goldCreate(Sprite *b, Entity *entityInfo, unsigned char index);
 void shipCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
 

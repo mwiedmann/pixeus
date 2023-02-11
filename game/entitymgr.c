@@ -34,6 +34,8 @@ unsigned char entitiesCreate(LevelOveralLayout *level, unsigned char nextSpriteI
     for (i=0,index=0; i<level->entityList->length; i++) {
         if (level->entityList->entities[i].entityType == EnergyEnum) {
             energyCreate(&entitySprites[index++], &level->entityList->entities[i], nextSpriteIndex++);
+        } else if (level->entityList->entities[i].entityType == GoldEnum) {
+            goldCreate(&entitySprites[index++], &level->entityList->entities[i], nextSpriteIndex++);
         }
     }
 
