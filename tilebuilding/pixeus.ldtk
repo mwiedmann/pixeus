@@ -1001,34 +1001,6 @@
 							]
 						},
 						{
-							"__identifier": "Energy",
-							"__grid": [6,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#61FE69",
-							"iid": "d3734ad0-9f30-11ed-8be2-c9b5342a3e9c",
-							"width": 16,
-							"height": 16,
-							"defUid": 34,
-							"px": [96,336],
-							"fieldInstances": [{ "__identifier": "amount", "__value": 1, "__type": "Int", "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }]
-						},
-						{
-							"__identifier": "Gold",
-							"__grid": [7,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#F0F914",
-							"iid": "324c01f0-9f30-11ed-8be2-4d5e825fdd41",
-							"width": 16,
-							"height": 16,
-							"defUid": 36,
-							"px": [112,336],
-							"fieldInstances": [{ "__identifier": "amount", "__value": 10, "__type": "Int", "__tile": null, "defUid": 37, "realEditorValues": [{ "id": "V_Int", "params": [10] }] }]
-						},
-						{
 							"__identifier": "Enemy",
 							"__grid": [15,21],
 							"__pivot": [0,0],
@@ -1050,74 +1022,6 @@
 								{ "__identifier": "patrolB", "__value": 2, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
-						},
-						{
-							"__identifier": "Item",
-							"__grid": [17,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#0099DB",
-							"iid": "5c9a85e0-9f30-11ed-8be2-173ff3d4c5ab",
-							"width": 16,
-							"height": 16,
-							"defUid": 38,
-							"px": [272,336],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Scuba", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Scuba"]
-							}] }]
-						},
-						{
-							"__identifier": "Item",
-							"__grid": [24,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#0099DB",
-							"iid": "e29a8bd0-9f30-11ed-8be2-b140e94312cc",
-							"width": 16,
-							"height": 16,
-							"defUid": 38,
-							"px": [384,336],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Weapon", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Weapon"]
-							}] }]
-						},
-						{
-							"__identifier": "Item",
-							"__grid": [23,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#0099DB",
-							"iid": "e5cd5530-9f30-11ed-8be2-07ec03b2941d",
-							"width": 16,
-							"height": 16,
-							"defUid": 38,
-							"px": [368,336],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Boots", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Boots"]
-							}] }]
-						},
-						{
-							"__identifier": "Item",
-							"__grid": [16,21],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#0099DB",
-							"iid": "e87c4890-9f30-11ed-8be2-492810aa206e",
-							"width": 16,
-							"height": 16,
-							"defUid": 38,
-							"px": [256,336],
-							"fieldInstances": [{ "__identifier": "type", "__value": "ExtraLife", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["ExtraLife"]
-							}] }]
 						}
 					]
 				},

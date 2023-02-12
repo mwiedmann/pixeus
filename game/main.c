@@ -64,10 +64,10 @@ unsigned char hasScuba = 0;
 unsigned char hasWeapon = 0;
 unsigned char hasBoots = 0;
 
-// This is a "fake" exit returned when the player has died
-Exit playerDied = {
-    255
-};
+// These are "fake" exits returned when the player has died
+Exit playerEaten = { 255 };
+Exit playerShot = { 254 };
+Exit playerDrowned = { 253 };
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
@@ -286,7 +286,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         } else if (tileCollision.type == Water) {
             if (!hasScuba) {
                 // Player needs the Scuba gear to survive in water. DEAD!
-                return &playerDied;
+                return &playerDrowned;
             }
             if (player.graphicsAddress != SPRITE_MEM_PLAYER_SCUBA) {
                 player.graphicsAddress = SPRITE_MEM_PLAYER_SCUBA;
@@ -408,7 +408,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // Move the sprite back to the start
             if (!testMode) {
                 // Exit the level. The outer loop will reset.
-                return &playerDied;
+                return collision == 0b1001 ? &playerEaten : &playerShot;
             }
         } else if (bullet.active == 1 && collision == 0b1010) {
             // This is a player bullet/enemy collision
@@ -524,7 +524,7 @@ void main() {
 
         // If this was a normal level exit (not a player death)
         // The load the next level
-        if (exitCollision.entityType != 255) {
+        if (exitCollision.entityType < 253) {
             // Free the memory for the last level and load the next one
             freeLevel(level);
             level = levelGet(exitCollision.level);
@@ -536,7 +536,11 @@ void main() {
             for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
                 waitforjiffy();
             }
-            showMessage("YOU DIED");
+            switch(exitCollision.entityType) {
+                case 255: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
+                case 254: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
+                case 253: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
+            }
         }
 
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
