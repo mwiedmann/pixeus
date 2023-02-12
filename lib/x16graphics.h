@@ -71,6 +71,18 @@ void vMemSetAddr(unsigned short mem);
 void vMemSetIncMode(unsigned char mode);
 
 /**
+ * Get the "Data 0" $9F23 register
+ * This will get the value from the current Video Memory address 
+*/
+unsigned char vMemGetData0();
+
+/**
+ * Get the "Data 1" $9F2F register
+ * This will get the value from the current Video Memory address 
+*/
+unsigned char vMemGetData1();
+
+/**
  * Set the "Data 0" $9F23 register
  * This will set the value into the current Video Memory address 
 */

@@ -6,7 +6,7 @@
 #include "level.h"
 
 void main() {
-    unsigned char letter = '!';
+    unsigned char letter = '\'';
 
     printf("%u", letter);
 }

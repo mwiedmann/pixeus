@@ -8,6 +8,7 @@
 #include "imageload.h"
 #include "fontmgr.h"
 #include "sprites.h"
+#include "levelutils.h"
 
 unsigned char showTitleScreen() {
     unsigned char joy = 0;
@@ -64,29 +65,28 @@ unsigned char showTitleScreen() {
 }
 
 void showIntroScene(Sprite *ship) {
-    unsigned char joy = 0;
 
-    drawTextRow("        LOST IN SPACE IN A      ", 32, 3, 3);
-    drawTextRow("        SHIP LOW ON ENERGY      ", 32, 4, 3);
-    drawTextRow("      PIXEUS MUST CRASH LAND.   ", 32, 6, 3);
-    drawTextRow("     ALTHOUGH THERE IS HOPE...  ", 32, 8, 3);
-    drawTextRow("  WHILE THIS PLANET IS DANGEROUS", 32, 11, 3);
-    drawTextRow("            AND STRANGE         ", 32, 12, 3);
-    drawTextRow("    PIXEUS HAS DETECTED ENERGY  ", 32, 13, 3);
-    drawTextRow("             AND GOLD!!!        ", 32, 14, 3);
-    drawTextRow("      CAN PIXEUS MAKE IT HOME   ", 32, 16, 3);
-    drawTextRow("       AND SAVE HIS COLONY?     ", 32, 17, 3);
+    drawCenteredTextRow("PIXEUS THE EXPLORER", 0, 3);
+    
+    drawCenteredTextRow("LOST IN SPACE IN A", 0, 5);
+    drawCenteredTextRow("SHIP LOW ON ENERGY", 0, 6);
 
+    drawCenteredTextRow("PERHAPS THIS PLANET PROVIDES HOPE?", 0, 8);
+
+    drawCenteredTextRow("PLENTIFUL IN GOLD AND ENERGY", 0, 10);
+    drawCenteredTextRow("PIXEUS LANDS IN THIS STRANGE WORLD", 0, 11);
+
+    drawCenteredTextRow("ESCAPE IS THE GOAL", 0, 13);
+    drawCenteredTextRow("BUT GOLD IS THE SIREN'S CALL", 0, 14);
+    
     spriteMove(ship, 288, 350);
     x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
     ship->zDepth = BetweenL0L1;
     x16SpriteIdxSetZDepth(ship->index, ship->zDepth);
-        
+
     while(1) {
         // Wait for screen to finish drawing since we are animating the ship
         waitforjiffy();
-
-        joy = joy_read(0);
 
         ship->animationCount++;
         if (ship->animationCount == ship->animationSpeed) {
@@ -100,16 +100,7 @@ void showIntroScene(Sprite *ship) {
         }
 
         // Exit when either button is pressed
-        // Exit with testMode ON if UP is pressed
-        if (JOY_BTN_1(joy)) {
-            while(JOY_BTN_1(joy)) {
-                joy = joy_read(0);
-            }
-            break;
-        } else if (JOY_BTN_2(joy)) {
-            while(JOY_BTN_2(joy)) {
-                joy = joy_read(0);
-            }
+        if (readButtonPress()) {
             break;
         }
     }

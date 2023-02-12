@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <joystick.h>
 
 #include "level.h"
 #include "sprites.h"
@@ -61,4 +62,47 @@ Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char entrance
     }
 
     return 0;
+}
+
+void waitForButtonPress() {
+    unsigned char joy = 0;
+
+    while(1) {
+        joy = joy_read(0);
+
+        // Exit when either button is pressed
+        if (JOY_BTN_1(joy)) {
+            while(JOY_BTN_1(joy)) {
+                joy = joy_read(0);
+            }
+            break;
+        } else if (JOY_BTN_2(joy)) {
+            while(JOY_BTN_2(joy)) {
+                joy = joy_read(0);
+            }
+            break;
+        }
+    }
+}
+
+unsigned char readButtonPress() {
+    unsigned char joy = 0;
+    unsigned char pressed = 0;
+
+    joy = joy_read(0);
+
+    // Exit when either button is pressed
+    if (JOY_BTN_1(joy)) {
+        while(JOY_BTN_1(joy)) {
+            joy = joy_read(0);
+        }
+        pressed = 1;
+    } else if (JOY_BTN_2(joy)) {
+        while(JOY_BTN_2(joy)) {
+            joy = joy_read(0);
+        }
+        pressed = 1;
+    }
+
+    return pressed;
 }

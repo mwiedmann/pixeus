@@ -182,18 +182,22 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 updateHeader = 1;
             } else if (entityCollision->entityType == ScubaEnum) {
                 hasScuba = 1;
+                showMessage("SCUBA GEAR: EXPLORE THE WATER");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == WeaponEnum) {
                 hasWeapon = 1;
+                showMessage("WEAPON: IMPROVED RANGE AND VELOCITY");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == BootsEnum) {
                 hasBoots = 1;
+                showMessage("BOOTS: ENHANCED SPEED AND JUMPING");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == ExtraLifeEnum) {
                 lives++;
+                showMessage("EXTRA LIFE!!!");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             }
@@ -529,10 +533,10 @@ void main() {
             entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
         } else {
             // Pause the game for a moment since player died
-            // TODO: Come up with something better
             for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
                 waitforjiffy();
             }
+            showMessage("YOU DIED");
         }
 
         spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    

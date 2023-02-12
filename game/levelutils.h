@@ -39,4 +39,14 @@ void smallExplosion(Sprite *expSmall, ZDepth zDepth, short x, short y);
 */
 Entrance *findEntranceForExit(EntranceList *entranceList, unsigned char entranceId);
 
+/**
+ * Wait for a button press and release
+*/
+void waitForButtonPress();
+
+/**
+ * Return if button pressed and released
+*/
+unsigned char readButtonPress();
+
 #endif

@@ -42,6 +42,14 @@ void vMemSetIncMode(unsigned char mode) {
     VERA.address_hi = newVal;
 }
 
+unsigned char vMemGetData0() {
+    return VERA.data0;
+}
+
+unsigned char vMemGetData1() {
+    return VERA.data1;
+}
+
 void vMemSetData0(unsigned char val) {
     VERA.data0 = val;
 }
