@@ -11,7 +11,7 @@
 	"iid": "38da7de0-9f30-11ed-80de-216c9d08ad4a",
 	"jsonVersion": "1.2.5",
 	"appBuildId": 464870,
-	"nextUid": 38,
+	"nextUid": 41,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -648,6 +648,68 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "Item",
+			"uid": 38,
+			"tags": [],
+			"exportToToc": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#0099DB",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": [
+				{
+					"identifier": "type",
+					"doc": null,
+					"__type": "LocalEnum.Items",
+					"uid": 40,
+					"type": "F_Enum(39)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "EntityTile",
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -738,15 +800,23 @@
 				"averageColors": "f841f741f741f741f420f320f320f420f420f520f000f000f421f731f521f531f531f531f641f531f741f445f556f445f420f420f420f310f210f631f531f531f731f731f741f531f541f641f321f311f741f666f566f556f443f554f333f554f320f421f531f631f421f531f631f531f631f541f531f321f741f556f556f555f333f222f443f222f000f631f531f531f521f631f521f421f321f531f321f321f741f741f411f411f411f411f311f311f311f521f531f631f631f731f741f531f531f531f211f421f434f222f545f222f545f222f556f000f531f531f000f000f631f531f531f531f421f421f531f531f000f000f000f000f000f000f000f000f531f531f531f531f421f531f631f751f631f641f321f321"
 			}
 		}
-	], "enums": [{ "identifier": "Enemies", "uid": 20, "values": [
-		{ "id": "Snake", "tileId": null, "color": 7552569, "__tileSrcRect": null },
-		{ "id": "Bee", "tileId": null, "color": 16638270, "__tileSrcRect": null },
-		{ "id": "Ghost", "tileId": null, "color": 12635100, "__tileSrcRect": null },
-		{ "id": "Scorpion", "tileId": null, "color": 16217634, "__tileSrcRect": null },
-		{ "id": "Wasp", "tileId": null, "color": 0, "__tileSrcRect": null },
-		{ "id": "Fish1", "tileId": null, "color": 16180452, "__tileSrcRect": null },
-		{ "id": "BigGhost", "tileId": null, "color": 3079936, "__tileSrcRect": null }
-	], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }], "externalEnums": [], "levelFields": [] },
+	], "enums": [
+		{ "identifier": "Enemies", "uid": 20, "values": [
+			{ "id": "Snake", "tileId": null, "color": 7552569, "__tileSrcRect": null },
+			{ "id": "Bee", "tileId": null, "color": 16638270, "__tileSrcRect": null },
+			{ "id": "Ghost", "tileId": null, "color": 12635100, "__tileSrcRect": null },
+			{ "id": "Scorpion", "tileId": null, "color": 16217634, "__tileSrcRect": null },
+			{ "id": "Wasp", "tileId": null, "color": 0, "__tileSrcRect": null },
+			{ "id": "Fish1", "tileId": null, "color": 16180452, "__tileSrcRect": null },
+			{ "id": "BigGhost", "tileId": null, "color": 3079936, "__tileSrcRect": null }
+		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
+		{ "identifier": "Items", "uid": 39, "values": [
+			{ "id": "Scuba", "tileId": null, "color": 2943221, "__tileSrcRect": null },
+			{ "id": "Weapon", "tileId": null, "color": 16711680, "__tileSrcRect": null },
+			{ "id": "Boots", "tileId": null, "color": 12087120, "__tileSrcRect": null },
+			{ "id": "ExtraLife", "tileId": null, "color": 3079936, "__tileSrcRect": null }
+		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }
+	], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
 			"identifier": "Level_0",
@@ -814,9 +884,9 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						1,2,2,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -980,6 +1050,23 @@
 								{ "__identifier": "patrolB", "__value": 2, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
+						},
+						{
+							"__identifier": "Item",
+							"__grid": [17,21],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#0099DB",
+							"iid": "5c9a85e0-9f30-11ed-8be2-173ff3d4c5ab",
+							"width": 16,
+							"height": 16,
+							"defUid": 38,
+							"px": [272,336],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Scuba", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Scuba"]
+							}] }]
 						}
 					]
 				},
@@ -1109,16 +1196,22 @@
 						{ "px": [432,352], "src": [16,0], "f": 0, "t": 1, "d": [907] },
 						{ "px": [448,352], "src": [32,0], "f": 0, "t": 2, "d": [908] },
 						{ "px": [464,352], "src": [48,0], "f": 0, "t": 3, "d": [909] },
-						{ "px": [480,352], "src": [16,0], "f": 0, "t": 1, "d": [910] },
-						{ "px": [496,352], "src": [32,0], "f": 0, "t": 2, "d": [911] },
-						{ "px": [512,352], "src": [48,0], "f": 0, "t": 3, "d": [912] },
-						{ "px": [528,352], "src": [16,0], "f": 0, "t": 1, "d": [913] },
+						{ "px": [480,352], "src": [0,0], "f": 1, "t": 0, "d": [910] },
+						{ "px": [496,352], "src": [80,16], "f": 1, "t": 23, "d": [911] },
+						{ "px": [512,352], "src": [80,16], "f": 1, "t": 23, "d": [912] },
+						{ "px": [528,352], "src": [0,0], "f": 0, "t": 0, "d": [913] },
 						{ "px": [544,352], "src": [32,0], "f": 0, "t": 2, "d": [914] },
 						{ "px": [560,352], "src": [48,0], "f": 0, "t": 3, "d": [915] },
 						{ "px": [576,352], "src": [16,0], "f": 0, "t": 1, "d": [916] },
 						{ "px": [592,352], "src": [32,0], "f": 0, "t": 2, "d": [917] },
 						{ "px": [608,352], "src": [48,0], "f": 0, "t": 3, "d": [918] },
-						{ "px": [624,352], "src": [16,0], "f": 0, "t": 1, "d": [919] }
+						{ "px": [624,352], "src": [16,0], "f": 0, "t": 1, "d": [919] },
+						{ "px": [480,368], "src": [0,16], "f": 1, "t": 18, "d": [950] },
+						{ "px": [528,368], "src": [0,16], "f": 1, "t": 18, "d": [953] },
+						{ "px": [480,384], "src": [0,80], "f": 2, "t": 90, "d": [990] },
+						{ "px": [496,384], "src": [16,0], "f": 0, "t": 1, "d": [991] },
+						{ "px": [512,384], "src": [32,0], "f": 0, "t": 2, "d": [992] },
+						{ "px": [528,384], "src": [0,80], "f": 3, "t": 90, "d": [993] }
 					],
 					"entityInstances": []
 				},
@@ -1170,7 +1263,6 @@
 						{ "px": [320,336], "src": [80,96], "f": 0, "t": 113, "d": [860] },
 						{ "px": [336,336], "src": [96,96], "f": 0, "t": 114, "d": [861] },
 						{ "px": [352,336], "src": [32,80], "f": 0, "t": 92, "d": [862] },
-						{ "px": [384,336], "src": [48,96], "f": 0, "t": 111, "d": [864] },
 						{ "px": [400,336], "src": [96,96], "f": 0, "t": 114, "d": [865] },
 						{ "px": [448,336], "src": [160,96], "f": 0, "t": 118, "d": [868] },
 						{ "px": [464,336], "src": [160,80], "f": 0, "t": 100, "d": [869] },

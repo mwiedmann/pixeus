@@ -48,6 +48,9 @@ LevelOveralLayout* level;
 unsigned char energy = 0;
 unsigned short gold = 0;
 unsigned char lives = 2;
+unsigned char hasScuba = 0;
+unsigned char hasWeapon = 0;
+unsigned char hasBoots = 0;
 
 // This is a "fake" exit returned when the player has died
 Exit playerDied = {
@@ -165,6 +168,22 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 gold+= goldCollision->amount;
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
+            } else if (entityCollision->entityType == ScubaEnum) {
+                hasScuba = 1;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
+            } else if (entityCollision->entityType == WeaponEnum) {
+                hasWeapon = 1;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
+            } else if (entityCollision->entityType == BootsEnum) {
+                hasBoots = 1;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
+            } else if (entityCollision->entityType == ExtraLifeEnum) {
+                lives++;
+                hideEntity(entityCount, entityCollision);
+                updateHeader = 1;
             }
         }
 
@@ -239,10 +258,16 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             player.graphicsAddress = SPRITE_MEM_PLAYER;
             x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress);
-        } else if (tileCollision.type == Water && player.graphicsAddress != SPRITE_MEM_PLAYER_SCUBA) {
-            player.graphicsAddress = SPRITE_MEM_PLAYER_SCUBA;
-            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
-                player.graphicsAddress);
+        } else if (tileCollision.type == Water) {
+            if (!hasScuba) {
+                // Player needs the Scuba gear to survive in water. DEAD!
+                return &playerDied;
+            }
+            if (player.graphicsAddress != SPRITE_MEM_PLAYER_SCUBA) {
+                player.graphicsAddress = SPRITE_MEM_PLAYER_SCUBA;
+                x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
+                    player.graphicsAddress);
+            }
         }
 
         // Check if player is moving left/right

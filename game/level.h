@@ -41,7 +41,7 @@ typedef struct EnemyLayoutList {
     EnemyLayout *enemies;
 } EnemyLayoutList;
 
-typedef enum { EmptyEnum = 0, EntranceEnum = 1, ExitEnum = 2, EnergyEnum = 3, GoldEnum = 4 } EntityType;
+typedef enum { EmptyEnum = 0, EntranceEnum = 1, ExitEnum = 2, EnergyEnum = 3, GoldEnum = 4, ScubaEnum = 5, WeaponEnum = 6, BootsEnum = 7, ExtraLifeEnum = 8 } EntityType;
 
 typedef struct Entity {
     unsigned char entityType;

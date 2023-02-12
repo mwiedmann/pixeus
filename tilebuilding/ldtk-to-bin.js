@@ -8,7 +8,7 @@ const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
-const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4 }
+const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
 
 const TilesImageMap = {
   "foresttiles.png": 1,
@@ -93,6 +93,23 @@ const createLevelCode = (levelNum, level) => {
 
       goldpiles.forEach((e) => {
         entityBytes.push(...[e.entityType, e.x, e.y, e.amount, e.unused1])
+      })
+
+    // Items
+    const items = entityInstances
+      .filter((e) => e.__identifier === "Item")
+      .map((e) => {
+        return {
+          entityType: EntityTypeEnum[fiGet(e.fieldInstances, 'type')],
+          x: e.__grid[0],
+          y: e.__grid[1],
+          unused0: 0,
+          unused1: 0
+        };
+      });
+
+      items.forEach((e) => {
+        entityBytes.push(...[e.entityType, e.x, e.y, e.unused0, e.unused1])
       })
 
     // Entrances

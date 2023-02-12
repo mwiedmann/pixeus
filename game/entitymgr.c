@@ -30,15 +30,20 @@ EntityList *cachedEntityListGet(unsigned char levelNum) {
 
 unsigned char entitiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i, index;
+    
+    // Some of these are 0 because we don't create anything for them. They are skipped.
+    void (*entityCreate[])(Sprite*, Entity*, unsigned char) = {
+        0, 0, 0, energyCreate, goldCreate, scubaCreate, weaponCreate, bootsCreate, extraLifeCreate
+    };
 
     for (i=0,index=0; i<level->entityList->length; i++) {
-        if (level->entityList->entities[i].entityType == EnergyEnum) {
-            energyCreate(&entitySprites[index++], &level->entityList->entities[i], nextSpriteIndex++);
-        } else if (level->entityList->entities[i].entityType == GoldEnum) {
-            goldCreate(&entitySprites[index++], &level->entityList->entities[i], nextSpriteIndex++);
+        if (*entityCreate[level->entityList->entities[i].entityType] != 0) {
+            (*entityCreate[level->entityList->entities[i].entityType])(
+                &entitySprites[index++], &level->entityList->entities[i], nextSpriteIndex++
+            );
         }
     }
-
+    
     return index;
 }
 

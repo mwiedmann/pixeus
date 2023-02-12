@@ -33,6 +33,10 @@ void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
 void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index);
 void goldCreate(Sprite *b, Entity *entityInfo, unsigned char index);
+void scubaCreate(Sprite *b, Entity *entityInfo, unsigned char index);
+void bootsCreate(Sprite *b, Entity *entityInfo, unsigned char index);
+void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index);
+void extraLifeCreate(Sprite *b, Entity *entityInfo, unsigned char index);
 void shipCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
 
