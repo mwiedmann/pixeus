@@ -40,7 +40,7 @@
 #define PLAYER_SWIM_SPEED_NORMAL 6
 #define PLAYER_SWIM_SPEED_WITH_BOOTS 7
 
-#define PLAYER_JUMP_FRAMES 16
+#define PLAYER_JUMP_FRAMES 17
 #define PLAYER_WATER_JUMP_FRAMES 16
 
 #define BULLET_DIST_NORMAL 128
@@ -284,7 +284,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress);
         } else if (tileCollision.type == Water) {
-            if (!hasScuba) {
+            if (!hasScuba && !testMode) {
                 // Player needs the Scuba gear to survive in water. DEAD!
                 return &playerDrowned;
             }
