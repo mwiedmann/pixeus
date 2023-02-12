@@ -6,6 +6,8 @@
 #include "level.h"
 #include "levelutils.h"
 
+#define ENEMY_LASER_DIST 200
+
 AISprite masterEnemiesList[16];
 Sprite enemyLasers[16];
 
@@ -80,6 +82,7 @@ void enemyShot(short x, short y, unsigned char direction) {
             laser->zDepth = BetweenL0L1;
             laser->lastTileX=0;
             laser->lastTileY=0;
+            laser->startX = x;
             spriteMove(laser, x, y);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             x16SpriteIdxSetHFlip(laser->index, laser->animationDirection);
@@ -184,7 +187,8 @@ void enemyLasersMove(LevelOveralLayout *level) {
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             
             spriteTouchingTile(level, laser, &tileCollision);
-            if (tileCollision.type == Ground || laser->x < 0 || laser->x > 639) {
+            if (tileCollision.type == Ground || laser->x < 0 || laser->x > 639 || 
+                abs(laser->x - laser->startX) >= ENEMY_LASER_DIST) {
                 // TODO: Explosion for enemy lasers?
                 // Need more explosion sprites
                 // if (tileCollision.type == Ground) {

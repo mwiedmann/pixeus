@@ -5,6 +5,9 @@
 #include "sprites.h"
 #include "gametiles.h"
 
+#define PLAYER_NEAR_X 180
+#define PLAYER_NEAR_Y 40
+
 Entity *playerTouchingEntity(EntityList *entityList, Sprite *sprite) {
     unsigned char i,x,y;
     
@@ -34,7 +37,7 @@ unsigned char playerNear(Sprite *player, short x, short y) {
     // TODO: Eventually we will want the distance here to come from the specific enemy
     // Some enemies may be dumber and not see the player until very close and others smarter
     // this works fine as a general AI awareness routine for now.
-    return (abs(player->x-x) <= 170 && abs(player->y-y)<=40) ? 1 : 0;
+    return (abs(player->x-x) <= PLAYER_NEAR_X && abs(player->y-y)<=PLAYER_NEAR_Y) ? 1 : 0;
 }
 
 unsigned char facePlayer(Sprite *player, short x) {
