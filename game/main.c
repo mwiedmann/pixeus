@@ -35,8 +35,18 @@
 #define PLAYER_WATER_JUMP_SPEED_NORMAL 12
 #define PLAYER_WATER_JUMP_SPEED_BOOTS 14
 
+#define PLAYER_SPEED_NORMAL 12
+#define PLAYER_SPEED_WITH_BOOTS 14
+#define PLAYER_SWIM_SPEED_NORMAL 6
+#define PLAYER_SWIM_SPEED_WITH_BOOTS 7
+
 #define PLAYER_JUMP_FRAMES 16
 #define PLAYER_WATER_JUMP_FRAMES 16
+
+#define BULLET_DIST_NORMAL 128
+#define BULLET_DIST_WITH_WEAPON 150
+#define BULLET_SPEED_NORMAL 30
+#define BULLET_SPEED_WITH_WEAPON 45
 
 #define DEATH_PAUSE_FRAMES = 120
 
@@ -289,7 +299,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL-(tileCollision.type == Water ? player.swimSpeed : player.speed));
+            spriteMoveXL(&player, player.xL-(tileCollision.type == Water
+                ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
+                : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
+            ));
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -297,7 +310,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL+(tileCollision.type == Water ? player.swimSpeed : player.speed));
+            spriteMoveXL(&player, player.xL+(tileCollision.type == Water
+                ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
+                : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
+            ));
         }
 
         // Change animation if jumping or moving and hit loop count
@@ -323,7 +339,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         
         // Move the bullet (yes, the player can only have 1 active bullet right now)
         if (bullet.active == 1) {
-            spriteMoveX(&bullet, bullet.animationDirection == 0 ? bullet.x-bullet.speed : bullet.x+bullet.speed);
+            spriteMoveXL(&bullet, bullet.animationDirection == 0
+                ? bullet.xL-(hasWeapon ? BULLET_SPEED_WITH_WEAPON : BULLET_SPEED_NORMAL) 
+                : bullet.xL+(hasWeapon ? BULLET_SPEED_WITH_WEAPON : BULLET_SPEED_NORMAL));
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
         }
 
@@ -415,7 +433,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
             spriteTouchingTile(level, &bullet, &tileCollision);
-            if (tileCollision.type == Ground || bullet.x < 0 || bullet.x > 639 || abs(bullet.x - bullet.startX) >= 128) {
+            if (tileCollision.type == Ground || bullet.x < 0 || bullet.x > 639 || 
+                abs(bullet.x - bullet.startX) >= (hasWeapon ? BULLET_DIST_WITH_WEAPON : BULLET_DIST_NORMAL)) {
                 if (tileCollision.type == Ground) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);

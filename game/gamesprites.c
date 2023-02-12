@@ -123,8 +123,6 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;
     p->lastY = p->y;
-    p->speed = 12;
-    p->swimSpeed = 6;
 
     spriteInit(p);
     x16SpriteIdxSetXY(p->index, p->x, p->y);
@@ -275,8 +273,6 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->frames = 1;
     b->x = 320;
     b->y = 240;
-    b->speed = 4;
-    b->swimSpeed = 3;
 
     spriteInit(b);
 }
