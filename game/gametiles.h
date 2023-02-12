@@ -15,6 +15,5 @@
 
 void standardTilesLoad();
 void tilesConfig(unsigned char tilesetId);
-void loadFont();
 
 #endif

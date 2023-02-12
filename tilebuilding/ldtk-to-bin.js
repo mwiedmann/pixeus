@@ -9,6 +9,7 @@ const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
+const tilesStartTileId = 44
 
 const TilesImageMap = {
   "foresttiles.png": 1,
@@ -32,7 +33,6 @@ const createLevelCode = (levelNum, level) => {
         movementTypeBytes.push(grid[count])
       }
     }
-    // console.log(masterCode)
   };
 
   const tilesBytes = [];
@@ -43,12 +43,10 @@ const createLevelCode = (levelNum, level) => {
       tilesBytes.push(parseInt(g.px[0] / 16));
       tilesBytes.push(parseInt(g.px[1] / 16));
       tilesBytes.push(1)
-      tilesBytes.push(g.t + 41); // Add 1 because the game adds Tile:0 as an empty tile + the font tileset
+      tilesBytes.push(g.t + tilesStartTileId); // Add 1 because the game adds Tile:0 as an empty tile + the font tileset
       tilesBytes.push(layer)
       tilesBytes.push(g.f === 2 || g.f === 3 ? 1 : 0);
       tilesBytes.push(g.f === 1 || g.f === 3 ? 1 : 0);
-
-      // allGridTiles.push({ x, y, length: 1, type, layer, vFlip, hFlip });
     });
   };
 
@@ -169,7 +167,6 @@ const createLevelCode = (levelNum, level) => {
 
     enemies.forEach((e) => {
         enemiesBytes.push(...[e.x, e.y, e.moveDir, e.patrolA, e.patrolB, e.patrolDir, e.type, 0])
-        //return `    { ${e.x}, ${e.y}, ${e.moveDir}, ${e.patrolA}, ${e.patrolB}, ${e.patrolDir}, ${e.type}, 0 }`;
       })
 
   };
@@ -198,17 +195,10 @@ const createLevelCode = (levelNum, level) => {
     }
   });
 
-  // Added a 0, 0 2 byte header required for cbm_k_load
-  // Its an optional address to load into. We don't use it but its required
-  /*
-  const movementTypeBytes = []
-  const tilesBytes = []
-  const entityBytes = []
-  const enemiesBytes = []
-  */
-
   const tilesLength = tilesBytes.length/7
 
+  // Added a 0, 0 2 byte header required for cbm_k_load
+  // Its an optional address to load into. We don't use it but its required
   const output = new Uint8Array([
     0, 0,
     tilesetId,

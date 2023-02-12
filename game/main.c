@@ -30,8 +30,10 @@
 #define PLAYER_FALL_SPEED 20
 #define PLAYER_WATER_FALL_SPEED 4
 
-#define PLAYER_JUMP_SPEED 20
-#define PLAYER_WATER_JUMP_SPEED 12
+#define PLAYER_JUMP_SPEED_NORMAL 20
+#define PLAYER_JUMP_SPEED_BOOTS 24
+#define PLAYER_WATER_JUMP_SPEED_NORMAL 12
+#define PLAYER_WATER_JUMP_SPEED_BOOTS 14
 
 #define PLAYER_JUMP_FRAMES 16
 #define PLAYER_WATER_JUMP_FRAMES 16
@@ -87,7 +89,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
-    drawGameHeader(gold, energy, lives);
+    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots);
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     entityCount = entitiesCreate(level, nextSpriteIndex);
@@ -242,7 +244,16 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // Player is jumping, move them up
             jumpFrames--;
             player.going==1;
-            spriteMoveYL(&player, player.yL-(tileCollision.type == Water ? PLAYER_WATER_JUMP_SPEED : PLAYER_JUMP_SPEED));
+            spriteMoveYL(&player, player.yL-(
+                tileCollision.type == Water 
+                ? hasBoots 
+                    ? PLAYER_WATER_JUMP_SPEED_BOOTS
+                    : PLAYER_WATER_JUMP_SPEED_NORMAL 
+                : hasBoots
+                    ? PLAYER_JUMP_SPEED_BOOTS
+                    : PLAYER_JUMP_SPEED_NORMAL
+                )
+            );
             
             // Don't let the player jump through solid ground
             // Move them back if they hit something
@@ -376,7 +387,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             if (!testMode) {
                 // Exit the level. The outer loop will reset.
                 return &playerDied;
-                
             }
         } else if (bullet.active == 1 && collision == 0b1010) {
             // This is a player bullet/enemy collision
@@ -386,7 +396,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // Find the enemy
             hitEnemy = findEnemyCollision(&bullet);
             if (hitEnemy != 0) {
-                hitEnemy->health--;
+                // Having the weapon does 2 dmg
+                hitEnemy->health = hitEnemy->health == 1 ? 0 : hitEnemy->health - (1 + hasWeapon);
                 if (hitEnemy->health == 0) {
                     hitEnemy->sprite.active = 0;
                     hitEnemy->sprite.zDepth = Disabled;
@@ -418,7 +429,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // If anything in the header changes (gold, energy, lives, etc.), redraw it
         if (updateHeader) {
             updateHeader = 0;
-            drawGameHeader(gold, energy, lives);
+            drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots);
         }
     }
 }

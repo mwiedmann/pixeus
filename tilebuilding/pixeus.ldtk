@@ -1067,6 +1067,57 @@
 								"id": "V_String",
 								"params": ["Scuba"]
 							}] }]
+						},
+						{
+							"__identifier": "Item",
+							"__grid": [24,21],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#0099DB",
+							"iid": "e29a8bd0-9f30-11ed-8be2-b140e94312cc",
+							"width": 16,
+							"height": 16,
+							"defUid": 38,
+							"px": [384,336],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Weapon", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Weapon"]
+							}] }]
+						},
+						{
+							"__identifier": "Item",
+							"__grid": [23,21],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#0099DB",
+							"iid": "e5cd5530-9f30-11ed-8be2-07ec03b2941d",
+							"width": 16,
+							"height": 16,
+							"defUid": 38,
+							"px": [368,336],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Boots", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Boots"]
+							}] }]
+						},
+						{
+							"__identifier": "Item",
+							"__grid": [16,21],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#0099DB",
+							"iid": "e87c4890-9f30-11ed-8be2-492810aa206e",
+							"width": 16,
+							"height": 16,
+							"defUid": 38,
+							"px": [256,336],
+							"fieldInstances": [{ "__identifier": "type", "__value": "ExtraLife", "__type": "LocalEnum.Items", "__tile": null, "defUid": 40, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["ExtraLife"]
+							}] }]
 						}
 					]
 				},

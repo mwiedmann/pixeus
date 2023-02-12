@@ -14,6 +14,9 @@ void standardTilesLoad() {
         }
     }
 
+    imageFileLoad(2, TILE_MEM_BANK, TILE_SCUBA, "images/scuba.bin");
+    imageFileLoad(2, TILE_MEM_BANK, TILE_WEAPON, "images/weapon.bin");
+    imageFileLoad(2, TILE_MEM_BANK, TILE_BOOTS, "images/boots.bin");
     imageFileLoad(2, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");
 }
 
@@ -27,8 +30,4 @@ void tilesConfig(unsigned char tilesetId) {
 
     sprintf(filename, "images/tileset%d.bin", tilesetId);
     imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
-}
-
-void loadFont() {
-    imageFileLoad(2, FONT_MEM_BANK, FONT_MEM, "images/fontsimple.bin");
 }

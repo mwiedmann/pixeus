@@ -3,29 +3,33 @@
 #include "memmap.h"
 #include "gametiles.h"
 #include "x16graphics.h"
-// ! = 33
+
 unsigned char letterToTile(unsigned char letter) {
     unsigned char tile;
 
     if (letter >= 193 && letter <= 218) {
-        tile = letter - 192;
+        tile = letter - 193;
     } else if (letter >= 48 && letter <= 57) {
-        tile = letter - 21;
+        tile = letter - 22;
     } else if (letter == 58) {
-        tile = 37;
+        tile = 36;
     } else if (letter == 46) {
-        tile = 38;
+        tile = 37;
     } else if (letter == 63) {
-        tile = 39;
+        tile = 38;
     } else if (letter == 45) {
-        tile = 40;
+        tile = 39;
     } else if (letter == 33) {
-        tile = 41;
+        tile = 40;
+    } else if (letter == SCUBA_TILEID || letter == WEAPON_TILEID || letter == BOOTS_TILEID) {
+        // Special case to show some item icons
+        // Not really part of the font but they exist as tiles and show with text sometimes (e.g. the header)
+        return letter;
     } else {
-        tile = 0;
+        return 0;
     }
 
-    return tile;
+    return tile + FONT_TILEID_START;
 }
 
 void drawTextRow(unsigned char* text, unsigned char length, unsigned char row, unsigned char col) {
@@ -39,9 +43,14 @@ void drawTextRow(unsigned char* text, unsigned char length, unsigned char row, u
     }
 }
 
-void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives) {
+void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives,
+    unsigned short hasScuba, unsigned char hasWeapon, unsigned char hasBoots) {
     unsigned char text[40];
 
-    sprintf(text, " GOLD:%05u    ENERGY:%03u      LIVES:%02u ", gold, energy, lives);
+    sprintf(text, " GOLD:%05u  ENERGY:%03u  LIVES:%02u  %c%c%c", gold, energy, lives, 
+        (hasScuba ? SCUBA_TILEID : '?'),
+        (hasWeapon ? WEAPON_TILEID : '?'),
+        (hasBoots ? BOOTS_TILEID : '?'));
+
     drawTextRow(text, 40, 0, 0);
 }

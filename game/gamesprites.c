@@ -33,6 +33,10 @@ void spriteDataLoad() {
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SHIP, "images/ship.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_ENERGY, "images/energy.bin");
     imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GOLD, "images/gold.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCUBA, "images/scuba.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WEAPON, "images/weapon.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BOOTS, "images/boots.bin");
+    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXTRA_LIFE, "images/extralife.bin");
 
     // Back to memory bank 1
     POKE(0, 1);
@@ -347,10 +351,10 @@ void scubaCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->width = PX16;
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
-    b->graphicsAddress = SPRITE_MEM_GOLD;
-    b->frames = 4;
+    b->graphicsAddress = SPRITE_MEM_SCUBA;
+    b->frames = 1;
     b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 10;
+    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -368,10 +372,10 @@ void bootsCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->width = PX16;
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
-    b->graphicsAddress = SPRITE_MEM_GOLD;
-    b->frames = 4;
+    b->graphicsAddress = SPRITE_MEM_BOOTS;
+    b->frames = 1;
     b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 10;
+    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -389,10 +393,10 @@ void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->width = PX16;
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
-    b->graphicsAddress = SPRITE_MEM_GOLD;
-    b->frames = 4;
+    b->graphicsAddress = SPRITE_MEM_WEAPON;
+    b->frames = 1;
     b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 10;
+    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -410,10 +414,10 @@ void extraLifeCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->width = PX16;
     b->height = PX16;
     b->graphicsBank = SPRITE_MEM_BANK;
-    b->graphicsAddress = SPRITE_MEM_GOLD;
-    b->frames = 4;
+    b->graphicsAddress = SPRITE_MEM_EXTRA_LIFE;
+    b->frames = 1;
     b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 10;
+    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
