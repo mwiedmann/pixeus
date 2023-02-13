@@ -32,7 +32,7 @@ unsigned char showTitleScreen() {
     // Start in VBank 0, Addr 0
     POKE(LAYER_1_TILEBASE, 0);
 
-    imageFileLoad(2, 0, 0, "images/title.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "images/title.bin");
 
     while(1) {
         joy = joy_read(0);

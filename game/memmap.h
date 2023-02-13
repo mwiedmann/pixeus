@@ -65,4 +65,15 @@
 #define BOOTS_TILEID 3
 #define FONT_TILEID_START 4
 
+/**
+ * Hi Mem bank used to store current level data
+*/
+#define LEVEL_BANK 2
+
+/**
+ * Starting bank used when loading images
+ * Needs to not collide with the LEVEL_BANK
+*/
+#define IMAGE_LOAD_BANK 3
+
 #endif

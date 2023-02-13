@@ -10,14 +10,14 @@
 #include "gametiles.h"
 
 LevelOveralLayout *levelGet(unsigned char levelNum) {
-    unsigned short x,y;
+    unsigned short x;
     unsigned char tilesetId;
     unsigned short tilesLength;
     unsigned char entitiesLength;
     unsigned char enemiesLength;
     char filename[32];
     unsigned char *movementTypes;
-
+    
     TileLayout *tiles;
     TileLayoutList *tileList;
     Entity *entities;
@@ -27,10 +27,10 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     LevelOveralLayout *level;
     
     unsigned short ramstart = (unsigned short)BANK_RAM;
-    sprintf(filename, "levels/level%d.bin", levelNum);
+    sprintf(filename, "levels/level%u.bin", levelNum);
 
     // Load the level file into Banked RAM
-    POKE(0, 2);
+    POKE(0, LEVEL_BANK);
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
     cbm_k_load(0, (unsigned int)ramstart);
@@ -42,21 +42,19 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     entitiesLength = *(unsigned char*)(ramstart+3);
     enemiesLength = *(unsigned char*)(ramstart+4);
     
-    // Movement Types is always a fixed 40x30 size so we don't need a length
-    movementTypes = malloc(1200);
+    // The lengths take up 5 bytes
     ramstart+= 5;
-    for (y=0; y<30; y++) {
-        for (x=0; x<40; x++) {
-            ((unsigned char[30][40])movementTypes)[y][x] = *(unsigned char*)(ramstart);
-            ramstart++;
-        }
-    }
+
+    // Movement Types is always a fixed 40x30 size so we don't need a length
+    // Point movementTypes to the data in HI RAM and advance the pointer 1200
+    movementTypes = ramstart;
+    ramstart+= 1200;
 
     // TILES
-    tiles = malloc(tilesLength * sizeof(TileLayout));
-    for (x=0; x<tilesLength * sizeof(TileLayout); x++) {
-        ((unsigned char*)tiles)[x] = *(unsigned char*)(ramstart+x);
-    }
+    // Point tiles to the data in HI RAM
+    tiles = ramstart;
+
+    // Allocate the structure for the list/length
     tileList = malloc(5);
     tileList->tilesetId = tilesetId;
     tileList->length = tilesLength;
@@ -66,8 +64,9 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
     // Entities
     // See if we have already cached the entity list
-    // Use it if we have
     // We cache this because entities like energy and gold don't respawn
+    // We don't use HI RAM here because we cache it
+    // Its not much memory but we could refacto this into other HI RAM (later)
     entityList = cachedEntityListGet(levelNum);
     if (entityList == 0) {
         entities = malloc(entitiesLength * sizeof(Entity));
@@ -81,10 +80,9 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     ramstart+= entitiesLength * sizeof(Entity);
 
     // Enemies
-    enemies = malloc(enemiesLength * sizeof(EnemyLayout));
-    for (x=0; x<enemiesLength * sizeof(EnemyLayout); x++) {
-        ((unsigned char*)enemies)[x] = *(unsigned char*)(ramstart+x);
-    }
+    // Point enemies to the data in HI RAM
+    enemies = ramstart;
+    
     enemyList = malloc(4);
     enemyList->length = enemiesLength;
     enemyList->enemies = enemies;
@@ -106,16 +104,8 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 }
 
 void freeLevel(LevelOveralLayout *level) {
-    free(level->movementTypes);
-    free(level->tileList->tiles);
     free(level->tileList);
-    free(level->enemyList->enemies);
     free(level->enemyList);
-
-    // Not freeing this because we cache it now
-    // free(level->entityList->entities);
-    // free(level->entityList);
-
     free(level);
 }
 

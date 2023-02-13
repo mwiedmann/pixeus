@@ -14,10 +14,10 @@ void standardTilesLoad() {
         }
     }
 
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SCUBA, "images/scuba.bin");
-    imageFileLoad(2, TILE_MEM_BANK, TILE_WEAPON, "images/weapon.bin");
-    imageFileLoad(2, TILE_MEM_BANK, TILE_BOOTS, "images/boots.bin");
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "images/scuba.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "images/weapon.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "images/boots.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");
 }
 
 void tilesConfig(unsigned char tilesetId) {
@@ -29,5 +29,5 @@ void tilesConfig(unsigned char tilesetId) {
     vMemSetIncMode(1);
 
     sprintf(filename, "images/tileset%d.bin", tilesetId);
-    imageFileLoad(2, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
 }

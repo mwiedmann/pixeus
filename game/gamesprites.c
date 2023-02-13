@@ -1,5 +1,4 @@
 #include <6502.h>
-#include <peekpoke.h>
 #include <cx16.h>
 #include "gamesprites.h"
 #include "x16graphics.h"
@@ -19,27 +18,24 @@
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
 void spriteDataLoad() {
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER_SCUBA, "images/guyscuba.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SHIP, "images/ship.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_ENERGY, "images/energy.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_GOLD, "images/gold.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_SCUBA, "images/scuba.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_WEAPON, "images/weapon.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_BOOTS, "images/boots.bin");
-    imageFileLoad(2, SPRITE_MEM_BANK, SPRITE_MEM_EXTRA_LIFE, "images/extralife.bin");
-
-    // Back to memory bank 1
-    POKE(0, 1);
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER, "images/guyrun.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_PLAYER_SCUBA, "images/guyscuba.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_EXP_SMALL, "images/expsmall.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_SNAKE, "images/snake.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_BEE, "images/bee.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_GHOST, "images/ghost.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_SCORPION, "images/scorpion.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_WASP, "images/wasp.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_FISH1, "images/fish1.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_BIG_GHOST, "images/bigghost.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_LASER, "images/laser.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_SHIP, "images/ship.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_ENERGY, "images/energy.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_GOLD, "images/gold.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_SCUBA, "images/scuba.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_WEAPON, "images/weapon.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_BOOTS, "images/boots.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, SPRITE_MEM_EXTRA_LIFE, "images/extralife.bin");
 }
 
 void spriteIRQConfig() {

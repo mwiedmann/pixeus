@@ -51,8 +51,8 @@ void tileRowGet(unsigned char *orig, unsigned char row){
     unsigned char i;
 
     vMemSetIncMode(1);
-    vMemSetBank(LAYER0_MAP_MEM_BANK);
-    vMemSetAddr(LAYER0_MAP_MEM + (row * TILES_ACROSS * 2));
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    vMemSetAddr(LAYER1_MAP_MEM + (row * TILES_ACROSS * 2));
 
     for (i=0; i<80; i++) {
         orig[i] = vMemGetData0();
@@ -67,8 +67,8 @@ void tileRowSet(unsigned char *orig, unsigned char row) {
     }
 
     vMemSetIncMode(1);
-    vMemSetBank(LAYER0_MAP_MEM_BANK);
-    vMemSetAddr(LAYER0_MAP_MEM + (row * TILES_ACROSS * 2));
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    vMemSetAddr(LAYER1_MAP_MEM + (row * TILES_ACROSS * 2));
 
     for (i=0; i<80; i++) {
          vMemSetData0(orig[i]);
@@ -83,8 +83,8 @@ void drawTextRow(unsigned char* text, unsigned char* orig, unsigned char row, un
     }
 
     vMemSetIncMode(1);
-    vMemSetBank(LAYER0_MAP_MEM_BANK);
-    vMemSetAddr(LAYER0_MAP_MEM + (row * TILES_ACROSS * 2) + (col * 2));
+    vMemSetBank(LAYER1_MAP_MEM_BANK);
+    vMemSetAddr(LAYER1_MAP_MEM + (row * TILES_ACROSS * 2) + (col * 2));
 
     for (i=0; i<40; i++) {
         // Stop if a null terminator is hit

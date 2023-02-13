@@ -51,6 +51,7 @@
 #define DEATH_PAUSE_FRAMES = 120
 
 unsigned char testMode = 0;
+// unsigned char debugMsg[41];
 
 // A few top level structs to hold things that stay
 // active throughout the game life

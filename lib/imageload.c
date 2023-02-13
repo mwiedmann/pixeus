@@ -38,7 +38,7 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
     // I had to increment the bank and do it in chunks though.
     for (i=0; i<length/8192+1; i++) {
         // Set the bank to read from
-        POKE(0, 2+i);
+        POKE(0, startMemBank+i);
 
         // void memory_copy(word source: r0, word target: r1, word num_bytes: r2);
         POKEW(0x2, (unsigned int)startingImageAddr);
@@ -59,6 +59,9 @@ unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, 
     unsigned char endingMemBank;
     unsigned short finalmem;
     unsigned long length;
+    unsigned char currentMemBank;
+
+    currentMemBank = PEEK(0);
 
     // The memory bank to start loading data into.
     // The bank will auto-jump to the next bank when this bank is full (pretty neat).
@@ -92,6 +95,9 @@ unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, 
         If the A register is 3, the kernal loads into VRAM, starting from $10000 + the specified starting address.
     */
     copyBankedRAMToVRAM(startMemBank, vramBank, vramAddr, length, (unsigned short)BANK_RAM);
+
+    // Restore the previous mem bank
+    POKE(0, currentMemBank);
 
     return length;
 }
