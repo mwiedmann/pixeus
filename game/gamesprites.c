@@ -55,6 +55,16 @@ void spriteReset(Sprite *sp) {
     x16SpriteIdxSetXY(sp->index, sp->x, sp->y);
 }
 
+void spriteDefaults(Sprite *sp) {
+    sp->graphicsBank = SPRITE_MEM_BANK;
+    sp->width = PX16;
+    sp->height = PX16;
+    sp->frames = 4;
+    sp->frameSize = 256;
+    sp->collisionMask = ENEMY_COLLISION_MASK;
+    sp->zDepth = BetweenL0L1;
+}
+
 void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char index)
 {
     sp->sprite.index = index;
@@ -62,20 +72,13 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->sprite.clrMode = 1;
     
     // Possible zDepth will change but leave for now
-    sp->sprite.zDepth = BetweenL0L1;
-    sp->sprite.graphicsBank = SPRITE_MEM_BANK;
-    sp->sprite.animationCount = 0;    
-    sp->sprite.animationStopFrame = 0;
     sp->sprite.animationDirection = layout->moveDir;
-    sp->sprite.animationFrame = 0;
     sp->sprite.x = layout->x * TILE_PIXEL_WIDTH;
     sp->sprite.y = layout->y * TILE_PIXEL_HEIGHT;
     sp->sprite.xL = sp->sprite.x * MOVE_FACTOR;
     sp->sprite.yL = sp->sprite.y * MOVE_FACTOR;
     sp->sprite.lastX = sp->sprite.x;
     sp->sprite.lastY = sp->sprite.y;
-    sp->sprite.lastTileX = 0;
-    sp->sprite.lastTileY = 0;
 
     // Default for now
     if (sp->sprite.swimSpeed == 0) {
@@ -97,22 +100,15 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
 }
 
 void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
+    spriteDefaults(p);
+    
     p->index = index;
     p->active = 1;
     p->clrMode = 1;
     p->collisionMask = PLAYER_COLLISION_MASK;
     p->zDepth = Disabled;
-    p->width = PX16;
-    p->height = PX16;
-    p->graphicsBank = SPRITE_MEM_BANK;
     p->graphicsAddress = SPRITE_MEM_PLAYER;
-    p->frames = 4;
-    p->frameSize = 256; // Calculated as width * height
-    p->animationCount = 0;
     p->animationSpeed = 6;
-    p->animationStopFrame = 0;
-    p->animationDirection = 0;
-    p->animationFrame = 0;
     p->x = entrance->x * TILE_PIXEL_WIDTH;
     p->y = entrance->y * TILE_PIXEL_HEIGHT;
     p->xL = p->x * MOVE_FACTOR;
@@ -126,12 +122,9 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
 
 void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
 {
-    snake->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    snake->sprite.width = PX16;
-    snake->sprite.height = PX16;
+    spriteDefaults(&snake->sprite);
+
     snake->sprite.graphicsAddress = SPRITE_MEM_SNAKE;
-    snake->sprite.frames = 4;
-    snake->sprite.frameSize = 256; // Calculated as width * height
     snake->sprite.animationSpeed = 6;
     snake->sprite.speed = 8;
 
@@ -142,12 +135,9 @@ void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index)
 
 void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
 {
-    bee->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    bee->sprite.width = PX16;
-    bee->sprite.height = PX16;
+    spriteDefaults(&bee->sprite);
+
     bee->sprite.graphicsAddress = SPRITE_MEM_BEE;
-    bee->sprite.frames = 4;
-    bee->sprite.frameSize = 256; // Calculated as width * height
     bee->sprite.animationSpeed = 6;
     bee->sprite.speed = 13;
 
@@ -158,12 +148,9 @@ void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index)
 
 void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 {
-    ghost->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    ghost->sprite.width = PX16;
-    ghost->sprite.height = PX16;
+    spriteDefaults(&ghost->sprite);
+    
     ghost->sprite.graphicsAddress = SPRITE_MEM_GHOST;
-    ghost->sprite.frames = 4;
-    ghost->sprite.frameSize = 256; // Calculated as width * height
     ghost->sprite.animationSpeed = 20;
     ghost->sprite.speed = 3;
 
@@ -174,12 +161,9 @@ void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 
 void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index)
 {
-    scorpion->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    scorpion->sprite.width = PX16;
-    scorpion->sprite.height = PX16;
+    spriteDefaults(&scorpion->sprite);
+    
     scorpion->sprite.graphicsAddress = SPRITE_MEM_SCORPION;
-    scorpion->sprite.frames = 4;
-    scorpion->sprite.frameSize = 256; // Calculated as width * height
     scorpion->sprite.animationSpeed = 6;
     scorpion->sprite.speed = 6;
 
@@ -190,12 +174,9 @@ void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index
 
 void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
 {
-    wasp->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    wasp->sprite.width = PX16;
-    wasp->sprite.height = PX16;
+    spriteDefaults(&wasp->sprite);
+    
     wasp->sprite.graphicsAddress = SPRITE_MEM_WASP;
-    wasp->sprite.frames = 4;
-    wasp->sprite.frameSize = 256; // Calculated as width * height
     wasp->sprite.animationSpeed = 6;
     wasp->sprite.speed = 12;
 
@@ -206,12 +187,9 @@ void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index)
 
 void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index)
 {
-    fish->sprite.collisionMask = ENEMY_COLLISION_MASK;
-    fish->sprite.width = PX16;
-    fish->sprite.height = PX16;
+    spriteDefaults(&fish->sprite);
+
     fish->sprite.graphicsAddress = SPRITE_MEM_FISH1;
-    fish->sprite.frames = 4;
-    fish->sprite.frameSize = 256; // Calculated as width * height
     fish->sprite.animationSpeed = 30;
     fish->sprite.speed = 3;
 
@@ -222,11 +200,11 @@ void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index)
 
 void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 {
-    ghost->sprite.collisionMask = ENEMY_COLLISION_MASK;
+    spriteDefaults(&ghost->sprite);
+    
     ghost->sprite.width = PX32;
     ghost->sprite.height = PX32;
     ghost->sprite.graphicsAddress = SPRITE_MEM_BIG_GHOST;
-    ghost->sprite.frames = 4;
     ghost->sprite.frameSize = 1024; // Calculated as width * height
     ghost->sprite.animationSpeed = 30;
     ghost->sprite.speed = 3;
@@ -240,31 +218,27 @@ void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index)
 }
 
 void explosionSmallCreate(Sprite *b, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 1;
     b->clrMode = 1;
     b->collisionMask = 0;
     b->zDepth = Disabled;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_EXP_SMALL;
-    b->frames = 4;
-    b->frameSize = 256; // Calculated as width * height
     b->animationSpeed = 6;
 
     spriteInit(b);
 }
 
 void bulletCreate(Sprite *b, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 1;
     b->clrMode = 1;
     b->collisionMask = PLAYER_BULLET_COLLISION_MASK;
     b->zDepth = Disabled;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_PLAYER_BULLET;
     b->frames = 1;
     b->x = 320;
@@ -274,14 +248,13 @@ void bulletCreate(Sprite *b, unsigned char index) {
 }
 
 void laserCreate(Sprite *b, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = ENEMY_LASER_COLLISION_MASK;
     b->zDepth = Disabled;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_LASER;
     b->frames = 1;
     b->x = 320;
@@ -293,17 +266,13 @@ void laserCreate(Sprite *b, unsigned char index) {
 }
 
 void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_ENERGY;
-    b->frames = 4;
-    b->frameSize = 256; // Calculated as width * height
     b->animationSpeed = 10;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
@@ -314,17 +283,13 @@ void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
 }
 
 void goldCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_GOLD;
-    b->frames = 4;
-    b->frameSize = 256; // Calculated as width * height
     b->animationSpeed = 10;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
@@ -335,19 +300,14 @@ void goldCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
 }
 
 void scubaCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_SCUBA;
-    b->frames = 1;
-    b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 0;
-
+    
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
 
@@ -356,18 +316,13 @@ void scubaCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
 }
 
 void bootsCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+    
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_BOOTS;
-    b->frames = 1;
-    b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -377,18 +332,13 @@ void bootsCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
 }
 
 void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_WEAPON;
-    b->frames = 1;
-    b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -398,18 +348,13 @@ void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
 }
 
 void extraLifeCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
+    spriteDefaults(b);
+
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
     b->collisionMask = 0;
-    b->zDepth = BetweenL0L1;
-    b->width = PX16;
-    b->height = PX16;
-    b->graphicsBank = SPRITE_MEM_BANK;
     b->graphicsAddress = SPRITE_MEM_EXTRA_LIFE;
-    b->frames = 1;
-    b->frameSize = 256; // Calculated as width * height
-    b->animationSpeed = 0;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;

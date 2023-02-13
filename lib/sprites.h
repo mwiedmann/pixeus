@@ -29,8 +29,6 @@ typedef struct Sprite {
     short lastY;
     short xL;
     short yL;
-    unsigned char lastTileX;
-    unsigned char lastTileY;
     unsigned char active;
     unsigned char going;
     unsigned char speed;

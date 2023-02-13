@@ -80,8 +80,6 @@ void enemyShot(short x, short y, unsigned char direction) {
             laser->active = 1;
             laser->animationDirection = direction;
             laser->zDepth = BetweenL0L1;
-            laser->lastTileX=0;
-            laser->lastTileY=0;
             laser->startX = x;
             spriteMove(laser, x, y);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
