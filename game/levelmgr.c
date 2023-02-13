@@ -47,12 +47,12 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
     // Movement Types is always a fixed 40x30 size so we don't need a length
     // Point movementTypes to the data in HI RAM and advance the pointer 1200
-    movementTypes = ramstart;
+    movementTypes = (unsigned char*)ramstart;
     ramstart+= 1200;
 
     // TILES
     // Point tiles to the data in HI RAM
-    tiles = ramstart;
+    tiles = (TileLayout *)ramstart;
 
     // Allocate the structure for the list/length
     tileList = malloc(5);
@@ -81,7 +81,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 
     // Enemies
     // Point enemies to the data in HI RAM
-    enemies = ramstart;
+    enemies = (EnemyLayout *)ramstart;
     
     enemyList = malloc(4);
     enemyList->length = enemiesLength;
