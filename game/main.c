@@ -263,6 +263,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     releasedBtnAfterJump = 1;
                 }
             }
+
+            // Player leaving bottom of the screen
+            if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != 255) {
+                levelExitCleanup(enemyCount, entityCount);
+                spriteMove(&player, player.x, LEAVE_LEVEL_X_LEFT);
+                playerScreenExit.level = level->downLevel;
+
+                return &playerScreenExit;
+            }
         } else {
             // Player is jumping, move them up
             jumpFrames--;
