@@ -43,6 +43,8 @@
 #define PLAYER_JUMP_FRAMES 17
 #define PLAYER_WATER_JUMP_FRAMES 16
 
+#define ICE_SLIDE_AMOUNT 3
+
 #define BULLET_DIST_NORMAL 128
 #define BULLET_DIST_WITH_WEAPON 150
 #define BULLET_SPEED_NORMAL 30
@@ -101,8 +103,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
+    short momentum = 0;
+    short momentumChange, moveBase;
 
     TileInfo tileCollision;
+    TileInfo feetLastTouched;
+
     Entity *entityCollision;
     Exit *exitCollision;
     Energy *energyCollision;
@@ -244,7 +250,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             if (tileCollision.type != Empty) {
                 // Move the player to the top of the tile
                 // We do this because as the player falls they may end up wedged a few pixels into a tile
-                if (tileCollision.type == Ground) {
+                if (tileCollision.type == Ground || tileCollision.type == Ice) {
+                    // This is the last surface the player touched
+                    // We track this to know if they are sliding on ice or on better ground
+                    feetLastTouched = tileCollision;
                     spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
                 }
 
@@ -290,14 +299,14 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // Don't let the player jump through solid ground
             // Move them back if they hit something
             spriteTouchingTile(level, &player, &tileCollision);
-            if (tileCollision.type == Ground) {
+            if (tileCollision.type == Ground || tileCollision.type == Ice) {
                 spriteMoveBackY(&player);
             }
         }
 
         // Check the final tile the player is touching to see if the graphics need to change to scuba or back to running
         spriteTouchingTile(level, &player, &tileCollision);
-        if ((tileCollision.type == Ground || tileCollision.type == Empty) && player.graphicsAddress != SPRITE_MEM_PLAYER) {
+        if ((tileCollision.type == Ground || tileCollision.type == Ice || tileCollision.type == Empty) && player.graphicsAddress != SPRITE_MEM_PLAYER) {
             player.graphicsAddress = SPRITE_MEM_PLAYER;
             x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress);
@@ -313,6 +322,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
         }
 
+        moveBase = (tileCollision.type == Water
+            ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
+            : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
+        ) * 10;
+
+        // If standing on Ice, momentum changes slowly
+        // On other ground, movement is instant
+        momentumChange = feetLastTouched.type == Ice ? ICE_SLIDE_AMOUNT : moveBase * 2;
+        
         // Check if player is moving left/right
         if (JOY_LEFT(joy)) {
             player.going=1;
@@ -321,10 +339,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 player.animationDirection=0;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL-(tileCollision.type == Water
-                ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
-                : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
-            ));
+
+            momentum-= momentumChange;
+            if (momentum < (-moveBase)) {
+                momentum = (-moveBase);
+            }
+            spriteMoveXL(&player, player.xL+(momentum/10));
 
             // Player leaving left side of the screen
             if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != 255) {
@@ -341,10 +361,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 player.animationDirection=1;
                 x16SpriteIdxSetHFlip(player.index, player.animationDirection);
             }
-            spriteMoveXL(&player, player.xL+(tileCollision.type == Water
-                ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
-                : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
-            ));
+
+            momentum+= momentumChange;
+            if (momentum > moveBase) {
+                momentum = moveBase;
+            }
+            spriteMoveXL(&player, player.xL+(momentum/10));
 
             // Player leaving right side of the screen
             if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != 255) {
@@ -354,6 +376,21 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
                 return &playerScreenExit;
             }
+        } else {
+            // Player is not trying to move
+            // Slow them down if they are still moving
+            if (momentum > 0) {
+                momentum-= momentumChange;
+                if (momentum < 0) {
+                    momentum = 0;
+                }
+            } else if (momentum < 0) {
+                momentum+= momentumChange;
+                if (momentum > 0) {
+                    momentum = 0;
+                }
+            }
+            spriteMoveXL(&player, player.xL+(momentum/10));
         }
 
         // Change animation if jumping or moving and hit loop count
@@ -403,7 +440,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // With the current code we may end up checking tiles more than needed
         // but it's an O(1) operation since the tiles are in an array, so it should be fine. 
         spriteTouchingTile(level, &player, &tileCollision);
-        if (tileCollision.type == Ground) {
+        if (tileCollision.type == Ground || tileCollision.type == Ice) {
             spriteMoveBackX(&player);
         }
 
@@ -473,9 +510,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // Bullet is off screen or collided with a solid tile
         if (bullet.active == 1) {
             spriteTouchingTile(level, &bullet, &tileCollision);
-            if (tileCollision.type == Ground || bullet.x < 0 || bullet.x > 639 || 
+            if (tileCollision.type == Ground || tileCollision.type == Ice || bullet.x < 0 || bullet.x > 639 || 
                 abs(bullet.x - bullet.startX) >= (hasWeapon ? BULLET_DIST_WITH_WEAPON : BULLET_DIST_NORMAL)) {
-                if (tileCollision.type == Ground) {
+                if (tileCollision.type == Ground || tileCollision.type == Ice) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
                 }

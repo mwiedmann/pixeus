@@ -59,7 +59,11 @@
 			"parallaxScaling": true,
 			"requiredTags": [],
 			"excludedTags": [],
-			"intGridValues": [ { "value": 1, "identifier": "Ground", "color": "#B86F50" }, { "value": 2, "identifier": "Water", "color": "#0099DB" } ],
+			"intGridValues": [
+				{ "value": 1, "identifier": "Ground", "color": "#B86F50" },
+				{ "value": 2, "identifier": "Water", "color": "#0099DB" },
+				{ "value": 3, "identifier": "Ice", "color": "#FFFFFF" }
+			],
 			"autoRuleGroups": [],
 			"autoSourceLayerDefUid": null,
 			"tilesetDefUid": null,
