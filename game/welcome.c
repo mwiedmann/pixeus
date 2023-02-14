@@ -89,7 +89,7 @@ void showIntroScene(Sprite *ship) {
         waitforjiffy();
 
         ship->animationCount++;
-        if (ship->animationCount == ship->animationSpeed) {
+        if (ship->animationCount >= ship->animationSpeed) {
             ship->animationCount=0;
             ship->animationFrame++;
             if (ship->animationFrame == ship->frames) {

@@ -68,10 +68,10 @@ void entitiesAnimate(unsigned char length) {
         // TODO: This seems to be a standard sprite animation, create common function
         entity = &entitySprites[i];
         entity->animationCount++;
-        if (entity->animationCount == entity->animationSpeed) {
+        if (entity->animationCount >= entity->animationSpeed) {
             entity->animationCount=0;
             entity->animationFrame++;
-            if (entity->animationFrame == entity->frames) {
+            if (entity->animationFrame >= entity->frames) {
                 entity->animationFrame = 0;
             }
             x16SpriteIdxSetGraphicsPointer(entity->index, entity->clrMode, entity->graphicsBank,

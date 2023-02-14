@@ -131,10 +131,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 continue;
             }
             ship.animationCount++;
-            if (ship.animationCount == ship.animationSpeed) {
+            if (ship.animationCount >= ship.animationSpeed) {
                 ship.animationCount=0;
                 ship.animationFrame++;
-                if (ship.animationFrame == ship.frames) {
+                if (ship.animationFrame >= ship.frames) {
                     ship.animationFrame = 0;
                 }
                 x16SpriteIdxSetGraphicsPointer(ship.index, ship.clrMode, ship.graphicsBank,
@@ -325,15 +325,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         if (jumpFrames > 0) {
             // No "jump" animation because it looked kinda dumb
             // Leaving this here though in case I change my mind later
-        } else if (player.going==1 && player.animationCount == player.animationSpeed) {
+        } else if (player.going==1 && player.animationCount >= player.animationSpeed) {
             player.animationCount=0;
             player.animationFrame++;
-            if (player.animationFrame == player.frames) {
+            if (player.animationFrame >= player.frames) {
                 player.animationFrame = 0;
             }
             x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
                 player.graphicsAddress+(player.animationFrame * player.frameSize));
-        } else if (player.animationCount == player.animationSpeed && player.animationFrame != player.animationStopFrame) {
+        } else if (player.animationCount >= player.animationSpeed && player.animationFrame != player.animationStopFrame) {
             // If the guy is standing still, always show a certain frame
             // In future this could be a totally different animation
             // We could have a yawn animation for instance for when waiting too long.
@@ -377,13 +377,13 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
         // Manage explosion sprites
         expSmall.animationCount++;
-        if (expSmall.animationCount == expSmall.animationSpeed) {
+        if (expSmall.animationCount >= expSmall.animationSpeed) {
             expSmall.animationCount=0;
             expSmall.animationFrame++;
             x16SpriteIdxSetGraphicsPointer(expSmall.index, expSmall.clrMode, expSmall.graphicsBank,
                 expSmall.graphicsAddress+(expSmall.animationFrame * expSmall.frameSize));
 
-            if (expSmall.animationFrame == expSmall.frames) {
+            if (expSmall.animationFrame >= expSmall.frames) {
                 expSmall.zDepth = Disabled;
                 x16SpriteIdxSetZDepth(expSmall.index, expSmall.zDepth);
             }

@@ -124,10 +124,10 @@ void enemiesMove(Sprite *player, unsigned char length) {
         if (enemy->sprite.active == 1) {
             spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
             enemy->sprite.animationCount++;
-            if (enemy->sprite.animationCount == enemy->sprite.animationSpeed) {
+            if (enemy->sprite.animationCount >= enemy->sprite.animationSpeed) {
                 enemy->sprite.animationCount=0;
                 enemy->sprite.animationFrame++;
-                if (enemy->sprite.animationFrame == enemy->sprite.frames) {
+                if (enemy->sprite.animationFrame >= enemy->sprite.frames) {
                     enemy->sprite.animationFrame = 0;
                 }
                 x16SpriteIdxSetGraphicsPointer(enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,

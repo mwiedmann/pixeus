@@ -307,7 +307,8 @@ void scubaCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->clrMode = 1;
     b->collisionMask = 0;
     b->graphicsAddress = SPRITE_MEM_SCUBA;
-    
+    b->frames = 1;
+
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
 
@@ -323,6 +324,7 @@ void bootsCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->clrMode = 1;
     b->collisionMask = 0;
     b->graphicsAddress = SPRITE_MEM_BOOTS;
+    b->frames = 1;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -339,6 +341,7 @@ void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->clrMode = 1;
     b->collisionMask = 0;
     b->graphicsAddress = SPRITE_MEM_WEAPON;
+    b->frames = 1;
 
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
@@ -355,7 +358,8 @@ void extraLifeCreate(Sprite *b, Entity *entityInfo, unsigned char index) {
     b->clrMode = 1;
     b->collisionMask = 0;
     b->graphicsAddress = SPRITE_MEM_EXTRA_LIFE;
-
+    b->frames = 1;
+    
     b->x = entityInfo->x * TILE_PIXEL_WIDTH;
     b->y = entityInfo->y * TILE_PIXEL_HEIGHT;
 
