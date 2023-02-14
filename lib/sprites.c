@@ -72,11 +72,9 @@ void spriteMoveL(Sprite *sprite, short xL, short yL) {
 
 void spriteMoveXL(Sprite *sprite, short xL) {
     short newX = xL / MOVE_FACTOR;
-    if (newX >= -8 && newX <= 631) {
-        sprite->lastX = sprite->x;
-        sprite->xL = xL;
-        sprite->x = newX;
-    }
+    sprite->lastX = sprite->x;
+    sprite->xL = xL;
+    sprite->x = newX;
 }
 
 void spriteMoveYL(Sprite *sprite, short yL) {

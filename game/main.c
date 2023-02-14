@@ -50,6 +50,10 @@
 
 #define DEATH_PAUSE_FRAMES = 120
 
+#define LEAVE_LEVEL_X_LEFT -8
+#define LEAVE_LEVEL_X_RIGHT 631
+#define LEAVE_LEVEL_Y_DOWN 471
+
 unsigned char testMode = 0;
 // unsigned char debugMsg[41];
 
@@ -69,6 +73,24 @@ unsigned char hasBoots = 0;
 Exit playerEaten = { 255 };
 Exit playerShot = { 254 };
 Exit playerDrowned = { 253 };
+Exit playerScreenExit = { 2, 0, 0, 0, 255 };
+
+void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
+    // This is jumping to another level. We need to cleanup this level.
+    // Clean up the enemies and return the exit info
+    enemiesReset(enemyCount);
+    entitiesReset(entityCount);
+
+    // Hide the ship if leaving level 0
+    if (level->levelNum == 0) {
+        ship.zDepth = Disabled;
+        x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
+    }
+    // Reset any active bullets
+    bullet.active = 0;
+    bullet.zDepth = Disabled;
+    x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+}
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
@@ -154,21 +176,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                     x16SpriteIdxSetXY(player.index, player.x, player.y);
                 } else {
-                    // This is jumping to another level. We need to cleanup this level.
-                    // Clean up the enemies and return the exit info
-                    enemiesReset(enemyCount);
-                    entitiesReset(entityCount);
-
-                    // Hide the ship if leaving level 0
-                    if (level->levelNum == 0) {
-                        ship.zDepth = Disabled;
-                        x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
-                    }
-                    // Reset any active bullets
-                    bullet.active = 0;
-                    bullet.zDepth = Disabled;
-                    x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
-
+                    levelExitCleanup(enemyCount, entityCount);
                     return exitCollision;
                 }
             } else if (entityCollision->entityType == EnergyEnum) {
@@ -308,6 +316,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
                 : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
             ));
+
+            // Player leaving left side of the screen
+            if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != 255) {
+                levelExitCleanup(enemyCount, entityCount);
+                spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
+                playerScreenExit.level = level->leftLevel;
+
+                return &playerScreenExit;
+            }
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -319,6 +336,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
                 : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
             ));
+
+            // Player leaving right side of the screen
+            if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != 255) {
+                levelExitCleanup(enemyCount, entityCount);
+                spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
+                playerScreenExit.level = level->rightLevel;
+
+                return &playerScreenExit;
+            }
         }
 
         // Change animation if jumping or moving and hit loop count
@@ -530,8 +556,11 @@ void main() {
             freeLevel(level);
             level = levelGet(exitCollision.level);
 
-            // Find the entrance the player is linking to and place them there
-            entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
+            // If the player is going to a specific entranace place them there
+            if (exitCollision.entranceId != 255) {
+                entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
+                spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
+            }
         } else {
             // Pause the game for a moment since player died
             for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
@@ -544,7 +573,6 @@ void main() {
             }
         }
 
-        spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
         x16SpriteIdxSetXY(player.index, player.x, player.y);
     }
 
