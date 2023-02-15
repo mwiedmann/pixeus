@@ -61,7 +61,17 @@
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
 #define START_LEVEL 7
 
+// For the ship landing animation
 #define SHIP_STOP_Y 288
+
+// NOTE: If adding more of these, there is a < PLAYER_DROWNED check to update
+// entityType for special exit conditions
+#define PLAYER_DROWNED 253
+#define PLAYER_SHOT 254
+#define PLAYER_EATEN 255
+
+// Special EntranceId meaning the player exited via the edge of the screen
+#define LEAVE_SCREEN_ENTRACE_ID 255
 
 unsigned char testMode = 0;
 // unsigned char debugMsg[41];
@@ -78,11 +88,12 @@ unsigned char hasScuba = 0;
 unsigned char hasWeapon = 0;
 unsigned char hasBoots = 0;
 
-// These are "fake" exits returned when the player has died
-Exit playerEaten = { 255 };
-Exit playerShot = { 254 };
-Exit playerDrowned = { 253 };
-Exit playerScreenExit = { 2, 0, 0, 0, 255 };
+// These are special exits returned when the player has died
+// OR exited by leaving the screen
+Exit playerEaten = { PLAYER_EATEN };
+Exit playerShot = { PLAYER_SHOT };
+Exit playerDrowned = { PLAYER_DROWNED };
+Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 
 void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
     // This is jumping to another level. We need to cleanup this level.
@@ -163,8 +174,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
-            // testMode will speed up the ship so the intro doesn't last so long
-            spriteMoveYL(&ship, ship.yL+(ship.speed+(ship.speed * testMode)));
+            spriteMoveYL(&ship, ship.yL+(ship.speed+ship.speed));
             x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
             if (ship.y >= SHIP_STOP_Y) {
                 showShipScene = 0;
@@ -189,7 +199,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             continue;
         }
 
-        // See if player is touching an exit
+        // See if player is touching an entity (exit, item, energy, gold, etc.)
         entityCollision = playerTouchingEntity(level->entityList, &player);
         if (entityCollision != 0) {
             if (entityCollision->entityType == ExitEnum) {
@@ -245,7 +255,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         player.going=0;
         player.animationCount++;
 
-        // We are changing the guys animation every 6 game loops
+        // We are changing the guys animation every few game loops
         // but hold at this count as we only animate if moving.
         if (player.animationCount > player.animationSpeed) {
             player.animationCount=player.animationSpeed;
@@ -275,7 +285,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
                 }
 
-                // Since the player is touching something, see if they pressed jump button
+                // Since the player is touching something, see if they pressed the jump button
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
@@ -292,7 +302,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
 
             // Player leaving bottom of the screen
-            if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != 255) {
+            if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != LEAVE_SCREEN_ENTRACE_ID) {
                 levelExitCleanup(enemyCount, entityCount);
                 spriteMove(&player, player.x, LEAVE_LEVEL_Y_UP);
                 playerScreenExit.level = level->downLevel;
@@ -322,7 +332,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
 
             // Player leaving top of screen (normally only by swimming)
-            if (player.y <= LEAVE_LEVEL_Y_UP && level->upLevel != 255) {
+            if (player.y <= LEAVE_LEVEL_Y_UP && level->upLevel != LEAVE_SCREEN_ENTRACE_ID) {
                 levelExitCleanup(enemyCount, entityCount);
                 // Move the player an extra few pixels because they will immediately start falling back down
                 // When swimming we want to give them a chance to kick up a few times and not fall back to the previous level
@@ -379,7 +389,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             spriteMoveXL(&player, player.xL+(momentum/10));
 
             // Player leaving left side of the screen
-            if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != 255) {
+            if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != LEAVE_SCREEN_ENTRACE_ID) {
                 levelExitCleanup(enemyCount, entityCount);
                 spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
                 playerScreenExit.level = level->leftLevel;
@@ -401,7 +411,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             spriteMoveXL(&player, player.xL+(momentum/10));
 
             // Player leaving right side of the screen
-            if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != 255) {
+            if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != LEAVE_SCREEN_ENTRACE_ID) {
                 levelExitCleanup(enemyCount, entityCount);
                 spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
                 playerScreenExit.level = level->rightLevel;
@@ -580,10 +590,15 @@ void main() {
     // Use this to track the last tileset so we know if we need to load
     unsigned char lastTilesetId = 255;
 
+    // Running each level will return exit info
+    // It says if the player exited to another level and how, OR if they died
     Exit exitCollision;
+
+    // Need this to hold onto any specific entrance the player is jumping to
+    // For the starting level, the game looks for EntranceId=0
     Entrance *entrance;
     
-    // Clear the cache
+    // Init the level cache
     // We cache some level data (entities) because certain things don't respawn (energy, gold)
     // so we need to remember which ones are gone
     initCachedLevelData();
@@ -645,13 +660,13 @@ void main() {
 
         // If this was a normal level exit (not a player death)
         // The load the next level
-        if (exitCollision.entityType < 253) {
+        if (exitCollision.entityType < PLAYER_DROWNED) {
             // Free the memory for the last level and load the next one
             freeLevel(level);
             level = levelGet(exitCollision.level);
 
             // If the player is going to a specific entranace place them there
-            if (exitCollision.entranceId != 255) {
+            if (exitCollision.entranceId != LEAVE_SCREEN_ENTRACE_ID) {
                 entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
                 spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
             }
@@ -661,9 +676,9 @@ void main() {
                 waitforjiffy();
             }
             switch(exitCollision.entityType) {
-                case 255: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
-                case 254: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
-                case 253: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
+                case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
+                case PLAYER_SHOT: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
+                case PLAYER_DROWNED: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
             }
 
             // Move them back to where they started the level
