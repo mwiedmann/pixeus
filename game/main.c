@@ -59,7 +59,7 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 0
+#define START_LEVEL 7
 
 #define SHIP_STOP_Y 288
 
@@ -595,7 +595,12 @@ void main() {
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
-    
+
+    // Load the palette for the game
+    // It is mostly the standard palette but some colors in the 17-30-ish range
+    // have been swapped out
+    paletteLoad();
+
     testMode = showTitleScreen();
     showShipScene = !testMode;
 

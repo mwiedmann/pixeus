@@ -31,3 +31,7 @@ void tilesConfig(unsigned char tilesetId) {
     sprintf(filename, "images/tileset%d.bin", tilesetId);
     imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
 }
+
+void paletteLoad() {
+    imageFileLoad(IMAGE_LOAD_BANK, PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR, "images/palette.bin");
+}

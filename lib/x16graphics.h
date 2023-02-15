@@ -25,6 +25,9 @@
 #define LAYER_1_MAPBASE 0x9F35
 #define LAYER_1_TILEBASE 0x9F36
 
+#define PALETTE_VRAM_ADDR 0xFA00
+#define PALETTE_VRAM_BANK 1
+
 typedef enum { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 } ZDepth;
 typedef enum { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 } SpriteSize;
 

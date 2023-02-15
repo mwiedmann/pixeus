@@ -15,5 +15,6 @@
 
 void standardTilesLoad();
 void tilesConfig(unsigned char tilesetId);
+void paletteLoad();
 
 #endif
