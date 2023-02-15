@@ -18,6 +18,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned char leftLevel;
     unsigned char rightLevel;
     unsigned char downLevel;
+    unsigned char upLevel;
 
     char filename[32];
     unsigned char *movementTypes;
@@ -45,12 +46,13 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     leftLevel = *(unsigned char*)(ramstart+1);
     rightLevel = *(unsigned char*)(ramstart+2);
     downLevel = *(unsigned char*)(ramstart+3);
-    tilesLength = *(unsigned short*)(ramstart+4);
-    entitiesLength = *(unsigned char*)(ramstart+6);
-    enemiesLength = *(unsigned char*)(ramstart+7);
+    upLevel = *(unsigned char*)(ramstart+4);
+    tilesLength = *(unsigned short*)(ramstart+5);
+    entitiesLength = *(unsigned char*)(ramstart+7);
+    enemiesLength = *(unsigned char*)(ramstart+8);
     
-    // The tilesetId, level Ids, and lengths take up 5 bytes
-    ramstart+= 8;
+    // The tilesetId, level Ids, and lengths take up 9 bytes
+    ramstart+= 9;
 
     // Movement Types is always a fixed 40x30 size so we don't need a length
     // Point movementTypes to the data in HI RAM and advance the pointer 1200
@@ -102,6 +104,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     level->leftLevel = leftLevel;
     level->rightLevel = rightLevel;
     level->downLevel = downLevel;
+    level->upLevel = upLevel;
     level->tileList = tileList;
     level->enemyList = enemyList;
     level->entityList = entityList;

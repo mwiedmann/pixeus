@@ -115,6 +115,7 @@ typedef struct LevelOveralLayout {
     unsigned char leftLevel;
     unsigned char rightLevel;
     unsigned char downLevel;
+    unsigned char upLevel;
     TileLayoutList *tileList;
     EnemyLayoutList *enemyList;
     EntityList *entityList;

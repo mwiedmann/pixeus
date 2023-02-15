@@ -54,7 +54,12 @@
 
 #define LEAVE_LEVEL_X_LEFT -8
 #define LEAVE_LEVEL_X_RIGHT 631
-#define LEAVE_LEVEL_Y_DOWN 471
+#define LEAVE_LEVEL_Y_DOWN 463
+#define LEAVE_LEVEL_Y_UP 8
+
+#define START_LEVEL 0
+
+#define SHIP_STOP_Y 288
 
 unsigned char testMode = 0;
 // unsigned char debugMsg[41];
@@ -136,8 +141,19 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     if (level->levelNum == 0) {
         // On level 0 we need to show the ship
+        // If skipping the scene, make sure the ship is in the correct location
+        if (!showShipScene) {
+            ship.y = SHIP_STOP_Y;
+            x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
+        }
         ship.zDepth = BetweenL0L1;
         x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
+    }
+
+    // Make sure the player is visible
+    if (!showShipScene) {
+        player.zDepth = BetweenL0L1;
+        x16SpriteIdxSetZDepth(player.index, player.zDepth);
     }
 
     while (1) {
@@ -148,7 +164,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // testMode will speed up the ship so the intro doesn't last so long
             spriteMoveYL(&ship, ship.yL+(ship.speed+(ship.speed * testMode)));
             x16SpriteIdxSetXY(ship.index, ship.x, ship.y);
-            if (ship.y >= 288) {
+            if (ship.y >= SHIP_STOP_Y) {
                 showShipScene = 0;
                 ship.animationFrame = ship.animationStopFrame;
                 x16SpriteIdxSetGraphicsPointer(ship.index, ship.clrMode, ship.graphicsBank,
@@ -276,7 +292,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // Player leaving bottom of the screen
             if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != 255) {
                 levelExitCleanup(enemyCount, entityCount);
-                spriteMove(&player, player.x, LEAVE_LEVEL_X_LEFT);
+                spriteMove(&player, player.x, LEAVE_LEVEL_Y_UP);
                 playerScreenExit.level = level->downLevel;
 
                 return &playerScreenExit;
@@ -302,6 +318,17 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             if (tileCollision.type == Ground || tileCollision.type == Ice) {
                 spriteMoveBackY(&player);
             }
+
+            // Player leaving top of screen (normally only by swimming)
+            if (player.y <= LEAVE_LEVEL_Y_UP && level->upLevel != 255) {
+                levelExitCleanup(enemyCount, entityCount);
+                // Move the player an extra few pixels because they will immediately start falling back down
+                // When swimming we want to give them a chance to kick up a few times and not fall back to the previous level
+                spriteMove(&player, player.x, LEAVE_LEVEL_Y_DOWN-8);
+                playerScreenExit.level = level->upLevel;
+
+                return &playerScreenExit;
+            }
         }
 
         // Check the final tile the player is touching to see if the graphics need to change to scuba or back to running
@@ -322,6 +349,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
         }
 
+        // Based on what the player is currently in, set their speed
+        // Since we are dealing with ints, we multiply by 10 to give us some room
+        // with the momentum. We divide by 10 later.
         moveBase = (tileCollision.type == Water
             ? (hasBoots ? PLAYER_SWIM_SPEED_WITH_BOOTS : PLAYER_SWIM_SPEED_NORMAL)
             : (hasBoots ? PLAYER_SPEED_WITH_BOOTS : PLAYER_SPEED_NORMAL)
@@ -390,7 +420,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     momentum = 0;
                 }
             }
-            spriteMoveXL(&player, player.xL+(momentum/10));
+            if (momentum != 0) {
+                spriteMoveXL(&player, player.xL+(momentum/10));
+            }
         }
 
         // Change animation if jumping or moving and hit loop count
@@ -532,6 +564,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
 void main() {
     unsigned char i;
+    short playerEnterX, playerEnterY;
 
     // CX16 has 128 sprites for us to use. Each has an id/index.
     // As we create sprites we increase this value so we know what the next
@@ -555,13 +588,14 @@ void main() {
 
     // Get the starting level and main entrance
     // It loads quickly but do it before showing title to minimize time after title screen
-    level = levelGet(0);
+    level = levelGet(START_LEVEL);
     entrance = findEntranceForExit(((EntranceList*)level->entityList), 0);
     
     // Configure the joysticks
     joy_install(cx16_std_joy);
     
     testMode = showTitleScreen();
+    showShipScene = !testMode;
 
     // Clear the maps to remove the title screen junk
     layerMapsClear();
@@ -588,9 +622,16 @@ void main() {
     standardTilesLoad();
 
     // Show the intro screen before starting the level
-    showIntroScene(&ship);
+    if (!testMode) {
+        showIntroScene(&ship);
+    }
 
     while(1) {
+        // Get the player's position at the start of the level
+        // If they die, we put them back here
+        playerEnterX = player.x;
+        playerEnterY = player.y;
+
         // Get a copy of the exitCollision because we will free the level next
         exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
         showShipScene = 0;
@@ -617,6 +658,9 @@ void main() {
                 case 254: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
                 case 253: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
             }
+
+            // Move them back to where they started the level
+            spriteMove(&player, playerEnterX, playerEnterY);
         }
 
         x16SpriteIdxSetXY(player.index, player.x, player.y);

@@ -194,6 +194,7 @@ const createLevelCode = (levelNum, level) => {
   const leftLevel = fiGet(level.fieldInstances, "LeftLevel")
   const rightLevel = fiGet(level.fieldInstances, "RightLevel")
   const downLevel = fiGet(level.fieldInstances, "DownLevel")
+  const upLevel = fiGet(level.fieldInstances, "UpLevel")
 
   // Added a 0, 0 2 byte header required for cbm_k_load
   // Its an optional address to load into. We don't use it but its required
@@ -203,6 +204,7 @@ const createLevelCode = (levelNum, level) => {
     leftLevel ?? 255,
     rightLevel ?? 255,
     downLevel ?? 255,
+    upLevel ?? 255,
     shortLo(tilesLength),
     shortHi(tilesLength),
     entityBytes.length/5,
