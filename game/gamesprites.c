@@ -91,7 +91,7 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->xTileEnd = layout->x + layout->patrolB;
     sp->yTileEnd = layout->y;
     sp->framesUntilNextShot = sp->framesBetweenShots;
-    sp->framesBetweenFacePlayer = 120;
+    sp->framesBetweenFacePlayer = 60;
     sp->framesUntilFacePlayer = 0;
 
     spriteInit(&sp->sprite);
