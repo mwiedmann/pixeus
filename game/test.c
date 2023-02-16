@@ -6,9 +6,21 @@
 #include "level.h"
 
 void main() {
-    unsigned char letter = '\'';
+    unsigned char r;
+    int i;
+    int a=0;
 
-    printf("%u", letter);
+    for (i=0; i<10000; i++) {
+        // if (rand() & 1 == 1) {
+        //     a++;
+        // }
+        r = rand();
+        if (r > 127) {
+            a++;
+        }
+    }
+
+    printf("%u", a);
 }
 
 // cl65 -o testload.prg -t cx16 testload.c

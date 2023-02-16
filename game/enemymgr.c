@@ -114,7 +114,7 @@ void resetClosestLaser(short x, short y) {
 }
 
 void enemiesMove(Sprite *player, unsigned char length) {
-    unsigned char i;
+    unsigned char i,r;
     signed char tileCalc;
     AISprite *enemy;
 
@@ -156,7 +156,8 @@ void enemiesMove(Sprite *player, unsigned char length) {
                 }
                 // Shoot
                 if (enemy->framesUntilNextShot == 0) {
-                    enemy->framesUntilNextShot = enemy->framesBetweenShots;
+                    r=rand();
+                    enemy->framesUntilNextShot = r > 127 ? enemy->framesBetweenShots : enemy->framesBetweenShots/2;
                     // HACK: Move y 1px up to avoid ground collision
                     enemyShot(enemy->sprite.x, (enemy->sprite.y + enemy->yLaserAdjust)-1, enemy->sprite.animationDirection);
                 } else {
