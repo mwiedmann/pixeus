@@ -59,7 +59,7 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 7
+#define START_LEVEL 20
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
