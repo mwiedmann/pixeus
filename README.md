@@ -1,13 +1,10 @@
-# Pixeus - A game for the Commander X16
+# Pixeus - A Platformer Adventure for the Commander X16
 This is a game for the [Commander X16](https://cx16forum.com/) system written in C. The original purpose was to learn how to code on the CX16, including all of its video, sprite, audio, and kernal functionality. The end result is Pixeus, a platformer with colorful pixel/line graphics.
 
 ## What is the Commander X16
-In a nutshell, the X16 is a new 8-bit system based on the 65c02 processor (popular in many 80s/90s systems like the C64 and NES). It is a spiritual successor to the C64/C128 and even boots into a very similar BASIC prompt. It is NOT compatible with those systems though as the X16 includes a more advanced graphics/sound chip. The goal is to have a better supported 8-bit system for folks to hack on. There is an emulator for developing on, and actual hardware will be available in the near future.
+In a nutshell, the CX16 is a new 8-bit system based on the 65c02 processor (popular in many 80s/90s systems like the C64 and NES). It is a spiritual successor to the C64/C128 and even boots into a very similar BASIC prompt. It is NOT compatible with those systems though as the CX16 includes a more advanced graphics/sound chip. The goal is to have a better supported 8-bit system for folks to hack on. There is an emulator for developing on, and actual hardware will be available in the near future.
 
-Their FAQ states: 
-
-`The Commander X16 is David Murray aka The 8-Bit Guy’s dream computer, designed to evoke the same fondness and nostalgia many of us had for 8-Bit computers, whilst retaining closeness to the hardware from a programming perspective, unlike the Raspberry Pi and others. But more than that, it is intended not only as an educational tool but to solve some of the issues of finding an 8-Bit system to tinker with today; namely ever-increasing costs, auction site price gouging/sniping, lack of replacement parts, and unreliability of 30-year old hardware.
-The X16 will be made entirely with parts that are still readily available today, ensuring perpetual availability without reliability issues, but in keeping with David's vision, it will house a real CPU rather than using emulation or an FPGA recreation of a processor. Running Commodore BASIC V2 (with some additions), the X16 will be inexpensive enough to allow a critical mass of users to create an expansive software ecosystem, but simple enough that a single person can understand all of the chips and components that allow that software to run.`
+See [Their FAQ](https://cx16forum.com/faq.html) for more info
 
 ## Requirements
 - The [cc65](https://cc65.github.io/) cross development package for 65(C)02 systems.
@@ -30,9 +27,11 @@ This command executes: `[path-to-emulator]/x16emu -prg pixeus.prg -run`
 ## Level Design
 The levels are built using the amazing level editor [LDtk](https://ldtk.io/). The .ldtk file and tileset images are included with this repo. To use the levels in Pixeus, I wrote a NodeJS (JavaScript) program to convert the level data into binary files that can be loaded at runtime into the C level structs. You need to regenerate the .bin files after any updates made in LDtk.
 
-To generate the level .bin files, switch to the `tilebuilding` folder and run:
+DEV NOTE: There is a `#define CACHED_ENTITY_LIST_LENGTH` in `entitymgr.c` that may need to be increased as more levels are added.
+
+To generate the level .bin files:
 ```
-node ldtk-to-bin.js
+make level
 ```
 This will create a series of level#.bin files in the `levels` folder.
 
@@ -46,7 +45,9 @@ In GIMP:
 1. "Export" the image and Select "Raw image data" as the file type
 1. Save the `.data` file in the `tools` folder
 
-Now convert the `.data` file into a `.bin` file useable in Pixeus. Switch to the `tools` folder and run:
+Now convert the `.data` file into a `.bin` file useable in Pixeus.
+
+In the `makefile` there is a command `img`. Add a new line to the command for the image as follow:
 
 ```
 node gimp-convert-tiles-bin.js FILENAME.data X_FRAMES Y_FRAMES PIXEL_WIDTH PIXEL_HEIGHT
@@ -55,10 +56,19 @@ node gimp-convert-tiles-bin.js FILENAME.data X_FRAMES Y_FRAMES PIXEL_WIDTH PIXEL
 node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16
 ```
 
-## Main Title Image
-If changed, the main title image also needs to be converted in a similar way as the sprites/tilesets. Follow the same steps but since there are no animation frames, for the final conversion step you just run:
+To generate all of the images, run:
 ```
-node gimp-convert-bin.js title.data
+make img
+```
+
+## Main Title Image
+If changed, the main title image also needs to be converted in a similar way as the sprites/tilesets. Follow the same steps to create the `title.data` file. Then when you run `make img` the image will be updated.
+
+## Palette File
+The images in Pixeus use a few colors that didn't map well to the standard CX16 palette. Therefore, some colors in the 16-30-ish range have been replaced. There is a file `tools/palette.json` that contains the list of CX16 RGB colors Pixeus uses. There is a nodeJS program that converts this to `palette.bin` which can then be loaded into the palette area of the CX16. If you update any of the colors in `tools/palette.json`, you need to regenerate the `palette.bin` by running:
+
+```
+make pal
 ```
 
 ## License
