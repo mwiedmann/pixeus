@@ -76,6 +76,8 @@
 */
 #define IMAGE_LOAD_BANK 3
 
-#define SOUND_BANK_LASER 32
+#define SOUND_BANK_LASER 20
+
+#define MUSIC_BANK 28
 
 #endif

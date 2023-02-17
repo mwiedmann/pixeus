@@ -27,7 +27,6 @@
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
 #include "waitforjiffy.h"
-#include "pcmplayer.h"
 
 #define PLAYER_FALL_SPEED 20
 #define PLAYER_WATER_FALL_SPEED 4
@@ -173,7 +172,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     while (1) {
         waitforjiffy(); // Wait for screen to finish drawing
-        pcm_play();
+        playSoundsThisGameLoop();
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
@@ -700,5 +699,8 @@ void main() {
     // Disable sprite collisions before quitting
     x16SpriteCollisionsDisable();
 
+    soundsCleanup();
+
     // TODO: Restore the text video mode
+
 }

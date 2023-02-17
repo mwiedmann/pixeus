@@ -4,16 +4,37 @@
 
 #include "memmap.h"
 #include "pcmplayer.h"
+#include "zsmplayer.h"
 
 void loadSounds() {
-    unsigned short ramstart = (unsigned short)BANK_RAM;
-
     pcm_init();
+    zsm_init();
 
     POKE(0, SOUND_BANK_LASER);
     cbm_k_setnam("zsound/mvcursor2.zcm");
 	cbm_k_setlfs(0, 8, 2);
-    cbm_k_load(0, (unsigned int)ramstart);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    POKE(0, MUSIC_BANK);
+    cbm_k_setnam("zsound/drake.zsm");
+	cbm_k_setlfs(0, 8, 2);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
+	zsm_forceloop(0);
+
+    // Back to the default bank
+    POKE(0, LEVEL_BANK);
+}
+
+void playSoundsThisGameLoop() {
+    pcm_play();
+    zsm_play();
+    POKE(0, LEVEL_BANK);
+}
+
+void soundsCleanup() {
+    zsm_stopmusic();
 }
 
 void playLaser() {

@@ -75,7 +75,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     // See if we have already cached the entity list
     // We cache this because entities like energy and gold don't respawn
     // We don't use HI RAM here because we cache it
-    // Its not much memory but we could refacto this into other HI RAM (later)
+    // Its not much memory but we could refactor this into other HI RAM (later)
     entityList = cachedEntityListGet(levelNum);
     if (entityList == 0) {
         entities = malloc(entitiesLength * sizeof(Entity));

@@ -8,7 +8,7 @@ make:
 	zsound/zsound.lib
 
 test:
-	$(CC) -I lib -o test.prg -t cx16 game/test.c lib/x16graphics.c
+	$(CC) -I lib -I zsound -o test.prg -t cx16 game/test.c game/soundmgr.c lib/x16graphics.c lib/waitforjiffy.s zsound/zsound.lib
 
 testrun:
 	../emu/x16emu -prg test.prg -run
