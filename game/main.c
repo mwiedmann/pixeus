@@ -22,10 +22,12 @@
 #include "levelutils.h"
 #include "fontmgr.h"
 #include "entitymgr.h"
+#include "soundmgr.h"
 
 // The "waitvsync" function is broken in r41
 // People say to use this until fixed
 #include "waitforjiffy.h"
+#include "pcmplayer.h"
 
 #define PLAYER_FALL_SPEED 20
 #define PLAYER_WATER_FALL_SPEED 4
@@ -59,7 +61,7 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 20
+#define START_LEVEL 0
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
@@ -171,6 +173,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     while (1) {
         waitforjiffy(); // Wait for screen to finish drawing
+        pcm_play();
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
@@ -477,6 +480,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
             x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
+
+            playLaser();
         }
 
         // See if the player is touching any tiles left/right
@@ -598,6 +603,10 @@ void main() {
     // For the starting level, the game looks for EntranceId=0
     Entrance *entrance;
     
+    // Sounds are loaded into HIRAM Banks for use later
+    // Make sure not to overwrite these banks
+    loadSounds();
+
     // Init the level cache
     // We cache some level data (entities) because certain things don't respawn (energy, gold)
     // so we need to remember which ones are gone
