@@ -1,6 +1,8 @@
 # Pixeus - A Platformer Adventure for the Commander X16
 This is a game for the [Commander X16](https://cx16forum.com/) system written in C. The original purpose was to learn how to code on the CX16, including all of its video, sprite, audio, and kernal functionality. The end result is Pixeus, a platformer with colorful pixel/line graphics.
 
+![Pixeus Screenshot 1](./PixeusScreenShot1.jpg)
+
 ## What is the Commander X16
 In a nutshell, the CX16 is a new 8-bit system based on the 65c02 processor (popular in many 80s/90s systems like the C64 and NES). It is a spiritual successor to the C64/C128 and even boots into a very similar BASIC prompt. It is NOT compatible with those systems though as the CX16 includes a more advanced graphics/sound chip. The goal is to have a better supported 8-bit system for folks to hack on. There is an emulator for developing on, and actual hardware will be available in the near future.
 
