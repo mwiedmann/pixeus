@@ -11,12 +11,18 @@ void loadSounds() {
     zsm_init();
 
     POKE(0, SOUND_BANK_LASER);
-    cbm_k_setnam("zsound/mvcursor2.zcm");
+    cbm_k_setnam("sounds/guylaser.zcm");
+	cbm_k_setlfs(0, 8, 2);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    POKE(0, SOUND_BANK_ALIEN_HIT);
+    cbm_k_setnam("sounds/alienhit.zcm");
 	cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
 
     POKE(0, MUSIC_BANK);
-    cbm_k_setnam("zsound/drake.zsm");
+    // cbm_k_setnam("sounds/drake.zsm");
+    cbm_k_setnam("sounds/outrun.zsm");
 	cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
 
@@ -38,5 +44,12 @@ void soundsCleanup() {
 }
 
 void playLaser() {
+    pcm_stop();
     pcm_trigger_digi(SOUND_BANK_LASER, (unsigned short)BANK_RAM);
+}
+
+
+void playAlienHit() {
+    pcm_stop();
+    pcm_trigger_digi(SOUND_BANK_ALIEN_HIT, (unsigned short)BANK_RAM);
 }

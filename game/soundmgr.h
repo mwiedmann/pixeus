@@ -5,5 +5,6 @@ void loadSounds();
 void playSoundsThisGameLoop();
 void soundsCleanup();
 void playLaser();
+void playAlienHit();
 
 #endif

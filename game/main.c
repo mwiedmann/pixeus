@@ -535,7 +535,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // This is a player bullet/enemy collision
             // Show explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
-            
+            playAlienHit();
+
             // Find the enemy
             hitEnemy = findEnemyCollision(&bullet);
             if (hitEnemy != 0) {
@@ -563,6 +564,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
+                    playAlienHit();
                 }
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
