@@ -11398,7 +11398,22 @@
 					"seed": 5879868,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [8,26],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "5470f3c0-9f30-11ed-86be-d391c65e01d4",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [128,416],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
+						}
+					]
 				},
 				{
 					"__identifier": "Tiles_Background",
@@ -15586,8 +15601,8 @@
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
-					"__tilesetDefUid": null,
-					"__tilesetRelPath": null,
+					"__tilesetDefUid": 30,
+					"__tilesetRelPath": "wintertiles.png",
 					"iid": "71ec66a2-9f30-11ed-86be-6dad1d290827",
 					"levelId": 75,
 					"layerDefUid": 2,
@@ -15598,7 +15613,7 @@
 					"intGridCsv": [],
 					"autoLayerTiles": [],
 					"seed": 4419168,
-					"overrideTilesetUid": null,
+					"overrideTilesetUid": 30,
 					"gridTiles": [],
 					"entityInstances": []
 				},

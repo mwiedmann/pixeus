@@ -60,7 +60,7 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 0
+#define START_LEVEL 6
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
@@ -73,6 +73,9 @@
 
 // Special EntranceId meaning the player exited via the edge of the screen
 #define LEAVE_SCREEN_ENTRACE_ID 255
+
+#define PLAYER_FREEZES_COUNT 120
+#define PLAYER_OVERHEATS_COUNT 120
 
 unsigned char testMode = 0;
 // unsigned char debugMsg[41];
@@ -88,6 +91,8 @@ unsigned char lives = 2;
 unsigned char hasScuba = 0;
 unsigned char hasWeapon = 0;
 unsigned char hasBoots = 0;
+unsigned char coldCount = 0;
+unsigned char hotCount = 0;
 
 // These are special exits returned when the player has died
 // OR exited by leaving the screen
@@ -118,7 +123,7 @@ void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
  * and run the level until the player hits an exit.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, enemyCount, entityCount;
+    unsigned char collision, joy, enemyCount, entityCount, loopCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
@@ -147,7 +152,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
-    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots);
+    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
     enemyCount = enemiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= enemyCount;
     entityCount = entitiesCreate(level, nextSpriteIndex);
@@ -169,6 +174,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         player.zDepth = BetweenL0L1;
         x16SpriteIdxSetZDepth(player.index, player.zDepth);
     }
+
+    loopCount = 0;
 
     while (1) {
         waitforjiffy(); // Wait for screen to finish drawing
@@ -347,11 +354,57 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
         // Check the final tile the player is touching to see if the graphics need to change to scuba or back to running
         spriteTouchingTile(level, &player, &tileCollision);
-        if ((tileCollision.type == Ground || tileCollision.type == Ice || tileCollision.type == Empty) && player.graphicsAddress != SPRITE_MEM_PLAYER) {
-            player.graphicsAddress = SPRITE_MEM_PLAYER;
-            x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
-                player.graphicsAddress);
+        if ((tileCollision.type == Ground || tileCollision.type == Ice || tileCollision.type == Empty)) {
+            // Player dies in the desert after some time...needs water
+            if (level->tileList->tilesetId == TILESETID_DESERT) {
+                if (hotCount == 0) {
+                    hotCount = PLAYER_FREEZES_COUNT;
+                }
+                coldCount = 0;
+                if (loopCount == 60) { 
+                    hotCount--;
+                    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
+                    if (hotCount == 0) {
+                        hotCount = 0;
+                        return &playerDrowned;
+                    }
+                }
+            } else {
+                if (hotCount > 0 || coldCount > 0) {
+                    hotCount = 0;
+                    coldCount = 0;
+                    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
+                }
+            }
+
+            if (player.graphicsAddress != SPRITE_MEM_PLAYER) {
+                player.graphicsAddress = SPRITE_MEM_PLAYER;
+                x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
+                    player.graphicsAddress);
+            }
         } else if (tileCollision.type == Water) {
+            // Player freezes in the cold water after some time
+            if (level->tileList->tilesetId == TILESETID_WINTER) {
+                if (coldCount == 0) {
+                    coldCount = PLAYER_FREEZES_COUNT;
+                }
+                hotCount = 0;
+                if (loopCount == 60) { 
+                    coldCount--;
+                    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
+                    if (coldCount == 0) {
+                        coldCount = 0;
+                        return &playerDrowned;
+                    }
+                }
+            } else {
+                if (hotCount > 0 || coldCount > 0) {
+                    hotCount = 0;
+                    coldCount = 0;
+                    drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
+                }
+            }
+
             if (!hasScuba && !testMode) {
                 // Player needs the Scuba gear to survive in water. DEAD!
                 return &playerDrowned;
@@ -575,7 +628,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // If anything in the header changes (gold, energy, lives, etc.), redraw it
         if (updateHeader) {
             updateHeader = 0;
-            drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots);
+            drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
+        }
+
+        loopCount++;
+        if (loopCount > 60) {
+            loopCount=1;
         }
     }
 }
@@ -693,6 +751,10 @@ void main() {
 
             // Move them back to where they started the level
             spriteMove(&player, playerEnterX, playerEnterY);
+
+            // Reset env counters
+            hotCount = 0;
+            coldCount = 0;
         }
 
         x16SpriteIdxSetXY(player.index, player.x, player.y);

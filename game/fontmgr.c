@@ -25,7 +25,7 @@ unsigned char letterToTile(unsigned char letter) {
         tile = 40;
     } else if (letter == 39) {
         tile = 41;
-    } else if (letter == SCUBA_TILEID || letter == WEAPON_TILEID || letter == BOOTS_TILEID) {
+    } else if (letter == SCUBA_TILEID || letter == WEAPON_TILEID || letter == BOOTS_TILEID || letter == FLAME_TILEID || letter == SNOWFLAKE_TILEID) {
         // Special case to show some item icons
         // Not really part of the font but they exist as tiles and show with text sometimes (e.g. the header)
         return letter;
@@ -106,10 +106,21 @@ void drawCenteredTextRow(unsigned char* text, unsigned char* orig, unsigned char
 }
 
 void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives,
-    unsigned short hasScuba, unsigned char hasWeapon, unsigned char hasBoots) {
+    unsigned short hasScuba, unsigned char hasWeapon, unsigned char hasBoots,
+    unsigned char coldCount, unsigned char hotCount) {
     unsigned char text[41];
+    unsigned char dangerText[5] = "    ";
+    
+    // Show the snowflake or flame tile with count if needed
+    if (coldCount > 0 || hotCount > 0) {
+        sprintf(
+            dangerText,
+            "%c%03u",coldCount > 0 ? SNOWFLAKE_TILEID : FLAME_TILEID,
+            coldCount > 0 ? coldCount : hotCount
+        );
+    }
 
-    sprintf(text, " GOLD:%05u  ENERGY:%03u  LIVES:%02u  %c%c%c", gold, energy, lives, 
+    sprintf(text, "GOLD:%04u ENERGY:%03u LIVES:%02u %s %c%c%c", gold, energy, lives, dangerText, 
         (hasScuba ? SCUBA_TILEID : '?'),
         (hasWeapon ? WEAPON_TILEID : '?'),
         (hasBoots ? BOOTS_TILEID : '?'));

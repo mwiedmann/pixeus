@@ -39,6 +39,8 @@ img:
 	node gimp-convert-tiles-bin.js scuba.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js gold.data 4 1 16 16 && \
 	node gimp-convert-tiles-bin.js energy.data 4 1 16 16 && \
+	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
+	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16 && \
 	node gimp-convert-tiles-bin.js guyrun.data 6 1 16 16 && \
 	node gimp-convert-tiles-bin.js ship.data 4 1 64 64 && \

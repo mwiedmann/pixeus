@@ -13,6 +13,11 @@
 #define TILE_PIXEL_HEIGHT 16
 #define TILE_PIXEL_HEIGHT_HALF 8
 
+#define TILESETID_FOREST 1
+#define TILESETID_DESERT 2
+#define TILESETID_WINTER 3
+#define TILESETID_FIRE 4
+
 void standardTilesLoad();
 void tilesConfig(unsigned char tilesetId);
 void paletteLoad();

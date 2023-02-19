@@ -9,7 +9,7 @@ const d = JSON.parse(rawText);
 
 const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
-const tilesStartTileId = 46
+const tilesStartTileId = 48
 
 const TilesImageMap = {
   "foresttiles.png": 1,
