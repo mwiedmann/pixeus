@@ -60,13 +60,15 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 6
+#define START_LEVEL 7
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
 
 // NOTE: If adding more of these, there is a < PLAYER_DROWNED check to update
 // entityType for special exit conditions
+#define PLAYER_OVERHEATED 251
+#define PLAYER_FROZE 252
 #define PLAYER_DROWNED 253
 #define PLAYER_SHOT 254
 #define PLAYER_EATEN 255
@@ -78,7 +80,6 @@
 #define PLAYER_OVERHEATS_COUNT 120
 
 unsigned char testMode = 0;
-// unsigned char debugMsg[41];
 
 // A few top level structs to hold things that stay
 // active throughout the game life
@@ -99,6 +100,9 @@ unsigned char hotCount = 0;
 Exit playerEaten = { PLAYER_EATEN };
 Exit playerShot = { PLAYER_SHOT };
 Exit playerDrowned = { PLAYER_DROWNED };
+Exit playerFroze = { PLAYER_FROZE };
+Exit playerOverheated = { PLAYER_OVERHEATED };
+
 Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 
 void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
@@ -728,7 +732,7 @@ void main() {
 
         // If this was a normal level exit (not a player death)
         // The load the next level
-        if (exitCollision.entityType < PLAYER_DROWNED) {
+        if (exitCollision.entityType < PLAYER_OVERHEATED) {
             // Free the memory for the last level and load the next one
             freeLevel(level);
             level = levelGet(exitCollision.level);
@@ -747,6 +751,8 @@ void main() {
                 case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
                 case PLAYER_SHOT: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
                 case PLAYER_DROWNED: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
+                case PLAYER_FROZE: showMessage("PIXEUS FREEZES IN THE ICY WATER"); break;
+                case PLAYER_OVERHEATED: showMessage("PIXEUS FAINTS IN THE DESERT HEAT"); break;
             }
 
             // Move them back to where they started the level

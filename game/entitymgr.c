@@ -6,8 +6,8 @@
 
 Sprite entitySprites[16];
 
-// Increase this size if we have more than 32 levels
-#define CACHED_ENTITY_LIST_LENGTH 32
+// Increase this size if we add more levels
+#define CACHED_ENTITY_LIST_LENGTH 71
 
 EntityList *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
 

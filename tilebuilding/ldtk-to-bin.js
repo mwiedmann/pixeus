@@ -179,7 +179,9 @@ const createLevelCode = (levelNum, level) => {
       case "Tiles_Foreground":
       case "Tiles_Ground":
         // We force all layers to use the same tileset as defined in the Tiles_Ground layer
-        tilesetId = TilesImageMap[li.__tilesetRelPath];
+        if (li.__identifier === "Tiles_Ground") {
+          tilesetId = TilesImageMap[li.__tilesetRelPath];
+        }
         addTiles(li.gridTiles, 1);
         break;
 
