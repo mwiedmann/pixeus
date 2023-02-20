@@ -5,6 +5,7 @@
 #include "gametiles.h"
 #include "level.h"
 #include "levelutils.h"
+#include "layoutdefs.h"
 
 #define ENEMY_LASER_DIST 200
 
@@ -29,14 +30,13 @@ AISprite *findEnemyCollision(Sprite *s) {
 
 unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i;
-    void (*enemyCreate[])(AISprite*, EnemyLayout*, unsigned char) = {
-        snakeCreate, beeCreate, ghostCreate, scorpionCreate, waspCreate, fish1Create, bigGhostCreate
-    };
 
     for (i=0; i<level->enemyList->length; i++) {
-        (*enemyCreate[level->enemyList->enemies[i].enemyType])(
-            &masterEnemiesList[i], &level->enemyList->enemies[i], nextSpriteIndex+i
-        );
+        enemyCreate(
+            level->enemyList->enemies[i].enemyType,
+            &masterEnemiesList[i],
+            &level->enemyList->enemies[i],
+            nextSpriteIndex+i);
     }
 
     return level->enemyList->length;

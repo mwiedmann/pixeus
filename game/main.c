@@ -381,11 +381,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 }
             }
 
-            if (player.graphicsAddress != SPRITE_MEM_PLAYER) {
-                player.graphicsAddress = SPRITE_MEM_PLAYER;
-                x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
-                    player.graphicsAddress);
-            }
+            spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_IDX);
         } else if (tileCollision.type == Water) {
             // Player freezes in the cold water after some time
             if (level->tileList->tilesetId == TILESETID_WINTER) {
@@ -413,11 +409,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 // Player needs the Scuba gear to survive in water. DEAD!
                 return &playerDrowned;
             }
-            if (player.graphicsAddress != SPRITE_MEM_PLAYER_SCUBA) {
-                player.graphicsAddress = SPRITE_MEM_PLAYER_SCUBA;
-                x16SpriteIdxSetGraphicsPointer(player.index, player.clrMode, player.graphicsBank,
-                    player.graphicsAddress);
-            }
+
+            spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_SCUBA_IDX);
         }
 
         // Based on what the player is currently in, set their speed

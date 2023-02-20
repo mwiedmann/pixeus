@@ -18,17 +18,20 @@ typedef struct AISprite {
     unsigned short yLaserAdjust;
 } AISprite;
 
+typedef struct EnemyStats {
+    unsigned char graphicsIdx;
+    unsigned char animationSpeed;
+    unsigned char speed;
+    unsigned char health;
+    unsigned char framesBetweenShots;
+} EnemyStats;
+
 void spriteDataLoad();
 void spriteIRQConfig();
 void spriteReset(Sprite *sp);
+void spriteAnimationAddressSet(Sprite *sp, unsigned char idx);
 void playerCreate(Sprite *p, Entrance *entrance, unsigned char index);
-void snakeCreate(AISprite *snake, EnemyLayout *layout, unsigned char index);
-void beeCreate(AISprite *bee, EnemyLayout *layout, unsigned char index);
-void ghostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
-void scorpionCreate(AISprite *scorpion, EnemyLayout *layout, unsigned char index);
-void waspCreate(AISprite *wasp, EnemyLayout *layout, unsigned char index);
-void fish1Create(AISprite *fish, EnemyLayout *layout, unsigned char index);
-void bigGhostCreate(AISprite *ghost, EnemyLayout *layout, unsigned char index);
+void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned char index);
 void bulletCreate(Sprite *b, unsigned char index);
 void laserCreate(Sprite *b, unsigned char index);
 void energyCreate(Sprite *b, Entity *entityInfo, unsigned char index);
