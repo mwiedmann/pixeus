@@ -29,6 +29,7 @@
 // Player bullet is last frame on Player Sprite
 #define SPRITE_MEM_PLAYER_BULLET_OFFSET 1280
 
+// Sprite image indexes (controls filename)
 #define SPRITE_MEM_PLAYER_SCUBA_IDX 1
 #define SPRITE_MEM_EXP_SMALL_IDX 2
 #define SPRITE_MEM_SNAKE_IDX 3
@@ -53,7 +54,8 @@
 // We will need to figure something out if it exceeds 64k
 #define TILE_MEM 0
 #define TILE_EMPTY_MEM TILE_MEM
-#define TILE_SCUBA TILE_EMPTY_MEM + 256
+#define TILE_SOLID_MEM TILE_EMPTY_MEM + 256
+#define TILE_SCUBA TILE_SOLID_MEM + 256
 #define TILE_WEAPON TILE_SCUBA + 256
 #define TILE_BOOTS TILE_WEAPON + 256
 #define TILE_FLAME TILE_BOOTS + 256
@@ -61,13 +63,6 @@
 #define TILE_SET_FONT TILE_SNOWFLAKE + 256
 #define TILE_SET_1_MEM TILE_SET_FONT + 10752L
 #define TILE_MEM_BANK 0
-
-#define SCUBA_TILEID 1
-#define WEAPON_TILEID 2
-#define BOOTS_TILEID 3
-#define FLAME_TILEID 4
-#define SNOWFLAKE_TILEID 5
-#define FONT_TILEID_START 6
 
 /**
  * Hi Mem bank used to store current level data

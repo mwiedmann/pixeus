@@ -30,7 +30,7 @@ unsigned char letterToTile(unsigned char letter) {
         // Not really part of the font but they exist as tiles and show with text sometimes (e.g. the header)
         return letter;
     } else {
-        return 0;
+        return BLACK_TILE;
     }
 
     return tile + FONT_TILEID_START;

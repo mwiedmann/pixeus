@@ -55,6 +55,19 @@ void spriteIRQConfig() {
     x16SpriteCollisionsEnable();
 }
 
+void spriteAnimationAdvance(Sprite *sp) {
+    sp->animationCount++;
+    if (sp->animationCount >= sp->animationSpeed) {
+        sp->animationCount=0;
+        sp->animationFrame++;
+        if (sp->animationFrame >= sp->frames) {
+            sp->animationFrame = 0;
+        }
+        x16SpriteIdxSetGraphicsPointer(sp->index, sp->clrMode, sp->graphicsBank,
+            sp->graphicsAddress+(sp->animationFrame * sp->frameSize));
+    }
+}
+
 void spriteAnimationAddressSet(Sprite *sp, unsigned char idx) {
     if (sp->graphicsAddress != spriteMemAddresses[idx]) {
         sp->graphicsAddress = spriteMemAddresses[idx];

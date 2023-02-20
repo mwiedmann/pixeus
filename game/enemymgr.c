@@ -42,7 +42,6 @@ unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIn
     return level->enemyList->length;
 }
 
-
 void enemiesReset(unsigned char length) {
     unsigned char i;
     AISprite *enemy;
@@ -123,16 +122,7 @@ void enemiesMove(Sprite *player, unsigned char length) {
         enemy = &masterEnemiesList[i];
         if (enemy->sprite.active == 1) {
             spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
-            enemy->sprite.animationCount++;
-            if (enemy->sprite.animationCount >= enemy->sprite.animationSpeed) {
-                enemy->sprite.animationCount=0;
-                enemy->sprite.animationFrame++;
-                if (enemy->sprite.animationFrame >= enemy->sprite.frames) {
-                    enemy->sprite.animationFrame = 0;
-                }
-                x16SpriteIdxSetGraphicsPointer(enemy->sprite.index, enemy->sprite.clrMode, enemy->sprite.graphicsBank,
-                    enemy->sprite.graphicsAddress+(enemy->sprite.animationFrame * enemy->sprite.frameSize));
-            }
+            spriteAnimationAdvance(&enemy->sprite);
             tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
             // Careful, can be -1 if on left edge (signed char)
             if (tileCalc <= (signed char)enemy->xTileStart - 1) {

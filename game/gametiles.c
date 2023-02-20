@@ -7,10 +7,21 @@ void standardTilesLoad() {
     unsigned short x;
     unsigned short y;
 
+    vMemSetBank(TILE_MEM_BANK);
+    vMemSetAddr(TILE_MEM);
+    vMemSetIncMode(1);
+
     // Empty tile
     for (y=0; y < 16; y++) {
         for (x=0; x < 16; x++) {
             vMemSetData0(0);
+        }
+    }
+
+    // Solid Black tile
+    for (y=0; y < 16; y++) {
+        for (x=0; x < 16; x++) {
+            vMemSetData0(16);
         }
     }
 

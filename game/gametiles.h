@@ -1,8 +1,14 @@
 #ifndef GAMETILES_H
 #define GAMETILES_H
 
-#define TILES_START 1
 #define EMPTY_TILE 0
+#define BLACK_TILE 1
+#define SCUBA_TILEID 2
+#define WEAPON_TILEID 3
+#define BOOTS_TILEID 4
+#define FLAME_TILEID 5
+#define SNOWFLAKE_TILEID 6
+#define FONT_TILEID_START 7
 
 #define TILES_ACROSS 64
 #define TILES_DOWN 32

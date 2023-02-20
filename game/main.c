@@ -60,7 +60,7 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 7
+#define START_LEVEL 0
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
@@ -199,16 +199,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 x16SpriteIdxSetZDepth(player.index, player.zDepth);
                 continue;
             }
-            ship.animationCount++;
-            if (ship.animationCount >= ship.animationSpeed) {
-                ship.animationCount=0;
-                ship.animationFrame++;
-                if (ship.animationFrame >= ship.frames) {
-                    ship.animationFrame = 0;
-                }
-                x16SpriteIdxSetGraphicsPointer(ship.index, ship.clrMode, ship.graphicsBank,
-                    ship.graphicsAddress+(ship.animationFrame * ship.frameSize));
-            }
+            spriteAnimationAdvance(&ship);
             continue;
         }
 

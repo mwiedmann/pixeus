@@ -9,6 +9,7 @@
 #include "fontmgr.h"
 #include "sprites.h"
 #include "levelutils.h"
+#include "gamesprites.h"
 
 unsigned char showTitleScreen() {
     unsigned char joy = 0;
@@ -87,17 +88,7 @@ void showIntroScene(Sprite *ship) {
     while(1) {
         // Wait for screen to finish drawing since we are animating the ship
         waitforjiffy();
-
-        ship->animationCount++;
-        if (ship->animationCount >= ship->animationSpeed) {
-            ship->animationCount=0;
-            ship->animationFrame++;
-            if (ship->animationFrame == ship->frames) {
-                ship->animationFrame = 0;
-            }
-            x16SpriteIdxSetGraphicsPointer(ship->index, ship->clrMode, ship->graphicsBank,
-                ship->graphicsAddress+(ship->animationFrame * ship->frameSize));
-        }
+        spriteAnimationAdvance(ship);
 
         // Exit when either button is pressed
         if (readButtonPress()) {

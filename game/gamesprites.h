@@ -28,6 +28,7 @@ typedef struct EnemyStats {
 
 void spriteDataLoad();
 void spriteIRQConfig();
+void spriteAnimationAdvance(Sprite *sp);
 void spriteReset(Sprite *sp);
 void spriteAnimationAddressSet(Sprite *sp, unsigned char idx);
 void playerCreate(Sprite *p, Entrance *entrance, unsigned char index);
