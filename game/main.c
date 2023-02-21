@@ -60,13 +60,14 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 0
+#define START_LEVEL 57
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
 
-// NOTE: If adding more of these, there is a < PLAYER_DROWNED check to update
+// NOTE: If adding more of these, there is a < PLAYER_BURNED check to update
 // entityType for special exit conditions
+#define PLAYER_BURNED 250
 #define PLAYER_OVERHEATED 251
 #define PLAYER_FROZE 252
 #define PLAYER_DROWNED 253
@@ -102,6 +103,7 @@ Exit playerShot = { PLAYER_SHOT };
 Exit playerDrowned = { PLAYER_DROWNED };
 Exit playerFroze = { PLAYER_FROZE };
 Exit playerOverheated = { PLAYER_OVERHEATED };
+Exit playerBurned = { PLAYER_BURNED };
 
 Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 
@@ -402,6 +404,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
 
             spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_SCUBA_IDX);
+        } else if (tileCollision.type == Lava) {
+            return &playerBurned;
         }
 
         // Based on what the player is currently in, set their speed
@@ -716,7 +720,7 @@ void main() {
 
         // If this was a normal level exit (not a player death)
         // The load the next level
-        if (exitCollision.entityType < PLAYER_OVERHEATED) {
+        if (exitCollision.entityType < PLAYER_BURNED) {
             // Free the memory for the last level and load the next one
             freeLevel(level);
             level = levelGet(exitCollision.level);
@@ -737,6 +741,7 @@ void main() {
                 case PLAYER_DROWNED: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
                 case PLAYER_FROZE: showMessage("PIXEUS FREEZES IN THE ICY WATER"); break;
                 case PLAYER_OVERHEATED: showMessage("PIXEUS FAINTS IN THE DESERT HEAT"); break;
+                case PLAYER_BURNED: showMessage("PIXEUS BURNS IN THE MOLTEN LAVA"); break;
             }
 
             // Move them back to where they started the level

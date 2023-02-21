@@ -23,6 +23,7 @@ const xTiles = parseInt(process.argv[3]);
 const yTiles = parseInt(process.argv[4]);
 const frameWidth = parseInt(process.argv[5]);
 const frameHeight = parseInt(process.argv[6]);
+const outputFilename = `../images/${process.argv[7] || fileparts[0]}.bin`.toLowerCase(); 
 
 console.log(
   `filename: ${filename} xTiles:${xTiles} yTiles:${yTiles} frameWidth:${frameWidth} frameHeight:${frameHeight}`
@@ -147,7 +148,6 @@ for (ty = 0; ty < yTiles; ty++) {
 // Its an optional address to load into. We don't use it but its required
 const output = new Uint8Array([0, 0, ...flattenedTiles]);
 
-const outputFilename = `../images/${fileparts[0]}.bin`.toLowerCase();
 fs.writeFileSync(outputFilename, output, "binary");
 
 console.log(`Generated file ${outputFilename} with ${pixelData.length} pixels`);

@@ -25,6 +25,25 @@ level:
 pal:
 	cd tools && node palette-create-bin.js
 	
+
+	#define SPRITE_MEM_PLAYER_SCUBA_IDX 1
+#define SPRITE_MEM_EXP_SMALL_IDX 2
+#define SPRITE_MEM_SNAKE_IDX 3
+#define SPRITE_MEM_BEE_IDX 4
+#define SPRITE_MEM_GHOST_IDX 5
+#define SPRITE_MEM_SCORPION_IDX 6
+#define SPRITE_MEM_WASP_IDX 7
+#define SPRITE_MEM_FISH1_IDX 8
+#define SPRITE_MEM_BIG_GHOST_IDX 9
+#define SPRITE_MEM_LASER_IDX 10
+#define SPRITE_MEM_SHIP_IDX 11
+#define SPRITE_MEM_ENERGY_IDX 12
+#define SPRITE_MEM_GOLD_IDX 13
+#define SPRITE_MEM_SCUBA_IDX 14
+#define SPRITE_MEM_WEAPON_IDX 15
+#define SPRITE_MEM_BOOTS_IDX 16
+#define SPRITE_MEM_EXTRA_LIFE_IDX 17
+
 img:
 	cd tools && \
 	node gimp-convert-bin.js title.data && \
@@ -33,23 +52,36 @@ img:
 	node gimp-convert-tiles-bin.js tileset3.data 20 7 16 16 && \
 	node gimp-convert-tiles-bin.js tileset4.data 20 7 16 16 && \
 	node gimp-convert-tiles-bin.js fontsimple.data 42 1 16 16 && \
-	node gimp-convert-tiles-bin.js extralife.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js boots.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js weapon.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js scuba.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js gold.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js energy.data 4 1 16 16 && \
+	node gimp-convert-tiles-bin.js guyrun.data 6 1 16 16 sp0 && \
+	node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16 sp1 && \
+	node gimp-convert-tiles-bin.js expsmall.data 4 1 16 16 sp2 && \
+	node gimp-convert-tiles-bin.js snake.data 4 1 16 16 sp3 && \
+	node gimp-convert-tiles-bin.js bee.data 4 1 16 16 sp4 && \
+	node gimp-convert-tiles-bin.js ghost.data 4 1 16 16 sp5 && \
+	node gimp-convert-tiles-bin.js scorpion.data 4 1 16 16 sp6 && \
+	node gimp-convert-tiles-bin.js wasp.data 4 1 16 16 sp7 && \
+	node gimp-convert-tiles-bin.js fish1.data 4 1 16 16 sp8 && \
+	node gimp-convert-tiles-bin.js bigghost.data 4 1 32 32 sp9 && \
+	node gimp-convert-tiles-bin.js laser.data 1 1 16 16 sp10 && \
+	node gimp-convert-tiles-bin.js ship.data 4 1 64 64 sp11 && \
+	node gimp-convert-tiles-bin.js energy.data 4 1 16 16 sp12 && \
+	node gimp-convert-tiles-bin.js gold.data 4 1 16 16 sp13 && \
+	node gimp-convert-tiles-bin.js scuba.data 1 1 16 16 sp14 && \
+	node gimp-convert-tiles-bin.js weapon.data 1 1 16 16 sp15 && \
+	node gimp-convert-tiles-bin.js boots.data 1 1 16 16 sp16 && \
+	node gimp-convert-tiles-bin.js extralife.data 1 1 16 16 sp17 && \
 	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js guyrun.data 6 1 16 16 && \
-	node gimp-convert-tiles-bin.js ship.data 4 1 64 64 && \
-	node gimp-convert-bin.js laser.data && \
-	node gimp-convert-tiles-bin.js expsmall.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js bigghost.data 4 1 32 32 && \
-	node gimp-convert-tiles-bin.js fish1.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js wasp.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js scorpion.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js ghost.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js bee.data 4 1 16 16 && \
-	node gimp-convert-tiles-bin.js snake.data 4 1 16 16
+	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
