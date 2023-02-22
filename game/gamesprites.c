@@ -144,6 +144,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;
     p->lastY = p->y;
+    p->animationDirection = 0;
 
     spriteInit(p);
     x16SpriteIdxSetXY(p->index, p->x, p->y);

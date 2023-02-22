@@ -51,16 +51,18 @@
 #define BULLET_SPEED_NORMAL 30
 #define BULLET_SPEED_WITH_WEAPON 45
 
-#define DEATH_PAUSE_FRAMES = 120
+#define DEATH_PAUSE_FRAMES = 60
 
 #define LEAVE_LEVEL_X_LEFT -8
 #define LEAVE_LEVEL_X_RIGHT 631
 #define LEAVE_LEVEL_Y_DOWN 463
 #define LEAVE_LEVEL_Y_UP 8
 
+#define TEST_LEVEL 7
+
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 57
+#define START_LEVEL TEST_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 288
@@ -87,14 +89,18 @@ unsigned char testMode = 0;
 Sprite player, bullet, expSmall, ship;
 LevelOveralLayout* level;
 
-unsigned char energy = 0;
-unsigned short gold = 0;
-unsigned char lives = 2;
-unsigned char hasScuba = 0;
-unsigned char hasWeapon = 0;
-unsigned char hasBoots = 0;
-unsigned char coldCount = 0;
-unsigned char hotCount = 0;
+// Player values
+unsigned char energy;
+unsigned short gold;
+unsigned char lives;
+unsigned char hasScuba;
+unsigned char hasWeapon;
+unsigned char hasBoots;
+unsigned char coldCount;
+unsigned char hotCount;
+
+unsigned char enemyCount = 0;
+unsigned char entityCount = 0;
 
 // These are special exits returned when the player has died
 // OR exited by leaving the screen
@@ -107,7 +113,18 @@ Exit playerBurned = { PLAYER_BURNED };
 
 Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 
-void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
+void gameStartValues() {
+    energy = 0;
+    gold = 0;
+    lives = 0;
+    hasScuba = 0;
+    hasWeapon = 0;
+    hasBoots = 0;
+    coldCount = 0;
+    hotCount = 0;
+}
+
+void levelExitCleanup() {
     // This is jumping to another level. We need to cleanup this level.
     // Clean up the enemies and return the exit info
     enemiesReset(enemyCount);
@@ -129,7 +146,7 @@ void levelExitCleanup(unsigned char enemyCount, unsigned char entityCount) {
  * and run the level until the player hits an exit.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, enemyCount, entityCount, loopCount;
+    unsigned char collision, joy, loopCount;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
@@ -216,7 +233,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                     x16SpriteIdxSetXY(player.index, player.x, player.y);
                 } else {
-                    levelExitCleanup(enemyCount, entityCount);
+                    levelExitCleanup();
                     return exitCollision;
                 }
             } else if (entityCollision->entityType == EnergyEnum) {
@@ -309,7 +326,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving bottom of the screen
             if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(enemyCount, entityCount);
+                levelExitCleanup();
                 spriteMove(&player, player.x, LEAVE_LEVEL_Y_UP);
                 playerScreenExit.level = level->downLevel;
 
@@ -339,7 +356,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving top of screen (normally only by swimming)
             if (player.y <= LEAVE_LEVEL_Y_UP && level->upLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(enemyCount, entityCount);
+                levelExitCleanup();
                 // Move the player an extra few pixels because they will immediately start falling back down
                 // When swimming we want to give them a chance to kick up a few times and not fall back to the previous level
                 spriteMove(&player, player.x, LEAVE_LEVEL_Y_DOWN-8);
@@ -437,7 +454,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving left side of the screen
             if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(enemyCount, entityCount);
+                levelExitCleanup();
                 spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
                 playerScreenExit.level = level->leftLevel;
 
@@ -459,7 +476,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving right side of the screen
             if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(enemyCount, entityCount);
+                levelExitCleanup();
                 spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
                 playerScreenExit.level = level->rightLevel;
 
@@ -632,12 +649,13 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
 void main() {
     unsigned char i;
+    unsigned char clearData = 0;
     short playerEnterX, playerEnterY;
 
     // CX16 has 128 sprites for us to use. Each has an id/index.
     // As we create sprites we increase this value so we know what the next
     // available sprite index is.
-    unsigned char nextSpriteIndex = 0;
+    unsigned char nextSpriteIndex;
 
     // On the 1st level we show the ship landing before the game starts
     unsigned char showShipScene = 1;
@@ -658,16 +676,6 @@ void main() {
     // Make sure not to overwrite these banks
     loadSounds();
 
-    // Init the level cache
-    // We cache some level data (entities) because certain things don't respawn (energy, gold)
-    // so we need to remember which ones are gone
-    initCachedLevelData();
-
-    // Get the starting level and main entrance
-    // It loads quickly but do it before showing title to minimize time after title screen
-    level = levelGet(START_LEVEL);
-    entrance = findEntranceForExit(((EntranceList*)level->entityList), 0);
-    
     // Configure the joysticks
     joy_install(cx16_std_joy);
 
@@ -676,83 +684,117 @@ void main() {
     // have been swapped out
     paletteLoad();
 
-    testMode = showTitleScreen();
-    showShipScene = !testMode;
-
-    // Clear the maps to remove the title screen junk
-    layerMapsClear();
-
-    // Load all the sprites
-    // TODO: Currently we load all possible sprites for the game. Refactor?
-    // Currently we have enough memory for this BUT as the game grows...
-    // Maybe refactor to load just the needed sprites with each level?
-    spriteDataLoad();
-    spriteIRQConfig();
-    playerCreate(&player, entrance, nextSpriteIndex++);
-    bulletCreate(&bullet, nextSpriteIndex++);
-    explosionSmallCreate(&expSmall, nextSpriteIndex++);
-    nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
-    shipCreate(&ship, nextSpriteIndex++);
-
-    // Wait to switch to game mode until everything is loaded
-    // If you switch video modes first, you get crazy stuff on screen (kind cool?)
-    videoConfig();
-
-    // Load some standard tiles (font)
-    // These stay in the Tileset RAM for the entire game
-    // Level tilesets are loaded in RAM after
-    standardTilesLoad();
-
-    // Show the intro screen before starting the level
-    if (!testMode) {
-        showIntroScene(&ship);
-    }
-
     while(1) {
-        // Get the player's position at the start of the level
-        // If they die, we put them back here
-        playerEnterX = player.x;
-        playerEnterY = player.y;
+        nextSpriteIndex = 0;
+        gameStartValues();
 
-        // Get a copy of the exitCollision because we will free the level next
-        exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
-        showShipScene = 0;
+        // Init the level cache
+        // We cache some level data (entities) because certain things don't respawn (energy, gold)
+        // so we need to remember which ones are gone
+        initCachedLevelData(clearData);
 
-        // If this was a normal level exit (not a player death)
-        // The load the next level
-        if (exitCollision.entityType < PLAYER_BURNED) {
-            // Free the memory for the last level and load the next one
-            freeLevel(level);
-            level = levelGet(exitCollision.level);
+        // Get the starting level and main entrance
+        // It loads quickly but do it before showing title to minimize time after title screen
+        level = levelGet(START_LEVEL);
+        entrance = findEntranceForExit(((EntranceList*)level->entityList), 0);
 
-            // If the player is going to a specific entranace place them there
-            if (exitCollision.entranceId != LEAVE_SCREEN_ENTRACE_ID) {
-                entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
-                spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
-            }
-        } else {
-            // Pause the game for a moment since player died
-            for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
-                waitforjiffy();
-            }
-            switch(exitCollision.entityType) {
-                case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
-                case PLAYER_SHOT: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
-                case PLAYER_DROWNED: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
-                case PLAYER_FROZE: showMessage("PIXEUS FREEZES IN THE ICY WATER"); break;
-                case PLAYER_OVERHEATED: showMessage("PIXEUS FAINTS IN THE DESERT HEAT"); break;
-                case PLAYER_BURNED: showMessage("PIXEUS BURNS IN THE MOLTEN LAVA"); break;
-            }
+        // Clear the maps to remove any extra VMEM junk from showing on title screen
+        layerMapsClear();
 
-            // Move them back to where they started the level
-            spriteMove(&player, playerEnterX, playerEnterY);
+        testMode = showTitleScreen();
+        showShipScene = !testMode;
 
-            // Reset env counters
-            hotCount = 0;
-            coldCount = 0;
+        // Clear the maps to remove the title screen junk
+        layerMapsClear();
+
+        // Load all the sprites
+        // TODO: Currently we load all possible sprites for the game. Refactor?
+        // Currently we have enough memory for this BUT as the game grows...
+        // Maybe refactor to load just the needed sprites with each level?
+        spriteDataLoad();
+        spriteIRQConfig();
+        playerCreate(&player, entrance, nextSpriteIndex++);
+        bulletCreate(&bullet, nextSpriteIndex++);
+        explosionSmallCreate(&expSmall, nextSpriteIndex++);
+        nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
+        shipCreate(&ship, nextSpriteIndex++);
+
+        // Wait to switch to game mode until everything is loaded
+        // If you switch video modes first, you get crazy stuff on screen (kind cool?)
+        videoConfig();
+
+        // Load some standard tiles (font)
+        // These stay in the Tileset RAM for the entire game
+        // Level tilesets are loaded in RAM after
+        standardTilesLoad();
+
+        // Show the intro screen before starting the level
+        if (!testMode) {
+            showIntroScene(&ship);
         }
 
-        x16SpriteIdxSetXY(player.index, player.x, player.y);
+        while(1) {
+            // Get the player's position at the start of the level
+            // If they die, we put them back here
+            playerEnterX = player.x;
+            playerEnterY = player.y;
+
+            // Get a copy of the exitCollision because we will free the level next
+            exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
+            showShipScene = 0;
+
+            // If this was a normal level exit (not a player death)
+            // Then load the next level
+            if (exitCollision.entityType < PLAYER_BURNED) {
+                // Free the memory for the last level and load the next one
+                freeLevel(level);
+                level = levelGet(exitCollision.level);
+
+                // If the player is going to a specific entranace place them there
+                if (exitCollision.entranceId != LEAVE_SCREEN_ENTRACE_ID) {
+                    entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
+                    spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
+                }
+            } else {
+                // Pause the game for a moment since player died
+                for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
+                    waitforjiffy();
+                }
+                switch(exitCollision.entityType) {
+                    case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
+                    case PLAYER_SHOT: showMessage("THE PIERCED BODY OF PIXEUS FALLS"); break;
+                    case PLAYER_DROWNED: showMessage("TOXIC WATER DISSOLVES PIXEUS"); break;
+                    case PLAYER_FROZE: showMessage("PIXEUS FREEZES IN THE ICY WATER"); break;
+                    case PLAYER_OVERHEATED: showMessage("PIXEUS FAINTS IN THE DESERT HEAT"); break;
+                    case PLAYER_BURNED: showMessage("PIXEUS BURNS IN THE MOLTEN LAVA"); break;
+                }
+
+                // See if game over
+                if (lives == 0) {
+                    clearData = 1;
+                    freeLevel(level);
+                    levelExitCleanup();
+                    // Place Pixeus for the game over screen
+                    spriteMove(&player, 312, 360);
+                    x16SpriteIdxSetXY(player.index, player.x, player.y);
+                    x16SpriteIdxSetZDepth(ship.index, Disabled);
+                    gameOverScreen();
+                    break;
+                }
+                
+                // One less life remaining
+                lives--;
+
+                // Move them back to where they started the level
+                spriteMove(&player, playerEnterX, playerEnterY);
+
+                // Reset env counters
+                hotCount = 0;
+                coldCount = 0;
+            }
+
+            x16SpriteIdxSetXY(player.index, player.x, player.y);
+        }
     }
 
     // Disable sprite collisions before quitting

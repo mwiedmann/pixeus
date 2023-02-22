@@ -5,5 +5,5 @@
 
 unsigned char showTitleScreen();
 void showIntroScene(Sprite *ship);
-
+void gameOverScreen();
 #endif

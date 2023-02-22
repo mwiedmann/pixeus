@@ -3,7 +3,7 @@
 
 #include "level.h"
 
-void initCachedLevelData();
+void initCachedLevelData(unsigned char clearFirst);
 void cacheLevelData(LevelOveralLayout *level);
 EntityList *cachedEntityListGet(unsigned char levelNum);
 

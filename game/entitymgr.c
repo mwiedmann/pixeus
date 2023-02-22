@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "x16graphics.h"
 #include "gamesprites.h"
 #include "gametiles.h"
@@ -11,10 +13,13 @@ Sprite entitySprites[16];
 
 EntityList *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
 
-void initCachedLevelData() {
+void initCachedLevelData(unsigned char clearFirst) {
     unsigned char i;
 
     for (i=0; i<CACHED_ENTITY_LIST_LENGTH; i++) {
+        if (clearFirst && cachedEntityLists[i] != 0) {
+            free(cachedEntityLists[i]);
+        }
         cachedEntityLists[i] = 0;
     }
 }
