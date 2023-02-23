@@ -7,7 +7,7 @@ const fs = require("fs");
 const rawText = fs.readFileSync("pixeus.ldtk");
 const d = JSON.parse(rawText);
 
-const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6 }
+const EnemyEnum = { Snake: 0, Bee: 1, Ghost: 2, Scorpion: 3, Wasp: 4, Fish1: 5, BigGhost: 6, Eyeball: 7, Mushroom: 8 }
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
 const tilesStartTileId = 49
 

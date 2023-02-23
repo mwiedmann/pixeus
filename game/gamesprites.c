@@ -19,19 +19,21 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 18
+#define SPRITE_COUNT 20
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
-// { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6 }
-EnemyStats enemyStats[7] = {
+// { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7, Mushroom = 8 }
+EnemyStats enemyStats[9] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180 },
     { SPRITE_MEM_SCORPION_IDX, 6, 6, 6, 90 },
     { SPRITE_MEM_WASP_IDX, 6, 12, 3, 120 },
     { SPRITE_MEM_FISH1_IDX, 30, 3, 3, 120 },
-    { SPRITE_MEM_BIG_GHOST_IDX, 30, 3, 20, 120 }
+    { SPRITE_MEM_BIG_GHOST_IDX, 30, 3, 20, 120 },
+    { SPRITE_MEM_EYEBALL_IDX, 6, 6, 6, 90 },
+    { SPRITE_MEM_MUSHROOM_IDX, 30, 4, 6, 90 },
 };
 
 void spriteDataLoad() {

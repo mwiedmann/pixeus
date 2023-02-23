@@ -47,6 +47,8 @@
 #define SPRITE_MEM_WEAPON_IDX 15
 #define SPRITE_MEM_BOOTS_IDX 16
 #define SPRITE_MEM_EXTRA_LIFE_IDX 17
+#define SPRITE_MEM_EYEBALL_IDX 18
+#define SPRITE_MEM_MUSHROOM_IDX 19
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0
