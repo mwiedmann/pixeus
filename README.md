@@ -73,5 +73,14 @@ The images in Pixeus use a few colors that didn't map well to the standard CX16 
 make pal
 ```
 
+## Text Files
+The text screens (welcome, game over, etc.) are loaded at runtime from binary "text record" files. This helps save space since the text actually eats up a lot of bytes in the final .prg file. The files consist of a header with the number of text records, and each record contains some row/column info, an optional 'arg' value for controlling whether or not that text shows, and the text itself.
+
+`text-screen-gen.js` contains all of the text records and generates the .bin files. To regenerate them after making changes, run:
+
+```
+make txt
+```
+
 ## License
 See the [license file](./license.md)

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <cbm.h>
+#include <cx16.h>
 
 #include <peekpoke.h>
 #include <joystick.h>
@@ -67,21 +69,71 @@ unsigned char showTitleScreen() {
     return testMode;
 }
 
+void waitWithShipAnimation(Sprite *ship) {
+    while(1) {
+        // Wait for screen to finish drawing since we are animating the ship
+        waitforjiffy();
+        spriteAnimationAdvance(ship);
+
+        // Exit when either button is pressed
+        if (readButtonPress()) {
+            break;
+        }
+    }
+}
+
 void showIntroScene(Sprite *ship) {
+    drawTextFile("text/welcome.bin", 0);
 
-    drawCenteredTextRow("PIXEUS THE EXPLORER", 0, 3);
-    
-    drawCenteredTextRow("LOST IN SPACE IN A", 0, 5);
-    drawCenteredTextRow("SHIP LOW ON ENERGY", 0, 6);
+    spriteMove(ship, 288, 350);
+    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
+    ship->zDepth = BetweenL0L1;
+    x16SpriteIdxSetZDepth(ship->index, ship->zDepth);
 
-    drawCenteredTextRow("PERHAPS THIS PLANET PROVIDES HOPE?", 0, 8);
+    waitWithShipAnimation(ship);
 
-    drawCenteredTextRow("PLENTIFUL IN GOLD AND ENERGY", 0, 10);
-    drawCenteredTextRow("PIXEUS LANDS IN THIS STRANGE WORLD", 0, 11);
+    layerMapsClear();
 
-    drawCenteredTextRow("ESCAPE IS THE GOAL", 0, 13);
-    drawCenteredTextRow("BUT GOLD IS THE SIREN'S CALL", 0, 14);
-    
+    drawTextFile("text/instr.bin", 0);
+
+    waitWithShipAnimation(ship);
+
+    spriteMoveBack(ship);
+    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
+}
+
+void gameOverScreen(unsigned short gold, unsigned char energy) {
+    unsigned char scoreRow[41];
+
+    layerMapsClear();
+
+    sprintf(scoreRow, "GOLD:%04u ENERGY:%03u", gold, energy);
+    drawCenteredTextRow(scoreRow, 0, 4);
+
+    drawTextFile("text/gameover.bin", 0);
+
+    while(1) {
+        // Exit when either button is pressed
+        if (readButtonPress()) {
+            break;
+        }
+    }
+}
+
+void victoryScreen(Sprite *ship, unsigned short gold) {
+    unsigned char text[41];
+
+    layerMapsClear();
+
+    if (gold == 0) {
+        drawTextFile("text/nogold.bin", 0);
+    } else {
+        sprintf(text, "PIXEUS SPENDS %u GOLD ON:", gold);
+        drawCenteredTextRow(text, 0, 6);
+
+        drawTextFile("text/victory.bin", gold);
+    }
+   
     spriteMove(ship, 288, 350);
     x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
     ship->zDepth = BetweenL0L1;
@@ -92,64 +144,6 @@ void showIntroScene(Sprite *ship) {
         waitforjiffy();
         spriteAnimationAdvance(ship);
 
-        // Exit when either button is pressed
-        if (readButtonPress()) {
-            break;
-        }
-    }
-
-    layerMapsClear();
-
-    drawCenteredTextRow("HOW TO PLAY", 0, 2);
-    
-    drawTextRow(" MOVE - JOYSTICK LEFT-RIGHT", 0, 4, 5);
-    drawTextRow(" JUMP - BUTTON 1 OR JOYSTICK UP", 0, 5, 5);
-    drawTextRow("SHOOT - BUTTON 2", 0, 6, 5);
-
-    drawCenteredTextRow("FIND 100 ENERGY AND", 0, 8);
-    drawCenteredTextRow("RETURN TO YOUR SHIP TO ESCAPE", 0, 9);
-
-    drawCenteredTextRow("THE MORE GOLD YOU FIND", 0, 11);
-    drawCenteredTextRow("THE GREATER YOUR ENDING", 0, 12);
-
-    drawCenteredTextRow("WATER IS:", 0, 14);
-
-    drawCenteredTextRow("DEADLY UNTIL YOU FIND SCUBA GEAR", 0, 16);
-    drawCenteredTextRow("YOUR FRIEND IN THE DESERT", 0, 17);
-    drawCenteredTextRow("BONE CHILLING IN THE TUNDRA", 0, 18);
-
-    drawCenteredTextRow("GOOD LUCK!", 0, 20);
-
-    while(1) {
-        // Wait for screen to finish drawing since we are animating the ship
-        waitforjiffy();
-        spriteAnimationAdvance(ship);
-
-        // Exit when either button is pressed
-        if (readButtonPress()) {
-            break;
-        }
-    }
-
-    spriteMoveBack(ship);
-    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
-}
-
-void gameOverScreen() {
-    layerMapsClear();
-
-    drawCenteredTextRow("PIXEUS SURRENDERS TO SLEEP AT LAST", 0, 7);
-
-    drawCenteredTextRow("NO LONGER KEEPING WATCH", 0, 9);
-    drawCenteredTextRow("THROUGH THE NIGHT", 0, 10);
-    
-    drawCenteredTextRow("PERHAPS IN THE NEXT LIFE PIXEUS", 0, 12);
-    drawCenteredTextRow("YOU'LL COME UP FROM UNDER", 0, 13);
-    drawCenteredTextRow("ALL YOUR TROUBLES", 0, 14);
-    
-    drawCenteredTextRow("GAME OVER", 0, 17);
-
-    while(1) {
         // Exit when either button is pressed
         if (readButtonPress()) {
             break;

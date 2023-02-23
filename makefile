@@ -2,8 +2,8 @@ CC=cl65
 
 make:
 	$(CC) -I lib -I zsound -o pixeus.prg -t cx16 \
-	game/main.c game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c \
-	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c game/welcome.c \
+	game/main.c game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c \
+	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
 	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s \
 	zsound/zsound.lib
 
@@ -24,25 +24,9 @@ level:
 
 pal:
 	cd tools && node palette-create-bin.js
-	
 
-	#define SPRITE_MEM_PLAYER_SCUBA_IDX 1
-#define SPRITE_MEM_EXP_SMALL_IDX 2
-#define SPRITE_MEM_SNAKE_IDX 3
-#define SPRITE_MEM_BEE_IDX 4
-#define SPRITE_MEM_GHOST_IDX 5
-#define SPRITE_MEM_SCORPION_IDX 6
-#define SPRITE_MEM_WASP_IDX 7
-#define SPRITE_MEM_FISH1_IDX 8
-#define SPRITE_MEM_BIG_GHOST_IDX 9
-#define SPRITE_MEM_LASER_IDX 10
-#define SPRITE_MEM_SHIP_IDX 11
-#define SPRITE_MEM_ENERGY_IDX 12
-#define SPRITE_MEM_GOLD_IDX 13
-#define SPRITE_MEM_SCUBA_IDX 14
-#define SPRITE_MEM_WEAPON_IDX 15
-#define SPRITE_MEM_BOOTS_IDX 16
-#define SPRITE_MEM_EXTRA_LIFE_IDX 17
+txt:
+	cd tools && node text-screen-gen.js
 
 img:
 	cd tools && \

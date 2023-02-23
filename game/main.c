@@ -13,7 +13,7 @@
 #include "memmap.h"
 #include "level.h"
 #include "layoutdefs.h"
-#include "welcome.h"
+#include "textmgr.h"
 
 // These managers are honestly just places to hold functions
 // related to these entities
@@ -29,7 +29,7 @@
 #include "waitforjiffy.h"
 
 #define PLAYER_FALL_SPEED 20
-#define PLAYER_WATER_FALL_SPEED 4
+#define PLAYER_WATER_FALL_SPEED 5
 
 #define PLAYER_JUMP_SPEED_NORMAL 20
 #define PLAYER_JUMP_SPEED_BOOTS 24
@@ -62,13 +62,14 @@
 
 // FOR TESTING ONLY !!!
 // WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL TEST_LEVEL
+#define START_LEVEL 0
 
 // For the ship landing animation
-#define SHIP_STOP_Y 288
+#define SHIP_STOP_Y 256
 
-// NOTE: If adding more of these, there is a < PLAYER_BURNED check to update
+// NOTE: If adding more of these, there is a < PLAYER_ESCAPED check to update
 // entityType for special exit conditions
+#define PLAYER_ESCAPED 240
 #define PLAYER_BURNED 250
 #define PLAYER_OVERHEATED 251
 #define PLAYER_FROZE 252
@@ -78,9 +79,12 @@
 
 // Special EntranceId meaning the player exited via the edge of the screen
 #define LEAVE_SCREEN_ENTRACE_ID 255
+#define SHIP_ENTRACE_ID 254
 
-#define PLAYER_FREEZES_COUNT 120
-#define PLAYER_OVERHEATS_COUNT 120
+#define PLAYER_FREEZES_COUNT 60
+#define PLAYER_OVERHEATS_COUNT 30
+
+#define ENERGY_TO_ESCAPE 100
 
 unsigned char testMode = 0;
 
@@ -110,6 +114,8 @@ Exit playerDrowned = { PLAYER_DROWNED };
 Exit playerFroze = { PLAYER_FROZE };
 Exit playerOverheated = { PLAYER_OVERHEATED };
 Exit playerBurned = { PLAYER_BURNED };
+
+Exit playerEnterShipExit = { PLAYER_ESCAPED };
 
 Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 
@@ -227,8 +233,15 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         if (entityCollision != 0) {
             if (entityCollision->entityType == ExitEnum) {
                 exitCollision = (Exit*)entityCollision;
+                // Special exit entering the ship and completing the game
+                if (exitCollision->entranceId == SHIP_ENTRACE_ID) {
+                    if (energy >= ENERGY_TO_ESCAPE) {
+                        levelExitCleanup();
+                        return &playerEnterShipExit;
+                    }
+                } 
                 // If this jumps somewhere on the same level, just move the player
-                if (exitCollision->level == level->levelNum) {
+                else if (exitCollision->level == level->levelNum) {
                     entrance = findEntranceForExit((EntranceList*)(level->entityList), exitCollision->entranceId);
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                     x16SpriteIdxSetXY(player.index, player.x, player.y);
@@ -299,8 +312,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != Empty) {
-                // Move the player to the top of the tile
-                // We do this because as the player falls they may end up wedged a few pixels into a tile
+                // If a solid tile, move the player to the top of the tile
+                // We do this because as the player falls they may end up wedged a few pixels into the tile
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
                     // This is the last surface the player touched
                     // We track this to know if they are sliding on ice or on better ground
@@ -335,7 +348,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         } else {
             // Player is jumping, move them up
             jumpFrames--;
-            player.going==1;
+            player.going=1;
             spriteMoveYL(&player, player.yL-(
                 tileCollision.type == Water 
                 ? hasBoots 
@@ -380,7 +393,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
                     if (hotCount == 0) {
                         hotCount = 0;
-                        return &playerDrowned;
+                        return &playerOverheated;
                     }
                 }
             } else {
@@ -404,7 +417,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
                     if (coldCount == 0) {
                         coldCount = 0;
-                        return &playerDrowned;
+                        return &playerFroze;
                     }
                 }
             } else {
@@ -701,6 +714,7 @@ void main() {
         // Clear the maps to remove any extra VMEM junk from showing on title screen
         layerMapsClear();
 
+        // testMode makes the player invincible and skips some intro scenes
         testMode = showTitleScreen();
         showShipScene = !testMode;
 
@@ -720,10 +734,10 @@ void main() {
         shipCreate(&ship, nextSpriteIndex++);
 
         // Wait to switch to game mode until everything is loaded
-        // If you switch video modes first, you get crazy stuff on screen (kind cool?)
+        // If you switch video modes first, you get crazy stuff on screen (kinda cool?)
         videoConfig();
 
-        // Load some standard tiles (font)
+        // Load some standard tiles (empty, black, font)
         // These stay in the Tileset RAM for the entire game
         // Level tilesets are loaded in RAM after
         standardTilesLoad();
@@ -745,7 +759,7 @@ void main() {
 
             // If this was a normal level exit (not a player death)
             // Then load the next level
-            if (exitCollision.entityType < PLAYER_BURNED) {
+            if (exitCollision.entityType < PLAYER_ESCAPED) {
                 // Free the memory for the last level and load the next one
                 freeLevel(level);
                 level = levelGet(exitCollision.level);
@@ -767,18 +781,26 @@ void main() {
                     case PLAYER_FROZE: showMessage("PIXEUS FREEZES IN THE ICY WATER"); break;
                     case PLAYER_OVERHEATED: showMessage("PIXEUS FAINTS IN THE DESERT HEAT"); break;
                     case PLAYER_BURNED: showMessage("PIXEUS BURNS IN THE MOLTEN LAVA"); break;
+                    case PLAYER_ESCAPED: showMessage("PIXEUS LOADS THE ARGO WITH ENERGY"); break;
                 }
 
                 // See if game over
-                if (lives == 0) {
+                if (lives == 0 || exitCollision.entityType == PLAYER_ESCAPED) {
                     clearData = 1;
                     freeLevel(level);
                     levelExitCleanup();
-                    // Place Pixeus for the game over screen
-                    spriteMove(&player, 312, 360);
-                    x16SpriteIdxSetXY(player.index, player.x, player.y);
-                    x16SpriteIdxSetZDepth(ship.index, Disabled);
-                    gameOverScreen();
+
+                    if (exitCollision.entityType == PLAYER_ESCAPED) {
+                        x16SpriteIdxSetZDepth(player.index, Disabled);
+                        victoryScreen(&ship, gold);
+                    } else {
+                        // Place Pixeus for the game over screen
+                        spriteMove(&player, 312, 360);
+                        x16SpriteIdxSetXY(player.index, player.x, player.y);
+                        x16SpriteIdxSetZDepth(ship.index, Disabled);
+                        
+                        gameOverScreen(gold, energy);
+                    }
                     break;
                 }
                 

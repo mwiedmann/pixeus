@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <cbm.h>
+#include <cx16.h>
+#include <peekpoke.h>
 
 #include "memmap.h"
 #include "gametiles.h"
@@ -160,4 +163,47 @@ void showMessage(unsigned char* text) {
     free(orig1);
     free(orig2);
     free(orig3);
+}
+
+void drawTextFile(unsigned char *filename, unsigned short argComp) {
+    unsigned char i;
+    unsigned char *length, *text, *row, *col;
+    unsigned short *arg;
+    unsigned char currentMemBank;
+
+    currentMemBank = PEEK(0);
+
+    POKE(0, IMAGE_LOAD_BANK);
+    cbm_k_setnam(filename);
+    cbm_k_setlfs(0, 8, 0);
+    cbm_k_load(0, (unsigned int)BANK_RAM);
+
+    // 1 byte header with length
+    length = BANK_RAM;
+    
+    /*
+        1 byte - row
+        1 byte - col (255 = center)
+        2 bytes - arg (used for gold amount compare)
+        41 bytes ending with 0 - text
+    */
+
+    for (i=0; i<(*length); i++) {
+        row = BANK_RAM + 1 + (45*i);
+        col = BANK_RAM + 1 + (45*i) + 1;
+        arg = (unsigned short *)(BANK_RAM + 1 + (45*i) + 2);
+        text = BANK_RAM + 1 + (45*i) + 4;
+        // arg/argComp are used to optionally display text
+        // We use it to show what Pixeus buys depending on how much gold
+        if (argComp >= *arg) {
+            // 255 means center the text
+            if (*col != 255) {
+                drawTextRow(text, 0, *row, *col);
+            } else {
+                drawCenteredTextRow(text, 0, *row);
+            }
+        }
+    }
+
+    POKE(0, currentMemBank);
 }

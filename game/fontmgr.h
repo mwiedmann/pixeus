@@ -10,4 +10,6 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
     unsigned short hasScuba, unsigned char hasWeapon, unsigned char hasBoots,
     unsigned char coldCount, unsigned char hotCount);
 void showMessage(unsigned char* text);
+void drawTextFile(unsigned char *filename, unsigned short argComp);
+
 #endif
