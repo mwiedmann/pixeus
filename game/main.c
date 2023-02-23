@@ -130,14 +130,14 @@ void gameStartValues() {
     hotCount = 0;
 }
 
-void levelExitCleanup() {
+void levelExitCleanup(unsigned char hideShip) {
     // This is jumping to another level. We need to cleanup this level.
     // Clean up the enemies and return the exit info
     enemiesReset(enemyCount);
     entitiesReset(entityCount);
 
     // Hide the ship if leaving level 0
-    if (level->levelNum == 0) {
+    if (level->levelNum == 0 && hideShip) {
         ship.zDepth = Disabled;
         x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
     }
@@ -236,7 +236,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                 // Special exit entering the ship and completing the game
                 if (exitCollision->entranceId == SHIP_ENTRACE_ID) {
                     if (energy >= ENERGY_TO_ESCAPE) {
-                        levelExitCleanup();
+                        levelExitCleanup(0);
                         return &playerEnterShipExit;
                     }
                 } 
@@ -246,7 +246,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);    
                     x16SpriteIdxSetXY(player.index, player.x, player.y);
                 } else {
-                    levelExitCleanup();
+                    levelExitCleanup(1);
                     return exitCollision;
                 }
             } else if (entityCollision->entityType == EnergyEnum) {
@@ -339,7 +339,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving bottom of the screen
             if (player.y >= LEAVE_LEVEL_Y_DOWN && level->downLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup();
+                levelExitCleanup(1);
                 spriteMove(&player, player.x, LEAVE_LEVEL_Y_UP);
                 playerScreenExit.level = level->downLevel;
 
@@ -369,7 +369,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving top of screen (normally only by swimming)
             if (player.y <= LEAVE_LEVEL_Y_UP && level->upLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup();
+                levelExitCleanup(1);
                 // Move the player an extra few pixels because they will immediately start falling back down
                 // When swimming we want to give them a chance to kick up a few times and not fall back to the previous level
                 spriteMove(&player, player.x, LEAVE_LEVEL_Y_DOWN-8);
@@ -467,7 +467,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving left side of the screen
             if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup();
+                levelExitCleanup(1);
                 spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
                 playerScreenExit.level = level->leftLevel;
 
@@ -489,7 +489,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
 
             // Player leaving right side of the screen
             if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup();
+                levelExitCleanup(1);
                 spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
                 playerScreenExit.level = level->rightLevel;
 
@@ -788,12 +788,13 @@ void main() {
                 if (lives == 0 || exitCollision.entityType == PLAYER_ESCAPED) {
                     clearData = 1;
                     freeLevel(level);
-                    levelExitCleanup();
 
                     if (exitCollision.entityType == PLAYER_ESCAPED) {
+                        levelExitCleanup(0);
                         x16SpriteIdxSetZDepth(player.index, Disabled);
                         victoryScreen(&ship, gold);
                     } else {
+                        levelExitCleanup(1);
                         // Place Pixeus for the game over screen
                         spriteMove(&player, 312, 360);
                         x16SpriteIdxSetXY(player.index, player.x, player.y);
