@@ -56,6 +56,9 @@ img:
 	node gimp-convert-tiles-bin.js extralife.data 1 1 16 16 sp17 && \
 	node gimp-convert-tiles-bin.js eyeball.data 4 1 16 16 sp18 && \
 	node gimp-convert-tiles-bin.js mushroom.data 4 1 16 16 sp19 && \
+	node gimp-convert-tiles-bin.js slime.data 4 1 16 16 sp20 && \
+	node gimp-convert-tiles-bin.js spider.data 4 1 16 16 sp21 && \
+	node gimp-convert-tiles-bin.js rat.data 4 1 16 16 sp22 && \
 	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16
 

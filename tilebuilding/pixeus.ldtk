@@ -815,7 +815,10 @@
 			{ "id": "Fish1", "tileId": null, "color": 16180452, "__tileSrcRect": null },
 			{ "id": "BigGhost", "tileId": null, "color": 3079936, "__tileSrcRect": null },
 			{ "id": "Eyeball", "tileId": null, "color": 16711704, "__tileSrcRect": null },
-			{ "id": "Mushroom", "tileId": null, "color": 8661783, "__tileSrcRect": null }
+			{ "id": "Mushroom", "tileId": null, "color": 8661783, "__tileSrcRect": null },
+			{ "id": "Slime", "tileId": null, "color": 16217634, "__tileSrcRect": null },
+			{ "id": "Spider", "tileId": null, "color": 12470831, "__tileSrcRect": null },
+			{ "id": "Rat", "tileId": null, "color": 5925256, "__tileSrcRect": null }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Items", "uid": 39, "values": [
 			{ "id": "Scuba", "tileId": null, "color": 2943221, "__tileSrcRect": null },
@@ -1102,16 +1105,16 @@
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
-							"__smartColor": "#842B17",
+							"__smartColor": "#5A6988",
 							"iid": "5f3de350-9f30-11ed-86be-35cd065db9d2",
 							"width": 16,
 							"height": 16,
 							"defUid": 19,
 							"px": [224,336],
 							"fieldInstances": [
-								{ "__identifier": "type", "__value": "Mushroom", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+								{ "__identifier": "type", "__value": "Rat", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Mushroom"]
+									"params": ["Rat"]
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
 								{ "__identifier": "patrolA", "__value": 7, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [7] }] },
