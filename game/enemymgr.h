@@ -9,6 +9,16 @@
 AISprite *findEnemyCollision(Sprite *s);
 
 /**
+ * Find the 1st laser that overlaps with this sprite
+*/
+Sprite *findEnemyLaserCollision(Sprite *s);
+
+/**
+ * Reset a laser after a collision so it can be reused
+*/
+void resetLaser(Sprite *laser);
+
+/**
  * Create the enemies defined on this level
 */
 unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex);
@@ -22,12 +32,6 @@ void enemiesReset(unsigned char length);
  * Shoot an enemy laser starting at the location and direction
 */
 void enemyShot(short x, short y, unsigned char direction);
-
-/**
- * Reset the laser that is closest to this position.
- * Use this after a laser collision to find and reset the laser.
-*/
-void resetClosestLaser(short x, short y);
 
 /**
  * Move all the enemies

@@ -10,11 +10,6 @@
 #include "level.h"
 #include "imageload.h"
 
-#define ENEMY_COLLISION_MASK 0b1011 // [Enemy] | 0 | Player Bullets | Player
-#define ENEMY_LASER_COLLISION_MASK 0b0101 // 0 | [Enemy Laser] | 0 | Player
-#define PLAYER_COLLISION_MASK 0b1101 // Enemy | Enemy Laser | 0 | [Player]
-#define PLAYER_BULLET_COLLISION_MASK 0b1010 // Enemy | 0 | [Player Bullet] | 0
-
 // Not sure how big the stack needs to be. Unclear how this works.
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
@@ -97,7 +92,7 @@ void spriteDefaults(Sprite *sp) {
     sp->height = PX16;
     sp->frames = 4;
     sp->frameSize = 256;
-    sp->collisionMask = ENEMY_COLLISION_MASK;
+    sp->collisionMask = COLLISION_MASK_ENEMY;
     sp->zDepth = BetweenL0L1;
 }
 
@@ -141,7 +136,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->index = index;
     p->active = 1;
     p->clrMode = 1;
-    p->collisionMask = PLAYER_COLLISION_MASK;
+    p->collisionMask = COLLISION_MASK_PLAYER;
     p->zDepth = Disabled;
     p->graphicsAddress = spriteMemAddresses[SPRITE_MEM_PLAYER_IDX];
     p->animationSpeed = 6;
@@ -203,7 +198,7 @@ void bulletCreate(Sprite *b, unsigned char index) {
     b->index = index;
     b->active = 1;
     b->clrMode = 1;
-    b->collisionMask = PLAYER_BULLET_COLLISION_MASK;
+    b->collisionMask = COLLISION_MASK_PLAYER_BULLET;
     b->zDepth = Disabled;
     b->graphicsAddress = spriteMemAddresses[SPRITE_MEM_PLAYER_IDX] + SPRITE_MEM_PLAYER_BULLET_OFFSET;
     b->frames = 1;
@@ -219,7 +214,7 @@ void laserCreate(Sprite *b, unsigned char index) {
     b->index = index;
     b->active = 0;
     b->clrMode = 1;
-    b->collisionMask = ENEMY_LASER_COLLISION_MASK;
+    b->collisionMask = COLLISION_MASK_ENEMY_LASER;
     b->zDepth = Disabled;
     b->graphicsAddress = spriteMemAddresses[SPRITE_MEM_LASER_IDX];
     b->frames = 1;

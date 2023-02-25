@@ -9,6 +9,8 @@
 #include "x16graphics.h"
 #include "levelutils.h"
 
+#include "waitforjiffy.h"
+
 unsigned char letterToTile(unsigned char letter) {
     unsigned char tile;
 
@@ -206,4 +208,18 @@ void drawTextFile(unsigned char *filename, unsigned short argComp) {
     }
 
     POKE(0, currentMemBank);
+}
+
+void debugMsg(unsigned char* text, unsigned char val) {
+    unsigned char line[41];
+    unsigned char i;
+
+    sprintf(line, "%s %u", text, val);
+
+    // Pause the game for a moment since player died
+    for (i=0; i<120; i++) {
+        waitforjiffy();
+    }
+
+    showMessage(line);
 }

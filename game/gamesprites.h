@@ -4,6 +4,36 @@
 #include "sprites.h"
 #include "level.h"
 
+/*
+COLLISION MASKS:
+   ENEMY: 1 0 1 0
+EN.LASER: 0 1 0 0
+PL.LASER: 0 0 1 0
+  PLAYER: 1 1 0 1
+
+The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
+We can then look at all the sprites that have that bit in their mask
+
+NOTE: If there are multiple collisions on the same frame, multiple bits will be set
+This is fine, we just AND "&" with our COLLISION_RESULTS to see what has collided
+
+COLLISION RESULTS:
+   ENEMY-PLAYER: 1 0 0 0
+EN.LASER-PLAYER: 0 1 0 0
+ ENEMY-PL.LASER: 0 0 1 0
+*/
+
+// Collision Masks
+#define COLLISION_MASK_ENEMY 0b1010
+#define COLLISION_MASK_ENEMY_LASER 0b0100
+#define COLLISION_MASK_PLAYER_BULLET 0b0010
+#define COLLISION_MASK_PLAYER 0b1101
+
+// Collision Results
+#define COLLISION_RESULT_ENEMY_PLAYER 0b1000
+#define COLLISION_RESULT_ENEMY_LASER_PLAYER 0b0100
+#define COLLISION_RESULT_ENEMY_PLAYER_LASER 0b0010
+
 typedef struct AISprite {
     Sprite sprite;
     unsigned char xTileStart;

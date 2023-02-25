@@ -28,6 +28,30 @@ AISprite *findEnemyCollision(Sprite *s) {
     return 0;
 }
 
+Sprite *findEnemyLaserCollision(Sprite *s) {
+    unsigned char i;
+    Sprite *laser;
+
+    for (i=0; i<16; i++) {
+        laser = &enemyLasers[i];
+        if (laser->active && doOverlap(
+            s->x, s->y, pixelSizes[s->width], pixelSizes[s->height],
+            laser->x, laser->y, pixelSizes[laser->width], pixelSizes[laser->height])) {
+                return laser;
+            }
+    }
+
+    return 0;
+}
+
+void resetLaser(Sprite *laser) {
+    laser->active = 0;
+    laser->zDepth = Disabled;
+    spriteMove(laser, 0, 0);
+    x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
+    x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
+}
+
 unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i;
 
@@ -89,29 +113,6 @@ void enemyShot(short x, short y, unsigned char direction) {
     }
 }
 
-void resetClosestLaser(short x, short y) {
-    unsigned char i;
-    Sprite *laser;
-
-    for (i=0; i<16; i++) {
-        laser = &enemyLasers[i];
-
-        if (laser->active == 1 && abs(laser->x-x) <= TILE_PIXEL_WIDTH && abs(laser->y-y) <= TILE_PIXEL_HEIGHT) {
-            break;
-        } else {
-            laser = 0;
-        }
-    }
-
-    if (laser) {
-        laser->active = 0;
-        laser->zDepth = Disabled;
-        spriteMove(laser, 0, 0);
-        x16SpriteIdxSetZDepth(laser->index, laser->zDepth);
-        x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
-    }
-}
-
 void enemiesMove(Sprite *player, unsigned char length) {
     unsigned char i,r;
     signed char tileCalc;
@@ -121,16 +122,20 @@ void enemiesMove(Sprite *player, unsigned char length) {
     for (i=0; i<length; i++) {
         enemy = &masterEnemiesList[i];
         if (enemy->sprite.active == 1) {
-            spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);
             spriteAnimationAdvance(&enemy->sprite);
-            tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
-            // Careful, can be -1 if on left edge (signed char)
-            if (tileCalc <= (signed char)enemy->xTileStart - 1) {
-                enemy->sprite.animationDirection = 1;
-                x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
-            } else if (tileCalc >= enemy->xTileEnd) {
-                enemy->sprite.animationDirection = 0;
-                x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+
+            // If patrolling an area, move
+            if (enemy->xTileStart != enemy->xTileEnd) {
+                spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);    
+                tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
+                // Careful, can be -1 if on left edge (signed char)
+                if (tileCalc <= (signed char)enemy->xTileStart - 1) {
+                    enemy->sprite.animationDirection = 1;
+                    x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+                } else if (tileCalc >= enemy->xTileEnd) {
+                    enemy->sprite.animationDirection = 0;
+                    x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+                }
             }
             x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);
 

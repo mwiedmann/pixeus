@@ -58,11 +58,12 @@
 #define LEAVE_LEVEL_Y_DOWN 463
 #define LEAVE_LEVEL_Y_UP 8
 
+// TEST LEVEL has a bunch of enemies, items, gold, energy, and tile types
 #define TEST_LEVEL 7
+#define STARTING_LEVEL 0
 
-// FOR TESTING ONLY !!!
-// WARNING: THIS NEEDS TO BE 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 0
+// WARNING: THIS NEEDS TO BE STARTING_LEVEL OR 0 FOR FINAL GAME BUILD !!!!
+#define START_LEVEL STARTING_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 256
@@ -122,7 +123,7 @@ Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 void gameStartValues() {
     energy = 0;
     gold = 0;
-    lives = 0;
+    lives = 10;
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;
@@ -168,6 +169,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     Gold *goldCollision;
 
     AISprite *hitEnemy;
+    Sprite *hitLaser;
     Entrance *entrance;
 
     layerMapsClear();
@@ -547,7 +549,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         if (JOY_BTN_2(joy) && bullet.active==0) {
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
-            bullet.startX = player.x;
+            // Start the bullet out of the player's grid
+            bullet.startX = player.x; // + (player.animationDirection == 0 ? -24 : 40);
             spriteMove(&bullet, player.x, player.y);
             // Show the bullet
             bullet.zDepth = BetweenL0L1;
@@ -587,27 +590,21 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         // Get the Collision bits and shift them down
         collision = x16SpriteCollisionBitsGet();
 
-        // The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
-        // We can then look at all the sprites that have that bit in their mask
-        // NOTE: Collisions seem to be triggered twice.
-        // Could be because there are 2 sprites involved?
-        // OR maybe at this point we haven't Disabled the sprite yet and its too late?
-        // HACK: I check the "active" status on the bullet before considering this a valid collision
-        // The collision system still helps a TON even with this.
-
-        // Player and Enemy/Laser collisions
-        if (collision == 0b1001 || collision == 0b0101) {
-            // If laser hit, find and reset that laser
-            resetClosestLaser(player.x, player.y);
-
-            // TODO: Getting some false collisions, check the collisions here to make sure its valid
-            // Move the sprite back to the start
-            if (!testMode) {
-                // Exit the level. The outer loop will reset.
-                return collision == 0b1001 ? &playerEaten : &playerShot;
+        // Check if there were any collisions
+        if ((collision & COLLISION_RESULT_ENEMY_PLAYER) == COLLISION_RESULT_ENEMY_PLAYER) {
+            // Player collided with an enemy
+            return &playerEaten;
+        } else if ((collision & COLLISION_RESULT_ENEMY_LASER_PLAYER) == COLLISION_RESULT_ENEMY_LASER_PLAYER) {
+            // Player was hit by an enemy laser
+            hitLaser = findEnemyLaserCollision(&player);
+            if (hitLaser != 0) {
+                resetLaser(hitLaser);
+                if (!testMode) {
+                    return &playerShot;
+                }
             }
-        } else if (bullet.active == 1 && collision == 0b1010) {
-            // This is a player bullet/enemy collision
+        } else if (((collision & COLLISION_RESULT_ENEMY_PLAYER_LASER) == COLLISION_RESULT_ENEMY_PLAYER_LASER) && bullet.active) {
+            // Enemy was hit by the player's laser
             // Show explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
             playAlienHit();
