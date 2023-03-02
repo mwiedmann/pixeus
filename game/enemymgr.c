@@ -122,10 +122,9 @@ void enemiesMove(Sprite *player, unsigned char length) {
     for (i=0; i<length; i++) {
         enemy = &masterEnemiesList[i];
         if (enemy->sprite.active == 1) {
-            spriteAnimationAdvance(&enemy->sprite);
-
             // If patrolling an area, move
             if (enemy->xTileStart != enemy->xTileEnd) {
+                spriteAnimationAdvance(&enemy->sprite);
                 spriteMoveXL(&enemy->sprite, enemy->sprite.animationDirection == 0 ? enemy->sprite.xL-enemy->sprite.speed : enemy->sprite.xL+enemy->sprite.speed);    
                 tileCalc = enemy->sprite.x / TILE_PIXEL_WIDTH;
                 // Careful, can be -1 if on left edge (signed char)
@@ -135,6 +134,12 @@ void enemiesMove(Sprite *player, unsigned char length) {
                 } else if (tileCalc >= enemy->xTileEnd) {
                     enemy->sprite.animationDirection = 0;
                     x16SpriteIdxSetHFlip(enemy->sprite.index, enemy->sprite.animationDirection);
+                }
+            } else {
+                // Enemy is standing still
+                // See if we should still animate
+                if (enemy->sprite.animateIfStill) {
+                    spriteAnimationAdvance(&enemy->sprite);
                 }
             }
             x16SpriteIdxSetXY(enemy->sprite.index, enemy->sprite.x, enemy->sprite.y);

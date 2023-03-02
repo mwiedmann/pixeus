@@ -21,6 +21,7 @@ typedef struct Sprite {
     unsigned char animationStopFrame;
     unsigned char animationDirection;
     unsigned char animationFrame;
+    unsigned char animateIfStill;
     short x;
     short y;
     short startX;

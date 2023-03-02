@@ -21,19 +21,19 @@ unsigned short spriteMemAddresses[SPRITE_COUNT];
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
 // Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12 }
 EnemyStats enemyStats[13] = {
-    { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90 },
-    { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70 },
-    { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180 },
-    { SPRITE_MEM_SCORPION_IDX, 6, 6, 6, 90 },
-    { SPRITE_MEM_WASP_IDX, 6, 12, 3, 120 },
-    { SPRITE_MEM_FISH1_IDX, 30, 3, 3, 120 },
-    { SPRITE_MEM_BIG_GHOST_IDX, 30, 3, 20, 120 },
-    { SPRITE_MEM_EYEBALL_IDX, 6, 6, 6, 90 },
-    { SPRITE_MEM_MUSHROOM_IDX, 30, 4, 6, 90 },
-    { SPRITE_MEM_SLIME_IDX, 20, 4, 3, 90 },
-    { SPRITE_MEM_SPIDER_IDX, 6, 9, 4, 90 },
-    { SPRITE_MEM_RAT_IDX, 6, 10, 2, 90 },
-    { SPRITE_MEM_ROCKMAN_IDX, 10, 2, 8, 90 },
+    { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 0 },
+    { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 1 },
+    { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 1 },
+    { SPRITE_MEM_SCORPION_IDX, 6, 6, 6, 90, 0 },
+    { SPRITE_MEM_WASP_IDX, 6, 12, 3, 120, 1 },
+    { SPRITE_MEM_FISH1_IDX, 30, 3, 3, 120, 1 },
+    { SPRITE_MEM_BIG_GHOST_IDX, 30, 3, 20, 120, 1 },
+    { SPRITE_MEM_EYEBALL_IDX, 6, 6, 6, 90, 1 },
+    { SPRITE_MEM_MUSHROOM_IDX, 30, 4, 6, 90, 1 },
+    { SPRITE_MEM_SLIME_IDX, 20, 4, 3, 90, 1 },
+    { SPRITE_MEM_SPIDER_IDX, 6, 9, 4, 90, 0 },
+    { SPRITE_MEM_RAT_IDX, 6, 10, 2, 90, 0 },
+    { SPRITE_MEM_ROCKMAN_IDX, 10, 2, 8, 90, 1 },
 };
 
 void spriteDataLoad() {
@@ -170,6 +170,7 @@ void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned 
     enemy->sprite.speed = enemyStats[type].speed;
     enemy->health = enemyStats[type].health;
     enemy->framesBetweenShots = enemyStats[type].framesBetweenShots;
+    enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
 
     // Some special settings for large sprites
     if (type == BigGhost) {

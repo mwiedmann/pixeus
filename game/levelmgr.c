@@ -38,7 +38,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     POKE(0, LEVEL_BANK);
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
-    cbm_k_load(0, (unsigned int)ramstart);
+    cbm_k_load(0, (unsigned short)ramstart);
 
     // The level file has a structure that starts with
     // the lengths of everything.

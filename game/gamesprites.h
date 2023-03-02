@@ -54,6 +54,7 @@ typedef struct EnemyStats {
     unsigned char speed;
     unsigned char health;
     unsigned char framesBetweenShots;
+    unsigned char animateIfStill;
 } EnemyStats;
 
 void spriteDataLoad();

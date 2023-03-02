@@ -29,7 +29,8 @@
 #include "waitforjiffy.h"
 
 #define PLAYER_FALL_SPEED 20
-#define PLAYER_WATER_FALL_SPEED 5
+#define PLAYER_WATER_FALL_SPEED 3
+#define PLAYER_WATER_FALL_SPEED_FORCED 5
 
 #define PLAYER_JUMP_SPEED_NORMAL 20
 #define PLAYER_JUMP_SPEED_BOOTS 24
@@ -153,7 +154,7 @@ void levelExitCleanup(unsigned char hideShip) {
  * and run the level until the player hits an exit.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, loopCount;
+    unsigned char collision, joy, loopCount, fallSpeed;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
@@ -308,8 +309,21 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             // See what the player is currently touching to see his fall (or swim-fall) speed
             spriteTouchingTile(level, &player, &tileCollision);
 
-            // The player falls in water too, just more slowly
-            spriteMoveYL(&player, player.yL + (tileCollision.type == Empty ? PLAYER_FALL_SPEED : PLAYER_WATER_FALL_SPEED));
+            // See how quickly the player is falling (based on if in air or water)
+            // In water they can slowly float down or press DOWN and swim down more quickly
+            fallSpeed = tileCollision.type == Empty ?
+                PLAYER_FALL_SPEED :
+                JOY_DOWN(joy)
+                    // The player falls in water too, just more slowly
+                    ? PLAYER_WATER_FALL_SPEED_FORCED
+                    : PLAYER_WATER_FALL_SPEED;
+            
+            // If swimming down, animate the player
+            if (fallSpeed == PLAYER_WATER_FALL_SPEED_FORCED) {
+                player.going = 1;
+            }
+            
+            spriteMoveYL(&player, player.yL + fallSpeed);
             spriteTouchingTile(level, &player, &tileCollision);
 
             // If the player is standing on a tile, a few things happen

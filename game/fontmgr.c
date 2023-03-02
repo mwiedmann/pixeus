@@ -178,7 +178,7 @@ void drawTextFile(unsigned char *filename, unsigned short argComp) {
     POKE(0, IMAGE_LOAD_BANK);
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
-    cbm_k_load(0, (unsigned int)BANK_RAM);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
 
     // 1 byte header with length
     length = BANK_RAM;

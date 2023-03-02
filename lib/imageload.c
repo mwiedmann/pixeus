@@ -32,8 +32,6 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
     vMemSetAddr(vramAddr);
     vMemSetIncMode(1);
 
-    POKE(0, startMemBank);
-
     // This crazy routine uses the kernal memory_copy function to bulk copy RAM to VRAM
     // I had to increment the bank and do it in chunks though.
     for (i=0; i<length/8192+1; i++) {
@@ -75,7 +73,7 @@ unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, 
     cbm_k_setlfs(0, 8, 0);
 
     // This uses a kernal function which automatically switches to the next 8k Bank as they run out of space
-    finalmem = cbm_k_load(0, (unsigned int)BANK_RAM);
+    finalmem = cbm_k_load(0, (unsigned short)BANK_RAM);
 
     // The load rolls through banks, so get the ending bank and calc the total bytes read
     endingMemBank = PEEK(0);
