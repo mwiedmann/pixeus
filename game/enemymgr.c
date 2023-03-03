@@ -8,6 +8,9 @@
 #include "layoutdefs.h"
 
 #define ENEMY_LASER_DIST 200
+#define ENEMY_JUMP_SPEED_NORMAL 17
+#define ENEMY_WATER_JUMP_SPEED_NORMAL 12
+#define ENEMY_JUMP_FRAMES 15
 
 AISprite masterEnemiesList[16];
 Sprite enemyLasers[16];
@@ -122,6 +125,32 @@ void enemiesMove(Sprite *player, unsigned char length) {
     for (i=0; i<length; i++) {
         enemy = &masterEnemiesList[i];
         if (enemy->sprite.active == 1) {
+            // See if the enemy jumps at all
+            if (enemy->framesBetweenJumps > 0) {
+                // See if enemy needs to jump
+                if (enemy->framesUntilNextJump == 0) {
+                    enemy->jumpFrames = ENEMY_JUMP_FRAMES;
+                    enemy->framesUntilNextJump = 9999;
+                }
+
+                // See if enemy is currently jumping
+                if (enemy->jumpFrames > 0) {
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL - ENEMY_JUMP_SPEED_NORMAL);
+                    enemy->jumpFrames--;
+                } else if (enemy->sprite.y < enemy->yTileStart * TILE_PIXEL_HEIGHT) {
+                    // Falling back down
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL + ENEMY_JUMP_SPEED_NORMAL);
+
+                    // If back on the ground, reset the jump counters
+                    if (enemy->sprite.y >= enemy->yTileStart * TILE_PIXEL_HEIGHT) {
+                        enemy->framesUntilNextJump = enemy->framesBetweenJumps;
+                        spriteMoveY(&enemy->sprite, enemy->yTileStart * TILE_PIXEL_HEIGHT);
+                    }
+                }
+
+                enemy->framesUntilNextJump--;
+            }
+
             // If patrolling an area, move
             if (enemy->xTileStart != enemy->xTileEnd) {
                 spriteAnimationAdvance(&enemy->sprite);

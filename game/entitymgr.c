@@ -95,7 +95,8 @@ void hideEntity(unsigned char length, Entity *entity) {
     for (i=0; i<length; i++) {    
         sprite = &entitySprites[i];
         // TODO: We need an ID to associate between the Entity and Sprite
-        if (entity->x == sprite->x / TILE_PIXEL_WIDTH && entity->y == sprite->y / TILE_PIXEL_HEIGHT) {
+        if (entity->x == ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH) &&
+            entity->y == ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT)) {
             spriteReset(sprite);
             return;
         }

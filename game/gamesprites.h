@@ -7,9 +7,9 @@
 /*
 COLLISION MASKS:
    ENEMY: 1 0 1 0
-EN.LASER: 0 1 0 0
+EN.LASER: 0 1 0 1
 PL.LASER: 0 0 1 0
-  PLAYER: 1 1 0 1
+  PLAYER: 1 1 0 0
 
 The collision bits will be the OVERLAP of the Collision Masks of the two sprites.
 We can then look at all the sprites that have that bit in their mask
@@ -21,18 +21,24 @@ COLLISION RESULTS:
    ENEMY-PLAYER: 1 0 0 0
 EN.LASER-PLAYER: 0 1 0 0
  ENEMY-PL.LASER: 0 0 1 0
+
+FALSE SELF COLLISIONS:
+EN.LASER: 0 1 0 1
 */
 
 // Collision Masks
 #define COLLISION_MASK_ENEMY 0b1010
-#define COLLISION_MASK_ENEMY_LASER 0b0100
+#define COLLISION_MASK_ENEMY_LASER 0b0101
 #define COLLISION_MASK_PLAYER_BULLET 0b0010
-#define COLLISION_MASK_PLAYER 0b1101
+#define COLLISION_MASK_PLAYER 0b1100
 
 // Collision Results
 #define COLLISION_RESULT_ENEMY_PLAYER 0b1000
 #define COLLISION_RESULT_ENEMY_LASER_PLAYER 0b0100
 #define COLLISION_RESULT_ENEMY_PLAYER_LASER 0b0010
+
+// False Self Collisions
+#define COLLISION_FALSE_SELF_ENEMY_LASER 0b0101
 
 typedef struct AISprite {
     Sprite sprite;
@@ -46,6 +52,9 @@ typedef struct AISprite {
     unsigned short framesUntilFacePlayer;
     unsigned short framesBetweenFacePlayer;
     unsigned short yLaserAdjust;
+    unsigned short framesBetweenJumps;
+    unsigned short framesUntilNextJump;
+    unsigned char jumpFrames;
 } AISprite;
 
 typedef struct EnemyStats {
@@ -54,6 +63,7 @@ typedef struct EnemyStats {
     unsigned char speed;
     unsigned char health;
     unsigned char framesBetweenShots;
+    unsigned short framesBetweenJumps;
     unsigned char animateIfStill;
 } EnemyStats;
 

@@ -608,7 +608,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
         if ((collision & COLLISION_RESULT_ENEMY_PLAYER) == COLLISION_RESULT_ENEMY_PLAYER) {
             // Player collided with an enemy
             return &playerEaten;
-        } else if ((collision & COLLISION_RESULT_ENEMY_LASER_PLAYER) == COLLISION_RESULT_ENEMY_LASER_PLAYER) {
+        } else if (collision == COLLISION_RESULT_ENEMY_LASER_PLAYER) {
             // Player was hit by an enemy laser
             hitLaser = findEnemyLaserCollision(&player);
             if (hitLaser != 0) {
