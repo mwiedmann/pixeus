@@ -10098,7 +10098,54 @@
 					"seed": 7327797,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "Enemy",
+							"__grid": [30,18],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F6E4E4",
+							"iid": "71edb500-9f30-11ed-8655-cf3126bf636f",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [480,288],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Fish1", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Fish1"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 5, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolB", "__value": 4, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [23,6],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F6E4E4",
+							"iid": "8258bd90-9f30-11ed-8655-717cabc3788d",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [368,96],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Fish1", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Fish1"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 4, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolB", "__value": 5, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						}
+					]
 				},
 				{
 					"__identifier": "Tiles_Background",

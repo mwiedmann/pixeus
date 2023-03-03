@@ -26,7 +26,7 @@ run:
 	../emu-r41/x16emu -prg pixeus.prg -run
 
 runlatest:
-	../emu-latest/x16emu -prg pixeus.prg -run
+	../emu-latest/x16emu -prg pixeus.prg -run -randram
 
 level:
 	cd tilebuilding && node ldtk-to-bin.js

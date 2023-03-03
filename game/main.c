@@ -285,7 +285,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
             }
         }
 
-        enemiesMove(&player, enemyCount);
+        enemiesMove(level, &player, enemyCount);
         enemyLasersMove(level);
         entitiesAnimate(entityCount);
 

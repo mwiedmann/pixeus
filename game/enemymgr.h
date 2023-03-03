@@ -36,7 +36,7 @@ void enemyShot(short x, short y, unsigned char direction);
 /**
  * Move all the enemies
 */
-void enemiesMove(Sprite *player, unsigned char length);
+void enemiesMove(LevelOveralLayout *level, Sprite *player, unsigned char length);
 
 /**
  * Move all the enemy lasers

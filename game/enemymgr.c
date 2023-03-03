@@ -9,8 +9,9 @@
 
 #define ENEMY_LASER_DIST 200
 #define ENEMY_JUMP_SPEED_NORMAL 17
-#define ENEMY_WATER_JUMP_SPEED_NORMAL 12
+#define ENEMY_WATER_JUMP_SPEED_NORMAL 4
 #define ENEMY_JUMP_FRAMES 15
+#define ENEMY_WATER_JUMP_FRAMES 60
 
 AISprite masterEnemiesList[16];
 Sprite enemyLasers[16];
@@ -116,10 +117,11 @@ void enemyShot(short x, short y, unsigned char direction) {
     }
 }
 
-void enemiesMove(Sprite *player, unsigned char length) {
+void enemiesMove(LevelOveralLayout *level, Sprite *player, unsigned char length) {
     unsigned char i,r;
     signed char tileCalc;
     AISprite *enemy;
+    TileInfo tileCollision;
 
     // Move enemies
     for (i=0; i<length; i++) {
@@ -129,17 +131,20 @@ void enemiesMove(Sprite *player, unsigned char length) {
             if (enemy->framesBetweenJumps > 0) {
                 // See if enemy needs to jump
                 if (enemy->framesUntilNextJump == 0) {
-                    enemy->jumpFrames = ENEMY_JUMP_FRAMES;
+                    spriteTouchingTile(level, &enemy->sprite, &tileCollision);
+                    enemy->jumpFrames = (tileCollision.type == Water ? ENEMY_WATER_JUMP_FRAMES : ENEMY_JUMP_FRAMES);
                     enemy->framesUntilNextJump = 9999;
                 }
 
                 // See if enemy is currently jumping
                 if (enemy->jumpFrames > 0) {
-                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL - ENEMY_JUMP_SPEED_NORMAL);
+                    spriteTouchingTile(level, &enemy->sprite, &tileCollision);
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL - (tileCollision.type == Water ? ENEMY_WATER_JUMP_SPEED_NORMAL : ENEMY_JUMP_SPEED_NORMAL));
                     enemy->jumpFrames--;
                 } else if (enemy->sprite.y < enemy->yTileStart * TILE_PIXEL_HEIGHT) {
                     // Falling back down
-                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL + ENEMY_JUMP_SPEED_NORMAL);
+                    spriteTouchingTile(level, &enemy->sprite, &tileCollision);
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL + (tileCollision.type == Water ? ENEMY_WATER_JUMP_SPEED_NORMAL : ENEMY_JUMP_SPEED_NORMAL));
 
                     // If back on the ground, reset the jump counters
                     if (enemy->sprite.y >= enemy->yTileStart * TILE_PIXEL_HEIGHT) {
