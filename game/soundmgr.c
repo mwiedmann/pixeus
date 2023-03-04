@@ -7,7 +7,7 @@
 #include "zsmplayer.h"
 
 unsigned char MUSIC_ON = 1;
-unsigned char SOUND_ON = 0;
+unsigned char SOUND_ON = 1;
 
 
 void startMusic() {
