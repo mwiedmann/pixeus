@@ -23,10 +23,7 @@
 #include "fontmgr.h"
 #include "entitymgr.h"
 #include "soundmgr.h"
-
-// The "waitvsync" function is broken in r41
-// People say to use this until fixed
-#include "waitforjiffy.h"
+#include "loopmgr.h"
 
 #define PLAYER_FALL_SPEED 20
 #define PLAYER_WATER_FALL_SPEED 3
@@ -210,8 +207,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     loopCount = 0;
 
     while (1) {
-        waitforjiffy(); // Wait for screen to finish drawing
-        playSoundsThisGameLoop();
+        loopUpdates();
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
@@ -758,6 +754,9 @@ void main() {
             showIntroScene(&ship);
         }
 
+        loadForestMusic();
+        startMusic();
+        
         while(1) {
             // Get the player's position at the start of the level
             // If they die, we put them back here
@@ -774,7 +773,7 @@ void main() {
                 // Free the memory for the last level and load the next one
                 freeLevel(level);
                 level = levelGet(exitCollision.level);
-
+                
                 // If the player is going to a specific entranace place them there
                 if (exitCollision.entranceId != LEAVE_SCREEN_ENTRACE_ID) {
                     entrance = findEntranceForExit(((EntranceList*)level->entityList), exitCollision.entranceId);
@@ -783,7 +782,7 @@ void main() {
             } else {
                 // Pause the game for a moment since player died
                 for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
-                    waitforjiffy();
+                    loopUpdates();
                 }
                 switch(exitCollision.entityType) {
                     case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;

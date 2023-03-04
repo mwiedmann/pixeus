@@ -6,7 +6,7 @@
 #include "pcmplayer.h"
 #include "zsmplayer.h"
 
-unsigned char MUSIC_ON = 0;
+unsigned char MUSIC_ON = 1;
 unsigned char SOUND_ON = 1;
 
 void loadSounds() {
@@ -25,18 +25,54 @@ void loadSounds() {
 
     if (MUSIC_ON) {
         zsm_init();
-        POKE(0, MUSIC_BANK);
-        // cbm_k_setnam("sounds/drake.zsm");
-        cbm_k_setnam("sounds/outrun.zsm");
-        cbm_k_setlfs(0, 8, 2);
-        cbm_k_load(0, (unsigned short)BANK_RAM);
-
-        zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
-        zsm_forceloop(0);
+        // We will load the music we want on demand
     }
 
     // Back to the default bank
     POKE(0, LEVEL_BANK);
+}
+
+void loadTitleMusic() {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
+    POKE(0, MUSIC_BANK);
+    cbm_k_setnam("sounds/title.zsm");
+    cbm_k_setlfs(0, 8, 2);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+    
+    // Back to the previous bank
+    POKE(0, currentMemBank);
+}
+
+void loadForestMusic() {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
+    POKE(0, MUSIC_BANK);
+    cbm_k_setnam("sounds/forest.zsm");
+    cbm_k_setlfs(0, 8, 2);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    // Back to the previous bank
+    POKE(0, currentMemBank);
+}
+
+void startMusic() {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
+    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
+    zsm_forceloop(0);
+
+    // Back to the previous bank
+    POKE(0, currentMemBank);
 }
 
 void playSoundsThisGameLoop() {
@@ -49,6 +85,10 @@ void playSoundsThisGameLoop() {
     }
 
     POKE(0, LEVEL_BANK);
+}
+
+void pauseSounds() {
+    zsm_stopmusic();
 }
 
 void soundsCleanup() {

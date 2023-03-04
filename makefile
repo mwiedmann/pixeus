@@ -3,7 +3,7 @@ CC=cl65
 make:
 	$(CC) -O -I lib -I zsound -o pixeus.prg -t cx16 \
 	game/main.c \
-	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c \
+	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c game/loopmgr.c \
 	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
 	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s \
 	zsound/zsound.lib
@@ -11,13 +11,13 @@ make:
 test:
 	$(CC) -O -I lib -I zsound -o test.prg -t cx16 \
 	game/test.c \
-	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c \
+	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c game/loopmgr.c \
 	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
 	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s \
 	zsound/zsound.lib
 
 testrun:
-	../emu/x16emu -prg test.prg -run
+	../emu-r41/x16emu -prg test.prg -run
 
 clean:
 	rm lib/*.o images/*.o game/*.o
@@ -69,6 +69,7 @@ img:
 	node gimp-convert-tiles-bin.js spider.data 4 1 16 16 sp21 && \
 	node gimp-convert-tiles-bin.js rat.data 4 1 16 16 sp22 && \
 	node gimp-convert-tiles-bin.js rockman.data 4 1 16 16 sp23 && \
+	node gimp-convert-tiles-bin.js eel.data 4 1 16 16 sp24 && \
 	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16
 

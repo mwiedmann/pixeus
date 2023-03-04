@@ -4,6 +4,8 @@
 #include "level.h"
 #include "sprites.h"
 #include "gametiles.h"
+#include "soundmgr.h"
+#include "loopmgr.h"
 
 #define PLAYER_NEAR_X 180
 #define PLAYER_NEAR_Y 40
@@ -71,16 +73,22 @@ void waitForButtonPress() {
     unsigned char joy = 0;
 
     while(1) {
+        loopUpdates();
+        
         joy = joy_read(0);
 
         // Exit when either button is pressed
         if (JOY_BTN_1(joy)) {
             while(JOY_BTN_1(joy)) {
+                loopUpdates();
+        
                 joy = joy_read(0);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
+                loopUpdates();
+        
                 joy = joy_read(0);
             }
             break;
@@ -97,11 +105,15 @@ unsigned char readButtonPress() {
     // Exit when either button is pressed
     if (JOY_BTN_1(joy)) {
         while(JOY_BTN_1(joy)) {
+            loopUpdates();
+        
             joy = joy_read(0);
         }
         pressed = 1;
     } else if (JOY_BTN_2(joy)) {
         while(JOY_BTN_2(joy)) {
+            loopUpdates();
+        
             joy = joy_read(0);
         }
         pressed = 1;

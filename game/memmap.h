@@ -53,6 +53,7 @@
 #define SPRITE_MEM_SPIDER_IDX 21
 #define SPRITE_MEM_RAT_IDX 22
 #define SPRITE_MEM_ROCKMAN_IDX 23
+#define SPRITE_MEM_EEL_IDX 24
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0
@@ -80,6 +81,9 @@
  * Needs to not collide with the LEVEL_BANK
 */
 #define IMAGE_LOAD_BANK 3
+
+#define WELCOME_BANK 10
+#define INSTRUCTIONS_BANK 11
 
 #define MUSIC_BANK 20
 #define SOUND_BANK_LASER 28

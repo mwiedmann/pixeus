@@ -11,6 +11,9 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
     unsigned char coldCount, unsigned char hotCount);
 void showMessage(unsigned char* text);
 void drawTextFile(unsigned char *filename, unsigned short argComp);
+void drawTextFileFromBank(unsigned char bank, unsigned short argComp);
+void loadTextFile(unsigned char *filename, unsigned char bank);
 void debugMsg(unsigned char* text, unsigned char val);
+void preloadTextFiles();
 
 #endif

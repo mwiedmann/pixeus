@@ -5,6 +5,7 @@
 #include <peekpoke.h>
 #include <joystick.h>
 #include "waitforjiffy.h"
+#include "loopmgr.h"
 #include "x16graphics.h"
 #include "memmap.h"
 #include "imageload.h"
@@ -13,10 +14,12 @@
 #include "levelutils.h"
 #include "gamesprites.h"
 #include "levelmgr.h"
+#include "soundmgr.h"
 
 unsigned char showTitleScreen() {
     unsigned char joy = 0;
     unsigned char testMode = 0;
+    unsigned char wait = 60;
 
     // Clear the VRAM we will use for the bitmap mode title
     clearFullVRAM(0);
@@ -38,24 +41,42 @@ unsigned char showTitleScreen() {
     POKE(LAYER_1_TILEBASE, 0);
 
     imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "images/title.bin");
+    preloadTextFiles();
+
+    // Short delay before playing the music and button press skips title screen
+    while (wait > 0) {
+        waitforjiffy();
+        wait--;
+    }
+
+    loadTitleMusic();
+    startMusic();
 
     while(1) {
+        loopUpdates();
+
         joy = joy_read(0);
 
         // Exit when either button is pressed
         // Exit with testMode ON if UP is pressed
         if (JOY_BTN_1(joy)) {
             while(JOY_BTN_1(joy)) {
+                loopUpdates();
+        
                 joy = joy_read(0);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
+                loopUpdates();
+        
                 joy = joy_read(0);
             }
             break;
         } if (JOY_UP(joy)) {
             while(JOY_UP(joy)) {
+                loopUpdates();
+        
                 joy = joy_read(0);
             }
             testMode = 1;
@@ -72,7 +93,7 @@ unsigned char showTitleScreen() {
 void waitWithShipAnimation(Sprite *ship) {
     while(1) {
         // Wait for screen to finish drawing since we are animating the ship
-        waitforjiffy();
+        loopUpdates();
         spriteAnimationAdvance(ship);
 
         // Exit when either button is pressed
@@ -83,7 +104,7 @@ void waitWithShipAnimation(Sprite *ship) {
 }
 
 void showIntroScene(Sprite *ship) {
-    drawTextFile("text/welcome.bin", 0);
+    drawTextFileFromBank(WELCOME_BANK, 0);
 
     spriteMove(ship, 288, 350);
     x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
@@ -94,7 +115,7 @@ void showIntroScene(Sprite *ship) {
 
     layerMapsClear();
 
-    drawTextFile("text/instr.bin", 0);
+    drawTextFileFromBank(INSTRUCTIONS_BANK, 0);
 
     waitWithShipAnimation(ship);
 
@@ -113,6 +134,8 @@ void gameOverScreen(unsigned short gold, unsigned char energy) {
     drawTextFile("text/gameover.bin", 0);
 
     while(1) {
+        loopUpdates();
+        
         // Exit when either button is pressed
         if (readButtonPress()) {
             break;
@@ -141,7 +164,8 @@ void victoryScreen(Sprite *ship, unsigned short gold) {
 
     while(1) {
         // Wait for screen to finish drawing since we are animating the ship
-        waitforjiffy();
+        loopUpdates();
+        
         spriteAnimationAdvance(ship);
 
         // Exit when either button is pressed

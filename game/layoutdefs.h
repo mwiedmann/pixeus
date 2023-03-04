@@ -15,7 +15,8 @@ typedef enum
     Slime = 9,
     Spider = 10,
     Rat = 11,
-    Rockman = 12
+    Rockman = 12,
+    Eel = 13
 } EnemyType;
 
 typedef enum

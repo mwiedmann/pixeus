@@ -8,8 +8,7 @@
 #include "gametiles.h"
 #include "x16graphics.h"
 #include "levelutils.h"
-
-#include "waitforjiffy.h"
+#include "loopmgr.h"
 
 unsigned char letterToTile(unsigned char letter) {
     unsigned char tile;
@@ -167,18 +166,19 @@ void showMessage(unsigned char* text) {
     free(orig3);
 }
 
-void drawTextFile(unsigned char *filename, unsigned short argComp) {
-    unsigned char i;
-    unsigned char *length, *text, *row, *col;
-    unsigned short *arg;
-    unsigned char currentMemBank;
-
-    currentMemBank = PEEK(0);
-
-    POKE(0, IMAGE_LOAD_BANK);
+void loadTextFile(unsigned char *filename, unsigned char bank) {
+    POKE(0, bank);
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
     cbm_k_load(0, (unsigned short)BANK_RAM);
+}
+
+void drawTextFileFromBank(unsigned char bank, unsigned short argComp) {
+    unsigned char i;
+    unsigned char *length, *text, *row, *col;
+    unsigned short *arg;
+
+    POKE(0, bank);
 
     // 1 byte header with length
     length = BANK_RAM;
@@ -206,8 +206,22 @@ void drawTextFile(unsigned char *filename, unsigned short argComp) {
             }
         }
     }
+}
+
+void drawTextFile(unsigned char *filename, unsigned short argComp) {
+    unsigned char currentMemBank;
+
+    currentMemBank = PEEK(0);
+
+    loadTextFile(filename, IMAGE_LOAD_BANK);
+    drawTextFileFromBank(IMAGE_LOAD_BANK, argComp);
 
     POKE(0, currentMemBank);
+}
+
+void preloadTextFiles() {
+    loadTextFile("text/welcome.bin", WELCOME_BANK);
+    loadTextFile("text/instr.bin", INSTRUCTIONS_BANK);
 }
 
 void debugMsg(unsigned char* text, unsigned char val) {
@@ -218,7 +232,7 @@ void debugMsg(unsigned char* text, unsigned char val) {
 
     // Pause the game for a moment since player died
     for (i=0; i<120; i++) {
-        waitforjiffy();
+        loopUpdates();
     }
 
     showMessage(line);

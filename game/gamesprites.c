@@ -14,13 +14,24 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 24
+#define SPRITE_COUNT 25
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
-// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12 }
-EnemyStats enemyStats[13] = {
+// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13 }
+/*
+typedef struct EnemyStats {
+    unsigned char graphicsIdx;
+    unsigned char animationSpeed;
+    unsigned char speed;
+    unsigned char health;
+    unsigned char framesBetweenShots;
+    unsigned short framesBetweenJumps;
+    unsigned char animateIfStill;
+} EnemyStats;
+*/
+EnemyStats enemyStats[14] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
@@ -34,6 +45,7 @@ EnemyStats enemyStats[13] = {
     { SPRITE_MEM_SPIDER_IDX, 6, 9, 4, 90, 120, 0 },
     { SPRITE_MEM_RAT_IDX, 6, 10, 2, 90, 180, 0 },
     { SPRITE_MEM_ROCKMAN_IDX, 10, 2, 8, 90, 0, 1 },
+    { SPRITE_MEM_EEL_IDX, 6, 10, 2, 90, 120, 1 },
 };
 
 void spriteDataLoad() {
