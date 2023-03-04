@@ -150,7 +150,7 @@ void levelExitCleanup(unsigned char hideShip) {
  * Parse the current level, draw the tiles, create the enemies,
  * and run the level until the player hits an exit.
 */
-Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsigned char showShipScene) {
+Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsigned char showShipScene) {
     unsigned char collision, joy, loopCount, fallSpeed;
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
@@ -173,11 +173,20 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char lastTilesetId, unsig
     layerMapsClear();
 
     // Load the tileset for this level if it changed
-    if (lastTilesetId != level->tileList->tilesetId) {
+    if (*lastTilesetId != level->tileList->tilesetId) {
         tilesConfig(level->tileList->tilesetId);
+
+        // Play the music for this environment/tileset
+        switch (level->tileList->tilesetId)
+        {
+            case 1: loadForestMusic(); break;
+            case 2: loadDesertMusic(); break;
+            case 3: loadForestMusic(); break;
+            case 4: loadForestMusic(); break;
+        }
     }
 
-    lastTilesetId = level->tileList->tilesetId;
+    *lastTilesetId = level->tileList->tilesetId;
 
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
@@ -754,9 +763,6 @@ void main() {
             showIntroScene(&ship);
         }
 
-        loadForestMusic();
-        startMusic();
-        
         while(1) {
             // Get the player's position at the start of the level
             // If they die, we put them back here
@@ -764,7 +770,7 @@ void main() {
             playerEnterY = player.y;
 
             // Get a copy of the exitCollision because we will free the level next
-            exitCollision = *runLevel(nextSpriteIndex, lastTilesetId, showShipScene);
+            exitCollision = *runLevel(nextSpriteIndex, &lastTilesetId, showShipScene);
             showShipScene = 0;
 
             // If this was a normal level exit (not a player death)

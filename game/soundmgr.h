@@ -10,5 +10,6 @@ void playAlienHit();
 void pauseSounds();
 void loadTitleMusic();
 void loadForestMusic();
+void loadDesertMusic();
 
 #endif

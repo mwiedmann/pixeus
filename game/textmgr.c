@@ -50,7 +50,6 @@ unsigned char showTitleScreen() {
     }
 
     loadTitleMusic();
-    startMusic();
 
     while(1) {
         loopUpdates();

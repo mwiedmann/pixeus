@@ -1,4 +1,4 @@
-*.o
-*.prg
-*.data
-.DS_Store
+**/*.o
+**/*.prg
+**/*.data
+**/.DS_Store

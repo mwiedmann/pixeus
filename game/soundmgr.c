@@ -7,9 +7,28 @@
 #include "zsmplayer.h"
 
 unsigned char MUSIC_ON = 1;
-unsigned char SOUND_ON = 1;
+unsigned char SOUND_ON = 0;
+
+
+void startMusic() {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
+    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
+    zsm_forceloop(0);
+
+    // Back to the previous bank
+    POKE(0, currentMemBank);
+}
 
 void loadSounds() {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
     if (SOUND_ON) {
         pcm_init();
         POKE(0, SOUND_BANK_LASER);
@@ -28,51 +47,43 @@ void loadSounds() {
         // We will load the music we want on demand
     }
 
-    // Back to the default bank
-    POKE(0, LEVEL_BANK);
+    // Back to the previous bank
+    POKE(0, currentMemBank);
 }
 
-void loadTitleMusic() {
+void loadMusic(unsigned char* filename) {
     unsigned char currentMemBank;
 
     // Save the current bank
     currentMemBank = PEEK(0);
 
+    // POKE(0, MUSIC_BANK);
+    // zsm_stopmusic();
+
     POKE(0, MUSIC_BANK);
-    cbm_k_setnam("sounds/title.zsm");
+    // zsm_play();
+    // zsm_init();
+
+    cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
     
     // Back to the previous bank
     POKE(0, currentMemBank);
+
+    startMusic();
+}
+
+void loadTitleMusic() {
+    loadMusic("sounds/title.zsm");
 }
 
 void loadForestMusic() {
-    unsigned char currentMemBank;
-
-    // Save the current bank
-    currentMemBank = PEEK(0);
-
-    POKE(0, MUSIC_BANK);
-    cbm_k_setnam("sounds/forest.zsm");
-    cbm_k_setlfs(0, 8, 2);
-    cbm_k_load(0, (unsigned short)BANK_RAM);
-
-    // Back to the previous bank
-    POKE(0, currentMemBank);
+    loadMusic("sounds/forest.zsm");
 }
 
-void startMusic() {
-    unsigned char currentMemBank;
-
-    // Save the current bank
-    currentMemBank = PEEK(0);
-
-    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
-    zsm_forceloop(0);
-
-    // Back to the previous bank
-    POKE(0, currentMemBank);
+void loadDesertMusic() {
+    loadMusic("sounds/desert.zsm");
 }
 
 void playSoundsThisGameLoop() {
