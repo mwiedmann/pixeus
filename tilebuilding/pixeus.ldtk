@@ -28959,7 +28959,7 @@
 				{ "__identifier": "LeftLevel", "__value": 54, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [54] }] },
 				{ "__identifier": "RightLevel", "__value": 56, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [56] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
+				{ "__identifier": "UpLevel", "__value": 12, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [12] }] }
 			],
 			"layerInstances": [
 				{
@@ -31670,7 +31670,15 @@
 						{ "px": [112,128], "src": [192,32], "f": 0, "t": 52, "d": [327] },
 						{ "px": [128,128], "src": [208,32], "f": 0, "t": 53, "d": [328] },
 						{ "px": [144,128], "src": [224,32], "f": 0, "t": 54, "d": [329] },
-						{ "px": [400,128], "src": [96,64], "f": 2, "t": 86, "d": [345] },
+						{ "px": [384,128], "src": [32,64], "f": 0, "t": 82, "d": [344] },
+						{ "px": [400,128], "src": [48,64], "f": 0, "t": 83, "d": [345] },
+						{ "px": [416,128], "src": [32,64], "f": 0, "t": 82, "d": [346] },
+						{ "px": [432,128], "src": [48,64], "f": 0, "t": 83, "d": [347] },
+						{ "px": [448,128], "src": [32,64], "f": 0, "t": 82, "d": [348] },
+						{ "px": [464,128], "src": [48,64], "f": 0, "t": 83, "d": [349] },
+						{ "px": [480,128], "src": [32,64], "f": 0, "t": 82, "d": [350] },
+						{ "px": [496,128], "src": [32,64], "f": 0, "t": 82, "d": [351] },
+						{ "px": [512,128], "src": [48,64], "f": 0, "t": 83, "d": [352] },
 						{ "px": [128,144], "src": [144,80], "f": 0, "t": 109, "d": [368] },
 						{ "px": [448,144], "src": [128,64], "f": 0, "t": 88, "d": [388] },
 						{ "px": [480,144], "src": [96,64], "f": 0, "t": 86, "d": [390] },

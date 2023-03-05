@@ -61,7 +61,7 @@
 #define STARTING_LEVEL 0
 
 // WARNING: THIS NEEDS TO BE STARTING_LEVEL OR 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL STARTING_LEVEL
+#define START_LEVEL 5 // STARTING_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 256
@@ -174,8 +174,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
 
     // Load the tileset for this level if it changed
     if (*lastTilesetId != level->tileList->tilesetId) {
-        tilesConfig(level->tileList->tilesetId);
-
         // Play the music for this environment/tileset
         switch (level->tileList->tilesetId)
         {
@@ -184,6 +182,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             case 3: loadForestMusic(); break;
             case 4: loadForestMusic(); break;
         }
+
+        tilesConfig(level->tileList->tilesetId);        
     }
 
     *lastTilesetId = level->tileList->tilesetId;

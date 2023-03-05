@@ -8,7 +8,7 @@
 
 unsigned char MUSIC_ON = 1;
 unsigned char SOUND_ON = 1;
-
+unsigned char musicPlaying = 0;
 
 void startMusic() {
     unsigned char currentMemBank;
@@ -18,6 +18,8 @@ void startMusic() {
 
     zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
     zsm_forceloop(0);
+
+    musicPlaying = 1;
 
     // Back to the previous bank
     POKE(0, currentMemBank);
@@ -57,21 +59,21 @@ void loadMusic(unsigned char* filename) {
     // Save the current bank
     currentMemBank = PEEK(0);
 
-    // POKE(0, MUSIC_BANK);
-    // zsm_stopmusic();
+    // If you call stop and nothing is playing it goes bananas and trashes everything
+    if (musicPlaying == 0) {
+        zsm_stopmusic();
+    }
 
     POKE(0, MUSIC_BANK);
-    // zsm_play();
-    // zsm_init();
 
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
     
+    startMusic();
+
     // Back to the previous bank
     POKE(0, currentMemBank);
-
-    startMusic();
 }
 
 void loadTitleMusic() {
