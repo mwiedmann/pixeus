@@ -3,9 +3,10 @@
 
 #include "sprites.h"
 
-unsigned char showTitleScreen();
-void showIntroScene(Sprite *ship);
+void showTitleScreen();
+unsigned char showIntroScene(Sprite *ship);
 void gameOverScreen();
 void victoryScreen(Sprite *ship, unsigned short gold);
+unsigned char showSelectionScreen();
 
 #endif

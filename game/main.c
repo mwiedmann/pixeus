@@ -61,7 +61,7 @@
 #define STARTING_LEVEL 0
 
 // WARNING: THIS NEEDS TO BE STARTING_LEVEL OR 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL 5 // STARTING_LEVEL
+#define START_LEVEL STARTING_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 256
@@ -136,7 +136,7 @@ void levelExitCleanup(unsigned char hideShip) {
     entitiesReset(entityCount);
 
     // Hide the ship if leaving level 0
-    if (level->levelNum == 0 && hideShip) {
+    if (level->levelNum == START_LEVEL && hideShip) {
         ship.zDepth = Disabled;
         x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
     }
@@ -170,8 +170,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
     Sprite *hitLaser;
     Entrance *entrance;
 
-    layerMapsClear();
-
     // Load the tileset for this level if it changed
     if (*lastTilesetId != level->tileList->tilesetId) {
         // Play the music for this environment/tileset
@@ -183,8 +181,23 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             case 4: loadForestMusic(); break;
         }
 
+        // Stopping music causes issues with the layer maps (zsound bug?)
+        // Call the loop update to allow music change to take effect,
+        // then layerMapsClear should clean things up
+        loopUpdates();
+
+        // Clear before loading the next tileset or the existing level
+        // briefly shows with a new tileset. Looks kinda weird for a sec.
+        layerMapsClear();
+
+        // Load in the new tileset
         tilesConfig(level->tileList->tilesetId);        
+    } else {
+        // No music/tileset change. Just clear the maps/screen
+        layerMapsClear();
     }
+
+    
 
     *lastTilesetId = level->tileList->tilesetId;
 
@@ -730,9 +743,8 @@ void main() {
         // Clear the maps to remove any extra VMEM junk from showing on title screen
         layerMapsClear();
 
-        // testMode makes the player invincible and skips some intro scenes
-        testMode = showTitleScreen();
-        showShipScene = !testMode;
+        // Show the bitmap title screen
+        showTitleScreen();
 
         // Clear the maps to remove the title screen junk
         layerMapsClear();
@@ -759,9 +771,7 @@ void main() {
         standardTilesLoad();
 
         // Show the intro screen before starting the level
-        if (!testMode) {
-            showIntroScene(&ship);
-        }
+        testMode = showIntroScene(&ship);
 
         while(1) {
             // Get the player's position at the start of the level

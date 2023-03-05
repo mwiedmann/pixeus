@@ -7,8 +7,15 @@
 #include "zsmplayer.h"
 
 unsigned char MUSIC_ON = 1;
-unsigned char SOUND_ON = 1;
+unsigned char SOUND_ON = 0;
 unsigned char musicPlaying = 0;
+
+void pauseSounds() {
+    if (musicPlaying == 1) {
+        musicPlaying = 0;
+        zsm_stopmusic();
+    }
+}
 
 void startMusic() {
     unsigned char currentMemBank;
@@ -59,10 +66,7 @@ void loadMusic(unsigned char* filename) {
     // Save the current bank
     currentMemBank = PEEK(0);
 
-    // If you call stop and nothing is playing it goes bananas and trashes everything
-    if (musicPlaying == 0) {
-        zsm_stopmusic();
-    }
+    pauseSounds();
 
     POKE(0, MUSIC_BANK);
 
@@ -93,15 +97,11 @@ void playSoundsThisGameLoop() {
         pcm_play();
     }
 
-    if (MUSIC_ON) {
+    if (MUSIC_ON && musicPlaying == 1) {
         zsm_play();
     }
 
     POKE(0, LEVEL_BANK);
-}
-
-void pauseSounds() {
-    zsm_stopmusic();
 }
 
 void soundsCleanup() {
@@ -116,7 +116,6 @@ void playLaser() {
         pcm_trigger_digi(SOUND_BANK_LASER, (unsigned short)BANK_RAM);
     }
 }
-
 
 void playAlienHit() {
     if (SOUND_ON) {
