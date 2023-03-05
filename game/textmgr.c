@@ -4,7 +4,6 @@
 
 #include <peekpoke.h>
 #include <joystick.h>
-#include "waitforjiffy.h"
 #include "loopmgr.h"
 #include "x16graphics.h"
 #include "memmap.h"
@@ -45,12 +44,6 @@ void showTitleScreen() {
 
     imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "images/title.bin");
     preloadTextFiles();
-
-    // Short delay before playing the music and button press skips title screen
-    while (wait > 0) {
-        waitforjiffy();
-        wait--;
-    }
 
     loadTitleMusic();
 

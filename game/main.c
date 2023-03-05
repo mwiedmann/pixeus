@@ -121,7 +121,7 @@ Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 void gameStartValues() {
     energy = 0;
     gold = 0;
-    lives = 10;
+    lives = 0;
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;
@@ -702,10 +702,6 @@ void main() {
     // On the 1st level we show the ship landing before the game starts
     unsigned char showShipScene = 1;
 
-    // When we go to the next level, we may need to load a new tileset
-    // Use this to track the last tileset so we know if we need to load
-    unsigned char lastTilesetId = 255;
-
     // Running each level will return exit info
     // It says if the player exited to another level and how, OR if they died
     Exit exitCollision;
@@ -727,6 +723,10 @@ void main() {
     paletteLoad();
 
     while(1) {
+        // When we go to the next level, we may need to load a new tileset
+        // Use this to track the last tileset so we know if we need to load
+        unsigned char lastTilesetId = 255;
+
         nextSpriteIndex = 0;
         gameStartValues();
 
