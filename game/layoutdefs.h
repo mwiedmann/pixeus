@@ -18,7 +18,9 @@ typedef enum
     Rockman = 12,
     Eel = 13,
     Iceman = 14,
-    Snowball = 15
+    Snowball = 15,
+    Dragonfly = 16,
+    BigBear = 17
 } EnemyType;
 
 typedef enum

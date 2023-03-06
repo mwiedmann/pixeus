@@ -14,12 +14,12 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 27
+#define SPRITE_COUNT 29
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
-// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15 }
+// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15, Dragonfly = 16, BigBear = 17 }
 /*
 typedef struct EnemyStats {
     unsigned char graphicsIdx;
@@ -31,7 +31,7 @@ typedef struct EnemyStats {
     unsigned char animateIfStill;
 } EnemyStats;
 */
-EnemyStats enemyStats[16] = {
+EnemyStats enemyStats[18] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
@@ -48,6 +48,8 @@ EnemyStats enemyStats[16] = {
     { SPRITE_MEM_EEL_IDX, 6, 10, 2, 90, 120, 1 },
     { SPRITE_MEM_ICEMAN_IDX, 12, 2, 5, 90, 0, 1 },
     { SPRITE_MEM_SNOWBALL_IDX, 6, 8, 3, 90, 120, 1 },
+    { SPRITE_MEM_DRAGONFLY_IDX, 6, 11, 3, 80, 180, 1 },
+    { SPRITE_MEM_BIG_BEAR_IDX, 5, 10, 20, 120, 180, 1 },
 };
 
 void spriteDataLoad() {
@@ -189,7 +191,7 @@ void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned 
     enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
 
     // Some special settings for large sprites
-    if (type == BigGhost) {
+    if (type == BigGhost || type == BigBear) {
         largeSpriteAdjust(enemy);
     }
     standardAISpriteConfig(enemy, layout, index);

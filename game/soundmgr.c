@@ -6,7 +6,7 @@
 #include "pcmplayer.h"
 #include "zsmplayer.h"
 
-unsigned char MUSIC_ON = 1;
+unsigned char MUSIC_ON = 0;
 unsigned char SOUND_ON = 0;
 unsigned char musicPlaying = 0;
 
@@ -66,23 +66,25 @@ void startMusic(zsm_callback cb) {
 }
 
 void loadMusic(unsigned char* filename, zsm_callback cb) {
-    unsigned char currentMemBank;
+    if (MUSIC_ON) {
+        unsigned char currentMemBank;
 
-    // Save the current bank
-    currentMemBank = PEEK(0);
+        // Save the current bank
+        currentMemBank = PEEK(0);
 
-    pauseSounds();
+        pauseSounds();
 
-    POKE(0, MUSIC_BANK);
+        POKE(0, MUSIC_BANK);
 
-    cbm_k_setnam(filename);
-    cbm_k_setlfs(0, 8, 2);
-    cbm_k_load(0, (unsigned short)BANK_RAM);
-    
-    startMusic(cb);
+        cbm_k_setnam(filename);
+        cbm_k_setlfs(0, 8, 2);
+        cbm_k_load(0, (unsigned short)BANK_RAM);
+        
+        startMusic(cb);
 
-    // Back to the previous bank
-    POKE(0, currentMemBank);
+        // Back to the previous bank
+        POKE(0, currentMemBank);
+    }
 }
 
 

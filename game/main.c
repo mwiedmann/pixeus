@@ -29,7 +29,7 @@
 #define PLAYER_WATER_FALL_SPEED 3
 #define PLAYER_WATER_FALL_SPEED_FORCED 5
 
-#define PLAYER_JUMP_SPEED_NORMAL 20
+#define PLAYER_JUMP_SPEED_NORMAL 21
 #define PLAYER_JUMP_SPEED_BOOTS 24
 #define PLAYER_WATER_JUMP_SPEED_NORMAL 12
 #define PLAYER_WATER_JUMP_SPEED_BOOTS 14
@@ -61,7 +61,7 @@
 #define STARTING_LEVEL 0
 
 // WARNING: THIS NEEDS TO BE STARTING_LEVEL OR 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL STARTING_LEVEL
+#define START_LEVEL TEST_LEVEL // STARTING_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 256
@@ -625,7 +625,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         // Check if there were any collisions
         if ((collision & COLLISION_RESULT_ENEMY_PLAYER) == COLLISION_RESULT_ENEMY_PLAYER) {
             // Player collided with an enemy
-            return &playerEaten;
+            if (!testMode) {
+                return &playerEaten;
+            }
         } else if (collision == COLLISION_RESULT_ENEMY_LASER_PLAYER) {
             // Player was hit by an enemy laser
             hitLaser = findEnemyLaserCollision(&player);
@@ -772,6 +774,7 @@ void main() {
 
         // Show the intro screen before starting the level
         testMode = showIntroScene(&ship);
+        showShipScene = !testMode;
 
         while(1) {
             // Get the player's position at the start of the level
