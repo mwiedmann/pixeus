@@ -153,12 +153,12 @@ void songOverEmpty(unsigned char a, unsigned char b) {
     loadEmptyMusic();
 }
 
-void gameStartOver(unsigned char a, unsigned char b) {
-    (void)a;
-    (void)b;
-    loadTitleMusic();
-    gameStartDone = 1;
-}
+// void gameStartOver(unsigned char a, unsigned char b) {
+//     (void)a;
+//     (void)b;
+//     loadTitleMusic();
+//     gameStartDone = 1;
+// }
 
 void showJukebox() {
     unsigned char selection = 1;
