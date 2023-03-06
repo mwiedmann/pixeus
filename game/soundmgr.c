@@ -17,21 +17,6 @@ void pauseSounds() {
     }
 }
 
-void startMusic() {
-    unsigned char currentMemBank;
-
-    // Save the current bank
-    currentMemBank = PEEK(0);
-
-    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
-    zsm_forceloop(0);
-
-    musicPlaying = 1;
-
-    // Back to the previous bank
-    POKE(0, currentMemBank);
-}
-
 void loadSounds() {
     unsigned char currentMemBank;
 
@@ -60,7 +45,27 @@ void loadSounds() {
     POKE(0, currentMemBank);
 }
 
-void loadMusic(unsigned char* filename) {
+void startMusic(zsm_callback cb) {
+    unsigned char currentMemBank;
+
+    // Save the current bank
+    currentMemBank = PEEK(0);
+
+    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
+
+    if (cb != 0) {
+        zsm_setcallback(cb);
+    } else {
+        zsm_forceloop(0);
+    }
+
+    musicPlaying = 1;
+
+    // Back to the previous bank
+    POKE(0, currentMemBank);
+}
+
+void loadMusic(unsigned char* filename, zsm_callback cb) {
     unsigned char currentMemBank;
 
     // Save the current bank
@@ -74,22 +79,39 @@ void loadMusic(unsigned char* filename) {
     cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
     
-    startMusic();
+    startMusic(cb);
 
     // Back to the previous bank
     POKE(0, currentMemBank);
 }
 
+
 void loadTitleMusic() {
-    loadMusic("sounds/title.zsm");
+    loadMusic("sounds/title.zsm", 0);
 }
 
 void loadForestMusic() {
-    loadMusic("sounds/forest.zsm");
+    loadMusic("sounds/forest.zsm", 0);
 }
 
 void loadDesertMusic() {
-    loadMusic("sounds/desert.zsm");
+    loadMusic("sounds/desert.zsm", 0);
+}
+
+void loadEmptyMusic() {
+    loadMusic("sounds/empty.zsm", 0);
+}
+
+void loadStartMusic(zsm_callback cb) {
+    loadMusic("sounds/start.zsm", cb);
+}
+
+void loadGameOverMusic(zsm_callback cb) {
+    loadMusic("sounds/gameover.zsm", cb);
+}
+
+void loadVictoryMusic(zsm_callback cb) {
+    loadMusic("sounds/victory.zsm", cb);
 }
 
 void playSoundsThisGameLoop() {

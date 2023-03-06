@@ -19,6 +19,9 @@
 #define SELECTION_JUKEBOX 2
 #define SELECTION_TEST_MODE 3
 
+// Uncomment if we use the game start sound
+// unsigned char gameStartDone;
+
 void showTitleScreen() {
     unsigned char joy = 0;
     unsigned char wait = 60;
@@ -144,6 +147,19 @@ unsigned char showSelectionScreen() {
     }
 }
 
+void songOverEmpty(unsigned char a, unsigned char b) {
+    (void)a;
+    (void)b;
+    loadEmptyMusic();
+}
+
+void gameStartOver(unsigned char a, unsigned char b) {
+    (void)a;
+    (void)b;
+    loadTitleMusic();
+    gameStartDone = 1;
+}
+
 void showJukebox() {
     unsigned char selection = 1;
     unsigned char playMusic;
@@ -159,11 +175,14 @@ void showJukebox() {
         drawCenteredTextRow("USE THE JOYSTICK TO SELECT", 0, 14);
 
         drawCenteredTextRow(selection == 1 ? "::TITLE::" : "  TITLE  ", 0, 16);
-        drawCenteredTextRow(selection == 2 ? "::FOREST::" : "  FOREST  ", 0, 17);
-        drawCenteredTextRow(selection == 3 ? "::DESERT::" : "  DESERT  ", 0, 18);
+        drawCenteredTextRow(selection == 2 ? "::START::" : "  START  ", 0, 17);
+        drawCenteredTextRow(selection == 3 ? "::GAME OVER::" : "  GAME OVER  ", 0, 18);
+        drawCenteredTextRow(selection == 4 ? "::VICTORY::" : "  VICTORY  ", 0, 19);
+        drawCenteredTextRow(selection == 5 ? "::FOREST::" : "  FOREST  ", 0, 20);
+        drawCenteredTextRow(selection == 6 ? "::DESERT::" : "  DESERT  ", 0, 21);
 
-        drawCenteredTextRow(selection == 4 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 20);
-        drawCenteredTextRow(selection == 5 ? "::EXIT::" : "  EXIT  ", 0, 21);
+        drawCenteredTextRow(selection == 7 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 23);
+        drawCenteredTextRow(selection == 8 ? "::EXIT::" : "  EXIT  ", 0, 24);
 
         playMusic = 0;
 
@@ -175,7 +194,7 @@ void showJukebox() {
             if (JOY_UP(joy)) {
                 selection--;
                 if (selection==0) {
-                    selection = 5;
+                    selection = 8;
                 }
                 while(JOY_UP(joy)) {
                     loopUpdates();
@@ -185,7 +204,7 @@ void showJukebox() {
                 break;
             } else if (JOY_DOWN(joy)) {
                 selection++;
-                if (selection>5) {
+                if (selection>8) {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
@@ -205,10 +224,15 @@ void showJukebox() {
         if (playMusic) {
             switch(selection) {
                 case 1: loadTitleMusic(); break;
-                case 2: loadForestMusic(); break;
-                case 3: loadDesertMusic(); break;
-                case 4: /*pauseSounds();*/ break; // This breaks everything right now...WTF!
-                case 5: return;
+                case 2: loadStartMusic(songOverEmpty); break;
+                case 3: loadGameOverMusic(songOverEmpty); break;
+                case 4: loadVictoryMusic(songOverEmpty); break;
+                case 5: loadForestMusic(); break;
+                case 6: loadDesertMusic(); break;
+                // Stopping the music breaks everything right now...WTF!
+                // Cheat by playing an empty song
+                case 7: loadEmptyMusic(); break; 
+                case 8: return;
             }
 
             // zsound bug throws junk into the layer map when you stop/switch music
@@ -232,6 +256,18 @@ unsigned char showIntroScene(Sprite *ship) {
             showJukebox();
             continue;
         }
+
+        // I don't love this Game Start sound but leaving this hook here
+        /*
+        gameStartDone = 0;
+        loadStartMusic(gameStartOver);
+
+        while(gameStartDone == 0) {
+            loopUpdates();
+        }
+        
+        loopUpdates();
+        */
 
         layerMapsClear();
         drawTextFileFromBank(WELCOME_BANK, 0);

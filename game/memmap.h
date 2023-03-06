@@ -54,6 +54,8 @@
 #define SPRITE_MEM_RAT_IDX 22
 #define SPRITE_MEM_ROCKMAN_IDX 23
 #define SPRITE_MEM_EEL_IDX 24
+#define SPRITE_MEM_ICEMAN_IDX 25
+#define SPRITE_MEM_SNOWBALL_IDX 26
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0
