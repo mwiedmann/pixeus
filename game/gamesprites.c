@@ -49,7 +49,7 @@ EnemyStats enemyStats[18] = {
     { SPRITE_MEM_ICEMAN_IDX, 12, 2, 5, 90, 0, 1 },
     { SPRITE_MEM_SNOWBALL_IDX, 6, 8, 3, 90, 120, 1 },
     { SPRITE_MEM_DRAGONFLY_IDX, 6, 11, 3, 80, 180, 1 },
-    { SPRITE_MEM_BIG_BEAR_IDX, 5, 10, 20, 120, 180, 1 },
+    { SPRITE_MEM_BIG_BEAR_IDX, 6, 10, 20, 120, 180, 1 },
 };
 
 void spriteDataLoad() {
