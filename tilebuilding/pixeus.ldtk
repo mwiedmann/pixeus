@@ -824,7 +824,8 @@
 			{ "id": "Iceman", "tileId": null, "color": 13408767, "__tileSrcRect": null },
 			{ "id": "Snowball", "tileId": null, "color": 16777215, "__tileSrcRect": null },
 			{ "id": "Dragonfly", "tileId": null, "color": 15292512, "__tileSrcRect": null },
-			{ "id": "BigBear", "tileId": null, "color": 12635100, "__tileSrcRect": null }
+			{ "id": "BigBear", "tileId": null, "color": 12635100, "__tileSrcRect": null },
+			{ "id": "Clouds", "tileId": null, "color": 9149364, "__tileSrcRect": null }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Items", "uid": 39, "values": [
 			{ "id": "Scuba", "tileId": null, "color": 2943221, "__tileSrcRect": null },
@@ -5037,19 +5038,19 @@
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
-							"__smartColor": "#F77622",
+							"__smartColor": "#8B9BB4",
 							"iid": "8608d080-9f30-11ed-8655-33433924a93b",
 							"width": 16,
 							"height": 16,
 							"defUid": 19,
 							"px": [400,256],
 							"fieldInstances": [
-								{ "__identifier": "type", "__value": "Slime", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+								{ "__identifier": "type", "__value": "Clouds", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Slime"]
+									"params": ["Clouds"]
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
-								{ "__identifier": "patrolA", "__value": 3, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
+								{ "__identifier": "patrolA", "__value": 4, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
 								{ "__identifier": "patrolB", "__value": 3, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]

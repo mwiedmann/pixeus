@@ -74,6 +74,7 @@ img:
 	node gimp-convert-tiles-bin.js snowball.data 4 1 16 16 sp26 && \
 	node gimp-convert-tiles-bin.js dragfly.data 4 1 16 16 sp27 && \
 	node gimp-convert-tiles-bin.js bigbear.data 4 1 32 32 sp28 && \
+	node gimp-convert-tiles-bin.js clouds.data 4 1 16 16 sp29 && \
 	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16
 

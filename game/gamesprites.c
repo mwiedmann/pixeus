@@ -14,7 +14,7 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 29
+#define SPRITE_COUNT 30
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
@@ -31,7 +31,7 @@ typedef struct EnemyStats {
     unsigned char animateIfStill;
 } EnemyStats;
 */
-EnemyStats enemyStats[18] = {
+EnemyStats enemyStats[19] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
@@ -50,6 +50,7 @@ EnemyStats enemyStats[18] = {
     { SPRITE_MEM_SNOWBALL_IDX, 6, 8, 3, 90, 120, 1 },
     { SPRITE_MEM_DRAGONFLY_IDX, 6, 11, 3, 80, 180, 1 },
     { SPRITE_MEM_BIG_BEAR_IDX, 6, 10, 20, 120, 180, 1 },
+    { SPRITE_MEM_CLOUDS_IDX, 6, 6, 6, 90, 0, 1 },
 };
 
 void spriteDataLoad() {
