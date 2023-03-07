@@ -25,9 +25,12 @@ void standardTilesLoad() {
         }
     }
 
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "images/scuba.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "images/weapon.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "images/boots.bin");
+    // These are sprites because they also show as items in the game
+    // Load them via their sprite IDs.
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "images/sp7.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "images/sp8.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "images/sp9.bin");
+
     imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_FLAME, "images/flame.bin");
     imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SNOWFLAKE, "images/snowflake.bin");
     imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");

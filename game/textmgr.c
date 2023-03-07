@@ -168,22 +168,28 @@ void showJukebox() {
     layerMapsClear();
 
     while (1) {
-        drawCenteredTextRow("JUKEBOX", 0, 6);
-        drawCenteredTextRow("ENJOY THESE AMAZING TUNES", 0, 8);
-        drawCenteredTextRow("BY CRISPS", 0, 9);
+        drawCenteredTextRow("JUKEBOX", 0, 3);
+        drawCenteredTextRow("ENJOY THESE AMAZING TUNES AND FX", 0, 5);
+        drawCenteredTextRow("BY CRISPS", 0, 6);
 
-        drawCenteredTextRow("USE THE JOYSTICK TO SELECT", 0, 14);
+        drawCenteredTextRow("USE THE JOYSTICK TO SELECT", 0, 9);
 
-        drawCenteredTextRow(selection == 1 ? "::TITLE::" : "  TITLE  ", 0, 16);
-        drawCenteredTextRow(selection == 2 ? "::START::" : "  START  ", 0, 17);
-        drawCenteredTextRow(selection == 3 ? "::GAME OVER::" : "  GAME OVER  ", 0, 18);
-        drawCenteredTextRow(selection == 4 ? "::VICTORY::" : "  VICTORY  ", 0, 19);
-        drawCenteredTextRow(selection == 5 ? "::FOREST::" : "  FOREST  ", 0, 20);
-        drawCenteredTextRow(selection == 6 ? "::DESERT::" : "  DESERT  ", 0, 21);
-        drawCenteredTextRow(selection == 7 ? "::UNDERWORLD::" : "  UNDERWORLD  ", 0, 22);
+        drawCenteredTextRow("-MUSIC-", 0, 11);
+        drawCenteredTextRow(selection == 1 ? "::TITLE::" : "  TITLE  ", 0, 12);
+        drawCenteredTextRow(selection == 2 ? "::CREDITS::" : "  CREDITS  ", 0, 13);
+        drawCenteredTextRow(selection == 3 ? "::FOREST::" : "  FOREST  ", 0, 14);
+        drawCenteredTextRow(selection == 4 ? "::DESERT::" : "  DESERT  ", 0, 15);
+        drawCenteredTextRow(selection == 5 ? "::TUNDRA::" : "  TUNDRA  ", 0, 16);
+        drawCenteredTextRow(selection == 6 ? "::UNDERWORLD::" : "  UNDERWORLD  ", 0, 17);
 
-        drawCenteredTextRow(selection == 8 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 24);
-        drawCenteredTextRow(selection == 9 ? "::EXIT::" : "  EXIT  ", 0, 25);
+        drawCenteredTextRow("-SOUND FX-", 0, 19);
+        drawCenteredTextRow(selection == 7 ? "::START::" : "  START  ", 0, 20);
+        drawCenteredTextRow(selection == 8 ? "::GAME OVER::" : "  GAME OVER  ", 0, 21);
+        drawCenteredTextRow(selection == 9 ? "::VICTORY::" : "  VICTORY  ", 0, 22);
+        
+
+        drawCenteredTextRow(selection == 10 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 24);
+        drawCenteredTextRow(selection == 11 ? "::EXIT::" : "  EXIT  ", 0, 25);
 
         playMusic = 0;
 
@@ -195,7 +201,7 @@ void showJukebox() {
             if (JOY_UP(joy)) {
                 selection--;
                 if (selection==0) {
-                    selection = 9;
+                    selection = 11;
                 }
                 while(JOY_UP(joy)) {
                     loopUpdates();
@@ -205,7 +211,7 @@ void showJukebox() {
                 break;
             } else if (JOY_DOWN(joy)) {
                 selection++;
-                if (selection>9) {
+                if (selection>11) {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
@@ -225,16 +231,19 @@ void showJukebox() {
         if (playMusic) {
             switch(selection) {
                 case 1: loadTitleMusic(); break;
-                case 2: loadStartMusic(songOverEmpty); break;
-                case 3: loadGameOverMusic(songOverEmpty); break;
-                case 4: loadVictoryMusic(songOverEmpty); break;
-                case 5: loadForestMusic(); break;
-                case 6: loadDesertMusic(); break;
-                case 7: loadUnderworldMusic(); break; 
+                case 2: loadCreditsMusic(); break;
+                case 3: loadForestMusic(); break;
+                case 4: loadDesertMusic(); break;
+                case 5: loadTundraMusic(); break;
+                case 6: loadUnderworldMusic(); break;
+                case 7: loadStartMusic(songOverEmpty); break;
+                case 8: loadGameOverMusic(songOverEmpty); break;
+                case 9: loadVictoryMusic(songOverEmpty); break;
+                
                 // Stopping the music breaks everything right now...WTF!
                 // Cheat by playing an empty song
-                case 8: loadEmptyMusic(); break; 
-                case 9: return;
+                case 10: loadEmptyMusic(); break; 
+                case 11: return;
             }
 
             // zsound bug throws junk into the layer map when you stop/switch music

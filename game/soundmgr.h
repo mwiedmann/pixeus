@@ -9,11 +9,15 @@ void soundsCleanup();
 void playLaser();
 void playAlienHit();
 void pauseSounds();
+
+void loadEmptyMusic();
 void loadTitleMusic();
+void loadCreditsMusic();
 void loadForestMusic();
 void loadDesertMusic();
+void loadTundraMusic();
 void loadUnderworldMusic();
-void loadEmptyMusic();
+
 void loadStartMusic(zsm_callback cb);
 void loadGameOverMusic(zsm_callback cb);
 void loadVictoryMusic(zsm_callback cb);

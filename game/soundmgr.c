@@ -87,9 +87,16 @@ void loadMusic(unsigned char* filename, zsm_callback cb) {
     }
 }
 
+void loadEmptyMusic() {
+    loadMusic("sounds/empty.zsm", 0);
+}
 
 void loadTitleMusic() {
     loadMusic("sounds/title.zsm", 0);
+}
+
+void loadCreditsMusic() {
+    loadMusic("sounds/credits.zsm", 0);
 }
 
 void loadForestMusic() {
@@ -100,12 +107,12 @@ void loadDesertMusic() {
     loadMusic("sounds/desert.zsm", 0);
 }
 
-void loadUnderworldMusic() {
-    loadMusic("sounds/hell.zsm", 0);
+void loadTundraMusic() {
+    loadMusic("sounds/tundra.zsm", 0);
 }
 
-void loadEmptyMusic() {
-    loadMusic("sounds/empty.zsm", 0);
+void loadUnderworldMusic() {
+    loadMusic("sounds/hell.zsm", 0);
 }
 
 void loadStartMusic(zsm_callback cb) {

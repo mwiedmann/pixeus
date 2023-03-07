@@ -135,8 +135,9 @@ void levelExitCleanup(unsigned char hideShip) {
     enemiesReset(enemyCount);
     entitiesReset(entityCount);
 
-    // Hide the ship if leaving level 0
-    if (level->levelNum == START_LEVEL && hideShip) {
+    // Hide the ship, generally only needs to be done when leaving level 0,
+    // but with test mode just hide it every time
+    if (hideShip) {
         ship.zDepth = Disabled;
         x16SpriteIdxSetZDepth(ship.index, ship.zDepth);
     }
@@ -177,7 +178,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         {
             case 1: loadForestMusic(); break;
             case 2: loadDesertMusic(); break;
-            case 3: loadForestMusic(); break;
+            case 3: loadTundraMusic(); break;
             case 4: loadUnderworldMusic(); break;
         }
 
@@ -196,8 +197,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         // No music/tileset change. Just clear the maps/screen
         layerMapsClear();
     }
-
-    
 
     *lastTilesetId = level->tileList->tilesetId;
 

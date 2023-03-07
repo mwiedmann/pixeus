@@ -48,21 +48,21 @@ img:
 	node gimp-convert-tiles-bin.js guyrun.data 6 1 16 16 sp0 && \
 	node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16 sp1 && \
 	node gimp-convert-tiles-bin.js expsmall.data 4 1 16 16 sp2 && \
-	node gimp-convert-tiles-bin.js snake.data 4 1 16 16 sp3 && \
-	node gimp-convert-tiles-bin.js bee.data 4 1 16 16 sp4 && \
-	node gimp-convert-tiles-bin.js ghost.data 4 1 16 16 sp5 && \
-	node gimp-convert-tiles-bin.js scorpion.data 4 1 16 16 sp6 && \
-	node gimp-convert-tiles-bin.js wasp.data 4 1 16 16 sp7 && \
-	node gimp-convert-tiles-bin.js fish1.data 4 1 16 16 sp8 && \
-	node gimp-convert-tiles-bin.js bigghost.data 4 1 32 32 sp9 && \
-	node gimp-convert-tiles-bin.js laser.data 1 1 16 16 sp10 && \
-	node gimp-convert-tiles-bin.js ship.data 4 1 64 64 sp11 && \
-	node gimp-convert-tiles-bin.js energy.data 4 1 16 16 sp12 && \
-	node gimp-convert-tiles-bin.js gold.data 4 1 16 16 sp13 && \
-	node gimp-convert-tiles-bin.js scuba.data 1 1 16 16 sp14 && \
-	node gimp-convert-tiles-bin.js weapon.data 1 1 16 16 sp15 && \
-	node gimp-convert-tiles-bin.js boots.data 1 1 16 16 sp16 && \
-	node gimp-convert-tiles-bin.js extralife.data 1 1 16 16 sp17 && \
+	node gimp-convert-tiles-bin.js laser.data 1 1 16 16 sp3 && \
+	node gimp-convert-tiles-bin.js ship.data 4 1 64 64 sp4 && \
+	node gimp-convert-tiles-bin.js energy.data 4 1 16 16 sp5 && \
+	node gimp-convert-tiles-bin.js gold.data 4 1 16 16 sp6 && \
+	node gimp-convert-tiles-bin.js scuba.data 1 1 16 16 sp7 && \
+	node gimp-convert-tiles-bin.js weapon.data 1 1 16 16 sp8 && \
+	node gimp-convert-tiles-bin.js boots.data 1 1 16 16 sp9 && \
+	node gimp-convert-tiles-bin.js extralife.data 1 1 16 16 sp10 && \
+	node gimp-convert-tiles-bin.js snake.data 4 1 16 16 sp11 && \
+	node gimp-convert-tiles-bin.js bee.data 4 1 16 16 sp12 && \
+	node gimp-convert-tiles-bin.js ghost.data 4 1 16 16 sp13 && \
+	node gimp-convert-tiles-bin.js scorpion.data 4 1 16 16 sp14 && \
+	node gimp-convert-tiles-bin.js wasp.data 4 1 16 16 sp15 && \
+	node gimp-convert-tiles-bin.js fish1.data 4 1 16 16 sp16 && \
+	node gimp-convert-tiles-bin.js bigghost.data 4 1 32 32 sp17 && \
 	node gimp-convert-tiles-bin.js eyeball.data 4 1 16 16 sp18 && \
 	node gimp-convert-tiles-bin.js mushroom.data 4 1 16 16 sp19 && \
 	node gimp-convert-tiles-bin.js slime.data 4 1 16 16 sp20 && \
