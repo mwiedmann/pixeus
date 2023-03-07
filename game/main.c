@@ -178,7 +178,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             case 1: loadForestMusic(); break;
             case 2: loadDesertMusic(); break;
             case 3: loadForestMusic(); break;
-            case 4: loadForestMusic(); break;
+            case 4: loadUnderworldMusic(); break;
         }
 
         // Stopping music causes issues with the layer maps (zsound bug?)

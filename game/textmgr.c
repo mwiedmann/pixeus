@@ -180,9 +180,10 @@ void showJukebox() {
         drawCenteredTextRow(selection == 4 ? "::VICTORY::" : "  VICTORY  ", 0, 19);
         drawCenteredTextRow(selection == 5 ? "::FOREST::" : "  FOREST  ", 0, 20);
         drawCenteredTextRow(selection == 6 ? "::DESERT::" : "  DESERT  ", 0, 21);
+        drawCenteredTextRow(selection == 7 ? "::UNDERWORLD::" : "  UNDERWORLD  ", 0, 22);
 
-        drawCenteredTextRow(selection == 7 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 23);
-        drawCenteredTextRow(selection == 8 ? "::EXIT::" : "  EXIT  ", 0, 24);
+        drawCenteredTextRow(selection == 8 ? "::STOP MUSIC::" : "  STOP MUSIC  ", 0, 24);
+        drawCenteredTextRow(selection == 9 ? "::EXIT::" : "  EXIT  ", 0, 25);
 
         playMusic = 0;
 
@@ -194,7 +195,7 @@ void showJukebox() {
             if (JOY_UP(joy)) {
                 selection--;
                 if (selection==0) {
-                    selection = 8;
+                    selection = 9;
                 }
                 while(JOY_UP(joy)) {
                     loopUpdates();
@@ -204,7 +205,7 @@ void showJukebox() {
                 break;
             } else if (JOY_DOWN(joy)) {
                 selection++;
-                if (selection>8) {
+                if (selection>9) {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
@@ -229,10 +230,11 @@ void showJukebox() {
                 case 4: loadVictoryMusic(songOverEmpty); break;
                 case 5: loadForestMusic(); break;
                 case 6: loadDesertMusic(); break;
+                case 7: loadUnderworldMusic(); break; 
                 // Stopping the music breaks everything right now...WTF!
                 // Cheat by playing an empty song
-                case 7: loadEmptyMusic(); break; 
-                case 8: return;
+                case 8: loadEmptyMusic(); break; 
+                case 9: return;
             }
 
             // zsound bug throws junk into the layer map when you stop/switch music

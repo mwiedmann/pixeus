@@ -135,7 +135,7 @@ for (ty = 0; ty < yTiles; ty++) {
       start =
         ty * xTiles * frameWidth * frameHeight +
         tx * frameWidth +
-        y * xTiles * frameHeight;
+        y * xTiles * frameWidth;
       for (x = 0; x < frameWidth; x++) {
         pixelIdx = start + x;
         flattenedTiles.push(convertedPixels[pixelIdx].i);

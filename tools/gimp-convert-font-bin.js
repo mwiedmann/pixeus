@@ -50,7 +50,7 @@ for (ty = 0; ty < yTiles; ty++) {
       start =
         ty * xTiles * frameWidth * frameHeight +
         tx * frameWidth +
-        y * xTiles * frameHeight;
+        y * xTiles * frameWidth;
 
       let byte = 0
       

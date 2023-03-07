@@ -21,7 +21,9 @@ typedef enum
     Snowball = 15,
     Dragonfly = 16,
     BigBear = 17,
-    Clouds = 18
+    Clouds = 18,
+    Flies = 19,
+    Shark = 20
 } EnemyType;
 
 typedef enum

@@ -6,8 +6,8 @@
 #include "pcmplayer.h"
 #include "zsmplayer.h"
 
-unsigned char MUSIC_ON = 0;
-unsigned char SOUND_ON = 0;
+unsigned char MUSIC_ON = 1;
+unsigned char SOUND_ON = 1;
 unsigned char musicPlaying = 0;
 
 void pauseSounds() {
@@ -98,6 +98,10 @@ void loadForestMusic() {
 
 void loadDesertMusic() {
     loadMusic("sounds/desert.zsm", 0);
+}
+
+void loadUnderworldMusic() {
+    loadMusic("sounds/hell.zsm", 0);
 }
 
 void loadEmptyMusic() {

@@ -14,12 +14,13 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 30
+#define SPRITE_COUNT 32
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
-// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15, Dragonfly = 16, BigBear = 17 }
+// Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15,
+// Dragonfly = 16, BigBear = 17, Clouds = 18, Flies = 19, Shark = 20 }
 /*
 typedef struct EnemyStats {
     unsigned char graphicsIdx;
@@ -31,14 +32,14 @@ typedef struct EnemyStats {
     unsigned char animateIfStill;
 } EnemyStats;
 */
-EnemyStats enemyStats[19] = {
+EnemyStats enemyStats[21] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
     { SPRITE_MEM_SCORPION_IDX, 6, 6, 6, 90, 240, 0 },
     { SPRITE_MEM_WASP_IDX, 6, 12, 3, 120, 0, 1 },
     { SPRITE_MEM_FISH1_IDX, 30, 3, 3, 120, 360, 1 },
-    { SPRITE_MEM_BIG_GHOST_IDX, 30, 3, 20, 120, 0, 1 },
+    { SPRITE_MEM_BIG_GHOST_IDX, 8, 3, 20, 120, 0, 1 },
     { SPRITE_MEM_EYEBALL_IDX, 6, 6, 6, 90, 0, 1 },
     { SPRITE_MEM_MUSHROOM_IDX, 30, 4, 6, 90, 0, 1 },
     { SPRITE_MEM_SLIME_IDX, 20, 4, 3, 90, 300, 1 },
@@ -51,6 +52,8 @@ EnemyStats enemyStats[19] = {
     { SPRITE_MEM_DRAGONFLY_IDX, 6, 11, 3, 80, 180, 1 },
     { SPRITE_MEM_BIG_BEAR_IDX, 6, 10, 20, 120, 180, 1 },
     { SPRITE_MEM_CLOUDS_IDX, 6, 6, 6, 90, 0, 1 },
+    { SPRITE_MEM_FLIES_IDX, 4, 10, 20, 120, 180, 1 },
+    { SPRITE_MEM_SHARK_IDX, 20, 7, 20, 120, 180, 1 },
 };
 
 void spriteDataLoad() {
@@ -180,6 +183,13 @@ void largeSpriteAdjust(AISprite *largeSprite)
     largeSprite->yLaserAdjust = TILE_PIXEL_HEIGHT;
 }
 
+void largeFlatSpriteAdjust(AISprite *largeSprite)
+{
+    largeSprite->sprite.width = PX32;
+    largeSprite->sprite.height = PX16;
+    largeSprite->sprite.frameSize = 512; // Calculated as width * height
+}
+
 void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned char index) {
     spriteDefaults(&enemy->sprite);
 
@@ -192,9 +202,12 @@ void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned 
     enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
 
     // Some special settings for large sprites
-    if (type == BigGhost || type == BigBear) {
+    if (type == BigGhost || type == BigBear || type == Flies) {
         largeSpriteAdjust(enemy);
+    } else if (type == Shark) {
+        largeFlatSpriteAdjust(enemy);
     }
+
     standardAISpriteConfig(enemy, layout, index);
 }
 
