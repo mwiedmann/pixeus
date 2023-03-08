@@ -14,13 +14,16 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 32
+#define SPRITE_COUNT 33
+#define ENEMY_SPRITE_IDX_START SPRITE_MEM_SNAKE_IDX
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
+unsigned short enemySpritesMemStart = 0;
+
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
 // Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15,
-// Dragonfly = 16, BigBear = 17, Clouds = 18, Flies = 19, Shark = 20 }
+// Dragonfly = 16, BigBear = 17, Clouds = 18, Flies = 19, Shark = 20, Bluehawk = 21 }
 /*
 typedef struct EnemyStats {
     unsigned char graphicsIdx;
@@ -32,7 +35,7 @@ typedef struct EnemyStats {
     unsigned char animateIfStill;
 } EnemyStats;
 */
-EnemyStats enemyStats[21] = {
+EnemyStats enemyStats[22] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
@@ -54,17 +57,45 @@ EnemyStats enemyStats[21] = {
     { SPRITE_MEM_CLOUDS_IDX, 6, 6, 6, 90, 0, 1 },
     { SPRITE_MEM_FLIES_IDX, 4, 10, 20, 120, 180, 1 },
     { SPRITE_MEM_SHARK_IDX, 20, 7, 20, 120, 180, 1 },
+    { SPRITE_MEM_BLUEHAWK_IDX, 6, 11, 3, 80, 180, 1 },
 };
 
+/**
+ * These are non-enemy sprites that we just load once.
+ * Other sprites (enemies) are loaded on demand.
+*/
 void spriteDataLoad() {
     unsigned char i;
     unsigned char filename[32];
     unsigned short allBytes = SPRITE_MEM;
 
-    for (i=0; i<SPRITE_COUNT; i++) {
+    for (i=0; i<ENEMY_SPRITE_IDX_START; i++) {
         sprintf(filename, "images/sp%u.bin", i);
         spriteMemAddresses[i] = allBytes;
         allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
+    }
+
+    // Enemy sprites are loaded on demand and can start at this mem addr.
+    enemySpritesMemStart = allBytes;
+}
+
+void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
+    unsigned char i, gIdx;
+    unsigned char filename[32];
+    unsigned short allBytes = enemySpritesMemStart;
+
+    // Clear any existing sprite memory addresses
+    for (i=ENEMY_SPRITE_IDX_START; i<SPRITE_COUNT; i++) {
+        spriteMemAddresses[i] = 0;
+    }
+
+    for (i=0; i<length; i++) {
+        gIdx = enemyStats[enemies[i].enemyType].graphicsIdx;
+        if (spriteMemAddresses[gIdx] == 0) {
+            sprintf(filename, "images/sp%u.bin", gIdx);
+            spriteMemAddresses[gIdx] = allBytes;
+            allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
+        }
     }
 }
 

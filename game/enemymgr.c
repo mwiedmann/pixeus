@@ -59,6 +59,9 @@ void resetLaser(Sprite *laser) {
 unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i;
 
+    // Load the sprite data
+    spriteEnemyDataLoad(level->enemyList->enemies, level->enemyList->length);
+
     for (i=0; i<level->enemyList->length; i++) {
         enemyCreate(
             level->enemyList->enemies[i].enemyType,

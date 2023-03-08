@@ -68,6 +68,7 @@ typedef struct EnemyStats {
 } EnemyStats;
 
 void spriteDataLoad();
+void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) ;
 void spriteIRQConfig();
 void spriteAnimationAdvance(Sprite *sp);
 void spriteReset(Sprite *sp);
