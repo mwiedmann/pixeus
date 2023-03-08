@@ -24,7 +24,8 @@ typedef enum
     Clouds = 18,
     Flies = 19,
     Shark = 20,
-    Bluehawk = 21
+    Bluehawk = 21,
+    Beetle = 22
 } EnemyType;
 
 typedef enum

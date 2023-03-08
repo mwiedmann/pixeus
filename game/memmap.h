@@ -64,6 +64,7 @@
 #define SPRITE_MEM_FLIES_IDX 30
 #define SPRITE_MEM_SHARK_IDX 31
 #define SPRITE_MEM_BLUEHAWK_IDX 32
+#define SPRITE_MEM_BEETLE_IDX 33
 
 // **** BANK 0 ****
 // Tiles eat up the most memory so it lives alone in Bank 0
