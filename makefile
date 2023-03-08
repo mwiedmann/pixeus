@@ -80,7 +80,8 @@ img:
 	node gimp-convert-tiles-bin.js flies.data 4 1 32 32 sp30 && \
 	node gimp-convert-tiles-bin.js shark.data 4 1 32 16 sp31 && \
 	node gimp-convert-tiles-bin.js bluehawk.data 4 1 16 16 sp32 && \
-	node gimp-convert-tiles-bin.js beetle.data 4 1 16 16 sp33
+	node gimp-convert-tiles-bin.js beetle.data 4 1 16 16 sp33 && \
+    node gimp-convert-tiles-bin.js jellyfish.data 4 1 16 16 sp34
 	
 
 	
