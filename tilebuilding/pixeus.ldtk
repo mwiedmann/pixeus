@@ -830,7 +830,8 @@
 			{ "id": "Shark", "tileId": null, "color": 4073265, "__tileSrcRect": null },
 			{ "id": "Bluehawk", "tileId": null, "color": 2943221, "__tileSrcRect": null },
 			{ "id": "Beetle", "tileId": null, "color": 16775168, "__tileSrcRect": null },
-			{ "id": "Jellyfish", "tileId": null, "color": 11882632, "__tileSrcRect": null }
+			{ "id": "Jellyfish", "tileId": null, "color": 11882632, "__tileSrcRect": null },
+			{ "id": "Wolf", "tileId": null, "color": 5925256, "__tileSrcRect": null }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Items", "uid": 39, "values": [
 			{ "id": "Scuba", "tileId": null, "color": 2943221, "__tileSrcRect": null },
@@ -4905,16 +4906,16 @@
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
-							"__smartColor": "#FFFFFF",
+							"__smartColor": "#5A6988",
 							"iid": "0f2b7a90-9f30-11ed-8be2-13f08580e03f",
 							"width": 16,
 							"height": 16,
 							"defUid": 19,
 							"px": [528,256],
 							"fieldInstances": [
-								{ "__identifier": "type", "__value": "Snowball", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+								{ "__identifier": "type", "__value": "Wolf", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Snowball"]
+									"params": ["Wolf"]
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
 								{ "__identifier": "patrolA", "__value": 6, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },

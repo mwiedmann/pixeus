@@ -14,7 +14,7 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 35
+#define SPRITE_COUNT 36
 #define ENEMY_SPRITE_IDX_START SPRITE_MEM_SNAKE_IDX
 
 unsigned short spriteMemAddresses[SPRITE_COUNT];
@@ -23,7 +23,8 @@ unsigned short enemySpritesMemStart = 0;
 
 // { Snake = 0, Bee = 1, Ghost = 2, Scorpion = 3, Wasp = 4, Fish1 = 5, BigGhost = 6, Eyeball = 7,
 // Mushroom = 8, Slime = 9, Spider = 10, Rat = 11, Rockman = 12, Eel = 13, Iceman = 14, Snowball = 15,
-// Dragonfly = 16, BigBear = 17, Clouds = 18, Flies = 19, Shark = 20, Bluehawk = 21, Beetle = 22, Jellyfish = 23 }
+// Dragonfly = 16, BigBear = 17, Clouds = 18, Flies = 19, Shark = 20, Bluehawk = 21, Beetle = 22,
+// Jellyfish = 23, Wolf = 24 }
 /*
 typedef struct EnemyStats {
     unsigned char graphicsIdx;
@@ -35,7 +36,7 @@ typedef struct EnemyStats {
     unsigned char animateIfStill;
 } EnemyStats;
 */
-EnemyStats enemyStats[24] = {
+EnemyStats enemyStats[25] = {
     { SPRITE_MEM_SNAKE_IDX, 6, 8, 4, 90, 300, 0 },
     { SPRITE_MEM_BEE_IDX, 6, 13, 2, 70, 0, 1 },
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
@@ -60,6 +61,7 @@ EnemyStats enemyStats[24] = {
     { SPRITE_MEM_BLUEHAWK_IDX, 6, 11, 3, 80, 180, 1 },
     { SPRITE_MEM_BEETLE_IDX, 12, 4, 5, 90, 0, 1 },
     { SPRITE_MEM_JELLYFISH_IDX, 8, 3, 3, 120, 360, 1 },
+    { SPRITE_MEM_WOLF_IDX, 6, 6, 6, 90, 240, 1 },
 };
 
 /**
