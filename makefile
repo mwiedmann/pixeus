@@ -9,24 +9,19 @@ make:
 	zsound/zsound.lib
 
 test:
-	$(CC) -O -I lib -I zsound -o test.prg -t cx16 \
-	game/test.c \
-	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c game/loopmgr.c \
-	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
-	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s \
-	zsound/zsound.lib
+	$(CC) -O -o test.prg -t cx16 game/test.c
 
 testrun:
-	../emu-r41/x16emu -prg test.prg -run
+	../emu-r42/x16emu -prg test.prg -run
 
 clean:
 	rm lib/*.o images/*.o game/*.o
 
 run:
-	../emu-r41/x16emu -prg pixeus.prg -run
+	../emu-r42/x16emu -prg pixeus.prg -run
 
-runlatest:
-	../emu-latest/x16emu -prg pixeus.prg -run -randram
+run41:
+	../emu-r41/x16emu -prg pixeus.prg -run
 
 level:
 	cd tilebuilding && node ldtk-to-bin.js

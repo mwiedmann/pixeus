@@ -42,7 +42,7 @@ EnemyStats enemyStats[25] = {
     { SPRITE_MEM_GHOST_IDX, 20, 3, 10, 180, 0, 1 },
     { SPRITE_MEM_SCORPION_IDX, 6, 6, 6, 90, 240, 0 },
     { SPRITE_MEM_WASP_IDX, 6, 12, 3, 120, 0, 1 },
-    { SPRITE_MEM_FISH1_IDX, 30, 4, 3, 120, 360, 1 },
+    { SPRITE_MEM_FISH1_IDX, 30, 4, 3, 120, 105, 1 },
     { SPRITE_MEM_BIG_GHOST_IDX, 8, 3, 20, 120, 0, 1 },
     { SPRITE_MEM_EYEBALL_IDX, 6, 6, 6, 90, 0, 1 },
     { SPRITE_MEM_MUSHROOM_IDX, 30, 4, 6, 90, 0, 1 },
@@ -50,14 +50,14 @@ EnemyStats enemyStats[25] = {
     { SPRITE_MEM_SPIDER_IDX, 6, 9, 4, 90, 120, 0 },
     { SPRITE_MEM_RAT_IDX, 6, 10, 2, 90, 180, 0 },
     { SPRITE_MEM_ROCKMAN_IDX, 10, 2, 8, 90, 0, 1 },
-    { SPRITE_MEM_EEL_IDX, 6, 10, 2, 90, 120, 1 },
+    { SPRITE_MEM_EEL_IDX, 6, 10, 2, 90, 90, 1 },
     { SPRITE_MEM_ICEMAN_IDX, 12, 2, 5, 90, 0, 1 },
     { SPRITE_MEM_SNOWBALL_IDX, 6, 8, 3, 90, 120, 1 },
     { SPRITE_MEM_DRAGONFLY_IDX, 6, 11, 3, 80, 180, 1 },
     { SPRITE_MEM_BIG_BEAR_IDX, 6, 10, 20, 120, 180, 1 },
     { SPRITE_MEM_CLOUDS_IDX, 6, 6, 6, 90, 0, 1 },
     { SPRITE_MEM_FLIES_IDX, 4, 10, 20, 120, 180, 1 },
-    { SPRITE_MEM_SHARK_IDX, 20, 7, 20, 120, 180, 1 },
+    { SPRITE_MEM_SHARK_IDX, 20, 7, 20, 120, 120, 1 },
     { SPRITE_MEM_BLUEHAWK_IDX, 6, 11, 3, 80, 180, 1 },
     { SPRITE_MEM_BEETLE_IDX, 12, 4, 5, 90, 0, 1 },
     { SPRITE_MEM_JELLYFISH_IDX, 8, 3, 3, 120, 360, 1 },
@@ -180,6 +180,8 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     sp->framesBetweenFacePlayer = 60;
     sp->framesUntilFacePlayer = 0;
     sp->framesUntilNextJump = sp->framesBetweenJumps;
+    sp->jumpDir = 1;
+    sp->jumpSpeed = 0;
 
     spriteInit(&sp->sprite);
     x16SpriteIdxSetXY(sp->sprite.index, sp->sprite.x, sp->sprite.y);
@@ -196,8 +198,13 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->zDepth = Disabled;
     p->graphicsAddress = spriteMemAddresses[SPRITE_MEM_PLAYER_IDX];
     p->animationSpeed = 6;
-    p->x = entrance->x * TILE_PIXEL_WIDTH;
-    p->y = entrance->y * TILE_PIXEL_HEIGHT;
+    if (entrance != 0) {
+        p->x = entrance->x * TILE_PIXEL_WIDTH;
+        p->y = entrance->y * TILE_PIXEL_HEIGHT;
+    } else {
+        p->x = 320;
+        p->y = 240;
+    }
     p->xL = p->x * MOVE_FACTOR;
     p->yL = p->y * MOVE_FACTOR;
     p->lastX = p->x;

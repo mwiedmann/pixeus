@@ -55,6 +55,8 @@ typedef struct AISprite {
     unsigned short framesBetweenJumps;
     unsigned short framesUntilNextJump;
     unsigned char jumpFrames;
+    signed char jumpDir;
+    signed char jumpSpeed;
 } AISprite;
 
 typedef struct EnemyStats {

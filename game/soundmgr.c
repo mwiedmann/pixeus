@@ -11,7 +11,7 @@ unsigned char SOUND_ON = 0;
 unsigned char musicPlaying = 0;
 
 void pauseSounds() {
-    if (musicPlaying == 1) {
+    if (musicPlaying) {
         musicPlaying = 0;
         zsm_stopmusic();
     }
@@ -132,7 +132,7 @@ void playSoundsThisGameLoop() {
         pcm_play();
     }
 
-    if (MUSIC_ON && musicPlaying == 1) {
+    if (MUSIC_ON && musicPlaying) {
         zsm_play();
     }
 

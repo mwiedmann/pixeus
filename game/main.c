@@ -61,7 +61,7 @@
 #define STARTING_LEVEL 0
 
 // WARNING: THIS NEEDS TO BE STARTING_LEVEL OR 0 FOR FINAL GAME BUILD !!!!
-#define START_LEVEL TEST_LEVEL // STARTING_LEVEL
+#define START_LEVEL STARTING_LEVEL
 
 // For the ship landing animation
 #define SHIP_STOP_Y 256
@@ -358,7 +358,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (JOY_BTN_1(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
-                    if (releasedBtnAfterJump == 1) {
+                    if (releasedBtnAfterJump) {
                         jumpFrames = tileCollision.type == Water ? PLAYER_WATER_JUMP_FRAMES : PLAYER_JUMP_FRAMES;
                         releasedBtnAfterJump = 0;
                         // The jump animation wasn't great. The normal animation is fine
@@ -569,7 +569,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         }
         
         // Move the bullet (yes, the player can only have 1 active bullet right now)
-        if (bullet.active == 1) {
+        if (bullet.active) {
             spriteMoveXL(&bullet, bullet.animationDirection == 0
                 ? bullet.xL-(hasWeapon ? BULLET_SPEED_WITH_WEAPON : BULLET_SPEED_NORMAL) 
                 : bullet.xL+(hasWeapon ? BULLET_SPEED_WITH_WEAPON : BULLET_SPEED_NORMAL));
@@ -662,7 +662,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         }
 
         // Bullet is off screen or collided with a solid tile
-        if (bullet.active == 1) {
+        if (bullet.active) {
             spriteTouchingTile(level, &bullet, &tileCollision);
             if (tileCollision.type == Ground || tileCollision.type == Ice || bullet.x < 0 || bullet.x > 639 || 
                 abs(bullet.x - bullet.startX) >= (hasWeapon ? BULLET_DIST_WITH_WEAPON : BULLET_DIST_NORMAL)) {

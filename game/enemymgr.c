@@ -11,7 +11,7 @@
 #define ENEMY_JUMP_SPEED_NORMAL 17
 #define ENEMY_WATER_JUMP_SPEED_NORMAL 4
 #define ENEMY_JUMP_FRAMES 15
-#define ENEMY_WATER_JUMP_FRAMES 60
+#define ENEMY_WATER_JUMP_FRAMES 90
 
 AISprite masterEnemiesList[16];
 Sprite enemyLasers[16];
@@ -106,7 +106,7 @@ void enemyShot(short x, short y, unsigned char direction) {
     for (i=0; i<16; i++) {
         laser = &enemyLasers[i];
 
-        if (laser->active == 0) {
+        if (!laser->active) {
             laser->active = 1;
             laser->animationDirection = direction;
             laser->zDepth = BetweenL0L1;
@@ -129,28 +129,38 @@ void enemiesMove(LevelOveralLayout *level, Sprite *player, unsigned char length)
     // Move enemies
     for (i=0; i<length; i++) {
         enemy = &masterEnemiesList[i];
-        if (enemy->sprite.active == 1) {
+        if (enemy->sprite.active) {
             // See if the enemy jumps at all
             if (enemy->framesBetweenJumps > 0) {
                 // See if enemy needs to jump
                 if (enemy->framesUntilNextJump == 0) {
                     spriteTouchingTile(level, &enemy->sprite, &tileCollision);
-                    enemy->jumpFrames = (tileCollision.type == Water ? ENEMY_WATER_JUMP_FRAMES : ENEMY_JUMP_FRAMES);
+                    if (tileCollision.type == Water) {
+                        enemy->jumpFrames = ENEMY_WATER_JUMP_FRAMES;
+                        // In water, enemies can "jump" up or swim down
+                        r = rand();
+                        enemy->jumpDir = r > 127 ? 1 : -1;
+                        enemy->jumpSpeed = ENEMY_WATER_JUMP_SPEED_NORMAL * enemy->jumpDir;
+                    } else {
+                        enemy->jumpFrames = ENEMY_JUMP_FRAMES;
+                        enemy->jumpDir = 1;
+                        enemy->jumpSpeed = ENEMY_JUMP_SPEED_NORMAL;
+                    }
                     enemy->framesUntilNextJump = 9999;
                 }
 
                 // See if enemy is currently jumping
                 if (enemy->jumpFrames > 0) {
-                    spriteTouchingTile(level, &enemy->sprite, &tileCollision);
-                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL - (tileCollision.type == Water ? ENEMY_WATER_JUMP_SPEED_NORMAL : ENEMY_JUMP_SPEED_NORMAL));
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL - enemy->jumpSpeed);
                     enemy->jumpFrames--;
-                } else if (enemy->sprite.y < enemy->yTileStart * TILE_PIXEL_HEIGHT) {
+                } else if ((enemy->jumpDir == 1 && enemy->sprite.y < enemy->yTileStart * TILE_PIXEL_HEIGHT) ||
+                           (enemy->jumpDir == -1 && enemy->sprite.y > enemy->yTileStart * TILE_PIXEL_HEIGHT)) {
                     // Falling back down
-                    spriteTouchingTile(level, &enemy->sprite, &tileCollision);
-                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL + (tileCollision.type == Water ? ENEMY_WATER_JUMP_SPEED_NORMAL : ENEMY_JUMP_SPEED_NORMAL));
+                    spriteMoveYL(&enemy->sprite, enemy->sprite.yL + enemy->jumpSpeed);
 
                     // If back on the ground, reset the jump counters
-                    if (enemy->sprite.y >= enemy->yTileStart * TILE_PIXEL_HEIGHT) {
+                    if ((enemy->jumpDir == 1 && enemy->sprite.y >= enemy->yTileStart * TILE_PIXEL_HEIGHT) ||
+                        (enemy->jumpDir == -1 && enemy->sprite.y <= enemy->yTileStart * TILE_PIXEL_HEIGHT)) {
                         enemy->framesUntilNextJump = enemy->framesBetweenJumps;
                         spriteMoveY(&enemy->sprite, enemy->yTileStart * TILE_PIXEL_HEIGHT);
                     }
@@ -218,7 +228,7 @@ void enemyLasersMove(LevelOveralLayout *level) {
 
     for (i=0; i<16; i++) {
         laser = &enemyLasers[i];
-        if (laser->active == 1) {
+        if (laser->active) {
             spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
             x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
             
