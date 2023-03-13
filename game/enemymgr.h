@@ -21,7 +21,12 @@ void resetLaser(Sprite *laser);
 /**
  * Create the enemies defined on this level
 */
-unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex);
+unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex, unsigned long mainFrameCount);
+
+/**
+ * Update the enemy cache with the framecount for any dead enemies
+*/
+void enemyCacheUpdate(LevelOveralLayout *level, unsigned long mainFrameCount);
 
 /**
  * Disabled and reset the current enemy and laser sprites

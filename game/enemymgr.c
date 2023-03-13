@@ -6,6 +6,7 @@
 #include "level.h"
 #include "levelutils.h"
 #include "layoutdefs.h"
+#include "entitymgr.h"
 
 #define ENEMY_LASER_DIST 200
 #define ENEMY_JUMP_SPEED_NORMAL 17
@@ -56,21 +57,40 @@ void resetLaser(Sprite *laser) {
     x16SpriteIdxSetXY(laser->index, laser->x, laser->y);
 }
 
-unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
+unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex, unsigned long mainFrameCount) {
     unsigned char i;
 
     // Load the sprite data
     spriteEnemyDataLoad(level->enemyList->enemies, level->enemyList->length);
 
     for (i=0; i<level->enemyList->length; i++) {
-        enemyCreate(
-            level->enemyList->enemies[i].enemyType,
-            &masterEnemiesList[i],
-            &level->enemyList->enemies[i],
-            nextSpriteIndex+i);
+        // After dying, an enemy will respawn after some time.
+        if (enemyAlive(mainFrameCount, level->levelNum, i)) {
+            enemyCreate(
+                level->enemyList->enemies[i].enemyType,
+                &masterEnemiesList[i],
+                &level->enemyList->enemies[i],
+                nextSpriteIndex+i);
+        } else {
+            masterEnemiesList[i].health = 1;
+            masterEnemiesList[i].sprite.active = 0;
+        }
     }
 
     return level->enemyList->length;
+}
+
+/**
+ * Any dead enemies will have the framecount cached so we know when to respawn them
+*/
+void enemyCacheUpdate(LevelOveralLayout *level, unsigned long mainFrameCount) {
+    unsigned char i;
+
+    for (i=0; i<level->enemyList->length; i++) {
+        if (masterEnemiesList[i].health == 0) {
+           enemyFrameSet(mainFrameCount, level->levelNum, i);
+        }
+    }
 }
 
 void enemiesReset(unsigned char length) {

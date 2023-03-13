@@ -6293,7 +6293,7 @@
 						0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,
@@ -6408,6 +6408,60 @@
 								{ "__identifier": "patrolB", "__value": 6, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [4,16],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "c28ae370-9f30-11ed-8655-f72fe6288c21",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [64,256],
+							"fieldInstances": [
+								{ "__identifier": "Level", "__value": 9, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [9] }] },
+								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [17,2],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "287f8140-9f30-11ed-8655-65a68d9eba4b",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [272,32],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [27,27],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F6E4E4",
+							"iid": "ec2b6770-9f30-11ed-8655-e9f41e024793",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [432,432],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Fish1", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Fish1"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 9, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [9] }] },
+								{ "__identifier": "patrolB", "__value": 9, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [9] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -6436,6 +6490,7 @@
 					"gridTiles": [
 						{ "px": [80,32], "src": [96,0], "f": 0, "t": 6, "d": [85] },
 						{ "px": [96,32], "src": [112,0], "f": 0, "t": 7, "d": [86] },
+						{ "px": [272,32], "src": [16,80], "f": 0, "t": 101, "d": [97] },
 						{ "px": [352,32], "src": [80,0], "f": 0, "t": 5, "d": [102] },
 						{ "px": [240,48], "src": [128,0], "f": 0, "t": 8, "d": [135] },
 						{ "px": [256,48], "src": [144,0], "f": 0, "t": 9, "d": [136] },
@@ -6470,6 +6525,7 @@
 						{ "px": [32,208], "src": [16,48], "f": 0, "t": 61, "d": [522] },
 						{ "px": [48,208], "src": [32,48], "f": 0, "t": 62, "d": [523] },
 						{ "px": [64,208], "src": [48,48], "f": 0, "t": 63, "d": [524] },
+						{ "px": [64,256], "src": [16,80], "f": 0, "t": 101, "d": [644] },
 						{ "px": [304,256], "src": [176,48], "f": 0, "t": 71, "d": [659] },
 						{ "px": [304,272], "src": [176,64], "f": 0, "t": 91, "d": [699] },
 						{ "px": [304,288], "src": [176,80], "f": 0, "t": 111, "d": [739] },
@@ -6612,6 +6668,9 @@
 						{ "px": [400,224], "src": [32,0], "f": 2, "t": 2, "d": [585] },
 						{ "px": [416,224], "src": [48,0], "f": 2, "t": 3, "d": [586] },
 						{ "px": [432,224], "src": [0,0], "f": 3, "t": 0, "d": [587] },
+						{ "px": [48,272], "src": [0,0], "f": 0, "t": 0, "d": [683] },
+						{ "px": [64,272], "src": [16,0], "f": 0, "t": 1, "d": [684] },
+						{ "px": [80,272], "src": [0,0], "f": 1, "t": 0, "d": [685] },
 						{ "px": [0,304], "src": [16,0], "f": 0, "t": 1, "d": [760] },
 						{ "px": [16,304], "src": [32,0], "f": 0, "t": 2, "d": [761] },
 						{ "px": [32,304], "src": [48,0], "f": 0, "t": 3, "d": [762] },
@@ -7002,6 +7061,75 @@
 							"fieldInstances": [
 								{ "__identifier": "Level", "__value": 10, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [10] }] },
 								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [31,5],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#000000",
+							"iid": "44c63450-9f30-11ed-8655-cbec110b9c2d",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [496,80],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Wasp", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Wasp"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 23, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [23] }] },
+								{ "__identifier": "patrolB", "__value": 1, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [10,11],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#5A6988",
+							"iid": "70d3d2a0-9f30-11ed-8655-a972321c5ac7",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [160,176],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Rat", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Rat"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 5, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolB", "__value": 5, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [12,24],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFF800",
+							"iid": "9beefaa0-9f30-11ed-8655-79ee382c0e42",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [192,384],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Beetle", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Beetle"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 11, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
+								{ "__identifier": "patrolB", "__value": 5, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
 						}
 					]
@@ -26288,7 +26416,77 @@
 					"seed": 8967507,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "Enemy",
+							"__grid": [9,23],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F77622",
+							"iid": "ab02cd10-9f30-11ed-8655-c37f26f74f66",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [144,368],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Scorpion", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Scorpion"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 7, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [7] }] },
+								{ "__identifier": "patrolB", "__value": 1, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [28,7],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "0a7f88a0-9f30-11ed-8655-03b5c8154e67",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [448,112],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Shark", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Shark"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 6, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },
+								{ "__identifier": "patrolB", "__value": 7, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [7] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [34,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F6E4E4",
+							"iid": "2393f970-9f30-11ed-8655-ef3c5767b24d",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [544,208],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Fish1", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Fish1"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 2, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
+								{ "__identifier": "patrolB", "__value": 2, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						}
+					]
 				},
 				{
 					"__identifier": "Tiles_Background",
@@ -27471,6 +27669,29 @@
 								{ "__identifier": "Level", "__value": 50, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [50] }] },
 								{ "__identifier": "EntranceId", "__value": 3, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
 							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [21,18],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFF800",
+							"iid": "9c8224d0-9f30-11ed-8655-5fbef580924a",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [336,288],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Beetle", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Beetle"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 8, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [8] }] },
+								{ "__identifier": "patrolB", "__value": 4, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -27972,7 +28193,77 @@
 					"seed": 8619656,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
-					"entityInstances": []
+					"entityInstances": [
+						{
+							"__identifier": "Enemy",
+							"__grid": [33,4],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#00FFB7",
+							"iid": "d8e39a30-9f30-11ed-8655-3be77ab85b3f",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [528,64],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Eel", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Eel"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 4, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolB", "__value": 4, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [29,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#5A6988",
+							"iid": "5f6a8960-9f30-11ed-8655-25709489c7e9",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [464,224],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Rat", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Rat"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 6, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },
+								{ "__identifier": "patrolB", "__value": 7, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [7] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [10,21],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFF800",
+							"iid": "7a373180-9f30-11ed-8655-b5a4c2054ef2",
+							"width": 16,
+							"height": 16,
+							"defUid": 19,
+							"px": [160,336],
+							"fieldInstances": [
+								{ "__identifier": "type", "__value": "Beetle", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Beetle"]
+								}] },
+								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "patrolA", "__value": 5, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolB", "__value": 5, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
+							]
+						}
+					]
 				},
 				{
 					"__identifier": "Tiles_Background",

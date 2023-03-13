@@ -86,6 +86,7 @@
 #define ENERGY_TO_ESCAPE 100
 
 unsigned char testMode = 0;
+unsigned long mainFrameCount = 0;
 
 // A few top level structs to hold things that stay
 // active throughout the game life
@@ -203,7 +204,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
     // Draw the tiles and create enemies
     layerMapsLevelInit(level);
     drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
-    enemyCount = enemiesCreate(level, nextSpriteIndex);
+    enemyCount = enemiesCreate(level, nextSpriteIndex, mainFrameCount);
     nextSpriteIndex+= enemyCount;
     entityCount = entitiesCreate(level, nextSpriteIndex);
     nextSpriteIndex+= entityCount;
@@ -683,6 +684,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
         }
 
+        mainFrameCount++;
         loopCount++;
         if (loopCount > 60) {
             loopCount=1;
@@ -775,6 +777,9 @@ void main() {
         testMode = showIntroScene(&ship);
         showShipScene = !testMode;
 
+        // We use this as a general counter for game length to reset enemies after some time
+        mainFrameCount = 0;
+
         while(1) {
             // Get the player's position at the start of the level
             // If they die, we put them back here
@@ -783,6 +788,7 @@ void main() {
 
             // Get a copy of the exitCollision because we will free the level next
             exitCollision = *runLevel(nextSpriteIndex, &lastTilesetId, showShipScene);
+            enemyCacheUpdate(level, mainFrameCount);
             showShipScene = 0;
 
             // If this was a normal level exit (not a player death)

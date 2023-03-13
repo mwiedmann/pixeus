@@ -11,7 +11,14 @@ Sprite entitySprites[16];
 // Increase this size if we add more levels
 #define CACHED_ENTITY_LIST_LENGTH 71
 
+/**
+ * How many frames an enemy will stay dead. Starts when player leaves the level.
+ * 60 frames/sec, so 1 min = 3600
+*/
+#define ENEMY_FRAMES_STAY_DEAD 3600
+
 EntityList *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
+unsigned long* cachedEnemyDiedFrame[CACHED_ENTITY_LIST_LENGTH];
 
 void initCachedLevelData(unsigned char clearFirst) {
     unsigned char i;
@@ -19,14 +26,41 @@ void initCachedLevelData(unsigned char clearFirst) {
     for (i=0; i<CACHED_ENTITY_LIST_LENGTH; i++) {
         if (clearFirst && cachedEntityLists[i] != 0) {
             free(cachedEntityLists[i]);
+            free(cachedEnemyDiedFrame[i]);
         }
         cachedEntityLists[i] = 0;
+        cachedEnemyDiedFrame[i] = 0;
     }
 }
+
 void cacheLevelData(LevelOveralLayout *level) {
+    unsigned char i;
+
     if (cachedEntityLists[level->levelNum] == 0) {
         cachedEntityLists[level->levelNum] = level->entityList;
+
+        // Memory for enemy health (1 byte per enemy)
+        cachedEnemyDiedFrame[level->levelNum] = malloc(level->enemyList->length * 4);
+        for (i=0; i<level->enemyList->length; i++) {
+            cachedEnemyDiedFrame[level->levelNum][i] = 0;
+        }
     }
+}
+
+unsigned char enemyAlive(unsigned long frameCount, unsigned char level, unsigned char enemyIdx) {
+    unsigned long f;
+
+    f = cachedEnemyDiedFrame[level][enemyIdx];
+
+    if (f == 0 || frameCount - f >= ENEMY_FRAMES_STAY_DEAD) {
+        return 1;
+    }
+
+    return 0;
+}
+
+void enemyFrameSet(unsigned long frameCount, unsigned char level, unsigned char enemyIdx) {
+    cachedEnemyDiedFrame[level][enemyIdx] = frameCount;
 }
 
 EntityList *cachedEntityListGet(unsigned char levelNum) {
