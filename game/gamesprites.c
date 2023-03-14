@@ -242,7 +242,8 @@ void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned 
     enemy->framesBetweenShots = enemyStats[type].framesBetweenShots;
     enemy->framesBetweenJumps = enemyStats[type].framesBetweenJumps;
     enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
-
+    enemy->yLaserAdjust = 0;
+    
     // Some special settings for large sprites
     if (type == BigGhost || type == BigBear || type == Flies) {
         largeSpriteAdjust(enemy);

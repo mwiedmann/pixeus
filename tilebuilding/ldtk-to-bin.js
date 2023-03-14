@@ -13,6 +13,40 @@ const EnemyEnum = {
     Dragonfly: 16, BigBear: 17, Clouds: 18, Flies: 19, Shark: 20, Bluehawk: 21, Beetle: 22,
     Jellyfish: 23, Wolf: 24
   }
+
+const enemyCount = {
+  Forest: '-----',
+  Mushroom: 0,
+  Spider: 0,
+  Bee: 0,
+  Slime: 0,
+  Dragonfly: 0,
+  BigGhost: 0,
+  Desert: '-----',
+  Scorpion: 0,
+  Wasp: 0,
+  Snake: 0,
+  Rat: 0,
+  Beetle: 0,
+  Flies: 0,
+  Tundra: '-----',
+  Snowball: 0,
+  Iceman: 0,
+  Clouds: 0,
+  Bluehawk: 0,
+  Wolf: 0,
+  BigBear: 0,
+  Underworld: '-----',
+  Eyeball: 0,
+  Rockman: 0,
+  Ghost: 0,
+  Water: '-----',
+  Fish1: 0,
+  Eel: 0,
+  Jellyfish: 0,
+  Shark: 0,
+}
+
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
 const tilesStartTileId = 49
 
@@ -153,8 +187,11 @@ const createLevelCode = (levelNum, level) => {
     const enemies = entityInstances
       .filter((e) => e.__identifier === "Enemy")
       .map((e) => {
+        const eType = fiGet(e.fieldInstances, 'type')
+        enemyCount[eType] += 1
+
         return {
-          type: EnemyEnum[fiGet(e.fieldInstances, 'type')],
+          type: EnemyEnum[eType],
           moveDir: fiGet(e.fieldInstances, 'moveDir'),
           patrolA: fiGet(e.fieldInstances, 'patrolA'),
           patrolB: fiGet(e.fieldInstances, 'patrolB'),
@@ -230,3 +267,5 @@ d.levels.forEach((l) => {
   const levelNum = l.identifier.split("_")[1];
   createLevelCode(levelNum, l);
 });
+
+console.log(enemyCount)
