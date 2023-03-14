@@ -623,7 +623,8 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         collision = x16SpriteCollisionBitsGet();
 
         // Check if there were any collisions
-        if ((collision & COLLISION_RESULT_ENEMY_PLAYER) == COLLISION_RESULT_ENEMY_PLAYER) {
+        // Chance here if player and multiple enemy sprites collide that this is skipped
+        if (collision == COLLISION_RESULT_ENEMY_PLAYER) {
             // Player collided with an enemy
             if (!testMode) {
                 return &playerEaten;
