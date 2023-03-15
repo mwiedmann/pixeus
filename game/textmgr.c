@@ -324,34 +324,46 @@ void gameOverScreen(unsigned short gold, unsigned char energy) {
     }
 }
 
-void victoryScreen(Sprite *ship, unsigned short gold) {
+void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
     unsigned char text[41];
+    unsigned char loop = 0;
+    
+    while (loop <= 1) {
+        layerMapsClear();
 
-    layerMapsClear();
+        if (loop == 0) {
+            if (gold == 0) {
+                drawTextFile("text/nogold.bin", 0);
+            } else {
+                sprintf(text, "PIXEUS SPENDS %u GOLD ON:", gold);
+                drawCenteredTextRow(text, 0, 6);
 
-    if (gold == 0) {
-        drawTextFile("text/nogold.bin", 0);
-    } else {
-        sprintf(text, "PIXEUS SPENDS %u GOLD ON:", gold);
-        drawCenteredTextRow(text, 0, 6);
+                drawTextFile("text/gold.bin", gold);
+            }
+        } else {
+            sprintf(text, "%u ENERGY TAKES PIXEUS TO:", energy);
+            drawCenteredTextRow(text, 0, 6);
 
-        drawTextFile("text/victory.bin", gold);
-    }
-   
-    spriteMove(ship, 288, 350);
-    x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
-    ship->zDepth = BetweenL0L1;
-    x16SpriteIdxSetZDepth(ship->index, ship->zDepth);
-
-    while(1) {
-        // Wait for screen to finish drawing since we are animating the ship
-        loopUpdates();
-        
-        spriteAnimationAdvance(ship);
-
-        // Exit when either button is pressed
-        if (readButtonPress()) {
-            break;
+            drawTextFile("text/energy.bin", energy);
         }
+
+        spriteMove(ship, 288, 366);
+        x16SpriteIdxSetXY(ship->index, ship->x, ship->y);
+        ship->zDepth = BetweenL0L1;
+        x16SpriteIdxSetZDepth(ship->index, ship->zDepth);
+
+        while(1) {
+            // Wait for screen to finish drawing since we are animating the ship
+            loopUpdates();
+            
+            spriteAnimationAdvance(ship);
+
+            // Exit when either button is pressed
+            if (readButtonPress()) {
+                break;
+            }
+        }
+
+        loop++;
     }
 }

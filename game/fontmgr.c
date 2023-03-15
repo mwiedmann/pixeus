@@ -124,7 +124,7 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
         );
     }
 
-    sprintf(text, "GOLD:%04u ENERGY:%03u LIVES:%02u %s %c%c%c", gold, energy, lives, dangerText, 
+    sprintf(text, " GOLD:%04u ENERGY:%02u LIVES:%02u %s %c%c%c", gold, energy, lives, dangerText, 
         (hasScuba ? SCUBA_TILEID : '?'),
         (hasWeapon ? WEAPON_TILEID : '?'),
         (hasBoots ? BOOTS_TILEID : '?'));

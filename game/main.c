@@ -83,7 +83,7 @@
 #define PLAYER_FREEZES_COUNT 60
 #define PLAYER_OVERHEATS_COUNT 30
 
-#define ENERGY_TO_ESCAPE 100
+#define ENERGY_TO_ESCAPE 5
 
 unsigned char testMode = 0;
 unsigned long mainFrameCount = 0;
@@ -827,7 +827,7 @@ void main() {
                     if (exitCollision.entityType == PLAYER_ESCAPED) {
                         levelExitCleanup(0);
                         x16SpriteIdxSetZDepth(player.index, Disabled);
-                        victoryScreen(&ship, gold);
+                        victoryScreen(&ship, gold, energy);
                     } else {
                         levelExitCleanup(1);
                         // Place Pixeus for the game over screen

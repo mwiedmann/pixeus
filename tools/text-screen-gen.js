@@ -88,9 +88,9 @@ const instructionsScreen = [
     { text: " MOVE - JOYSTICK LEFT-RIGHT", row: 4, col: 5 },
     { text: " JUMP - BUTTON 1 OR JOYSTICK UP", row: 5, col: 5 },
     { text: "SHOOT - BUTTON 2", row: 6, col: 5 },
-    { text: "FIND 100 ENERGY AND", row: 8 },
+    { text: "FIND GOLD AND ENERGY AND", row: 8 },
     { text: "RETURN TO YOUR SHIP TO ESCAPE", row: 9 },
-    { text: "THE MORE GOLD YOU FIND", row: 11 },
+    { text: "THE MORE GOLD AND ENERGY YOU FIND", row: 11 },
     { text: "THE GREATER YOUR ENDING", row: 12 },
     { text: "WATER IS:", row: 14 },
     { text: "DEADLY UNTIL YOU FIND SCUBA GEAR", row: 16 },
@@ -123,22 +123,41 @@ const noGoldVictory = [
 
 const col = 3
 
-const victoryScreen = [
-    { text: "WITH THE ARGO FULLY ENERGIZED", row: 3 },
+const goldScreen = [
+    { text: "WITH THE ARGO ENERGIZED", row: 3 },
     { text: "PIXEUS ESCAPES THIS STRANGE PLANET", row: 4 },
     { text: "- LATE FEES FOR TROPIC OF CANCER", row: 8, col },
     { text: "- THE WHITE ALBUM - AGAIN", row: 9, col, arg: 1000 },
     { text: "- TOPPS CARD 482", row: 10, col, arg: 2000 },
     { text: "- A BAG OF ZENNY COINS", row: 11, col, arg: 3000 },
     { text: "- A BANKSY - BUZZ. RIP. NO!", row: 12, col, arg: 4000 },
-    { text: "- 1 TICKET FROM RACKETMASTER", row: 13, col, arg: 5000 },
+    { text: "- A TOWEL", row: 13, col, arg: 5000 },
     { text: "- SHARES OF ENRON", row: 14, col, arg: 6000 },
     { text: "- CROCS. HEY THEY'RE COMFY!", row: 15, col, arg: 7000 },
     { text: "- A HARRIER JET", row: 16, col, arg: 8000 },
     { text: "- LOVE. PAUL: WHAT DID I SAY?!?", row: 17, col, arg: 9000 },
     { text: "- A RING 'ONE RING TO...' SHIT!", row: 18, col, arg: 9500 },
     { text: "- 30 SLIDERS 5 FRECH FRIES AND", row: 19, col, arg: 9999 },
-    { text: "  4 LARGE CHERRY COKES", row: 20, col, arg: 9999 }
+    { text: "  4 LARGE CHERRY COKES", row: 20, col, arg: 9999 },
+    { text: "CONGRATS YOU FOUND ALL THE GOLD!", row: 22, col, arg: 9999 }
+]
+
+const energyScreen = [
+    { text: "WITH THE EXTRA ENERGY IN THE ARGO", row: 3 },
+    { text: "PIXEUS EXPLORES THE GALAXY", row: 4 },
+    { text: "- THE ASTROPOLOOZA FESTIVAL", row: 8, col, arg: 5 },
+    { text: "- KLINGONS AROUND URANUS", row: 9, col, arg: 10 },
+    { text: "- THE FORD GALAXY", row: 10, col, arg: 20 },
+    { text: "- FAIRIES AT THE BOTTOM OF THE GARDEN", row: 11, col, arg: 30 },
+    { text: "- THE CANTINA AND SHOOTS FIRST", row: 12, col, arg: 40 },
+    { text: "- A RELAXING SPA ON GIEDI PRIME", row: 13, col, arg: 50 },
+    { text: "- KAMINO TO CHECK ON A PROJECT", row: 14, col, arg: 60 },
+    { text: "- THE VINEYARDS OF LA BARRE FRANCE", row: 15, col, arg: 70 },
+    { text: "- GALLIFREY TO SEE THE POLICE", row: 16, col, arg: 80 },
+    { text: "- MELMAC TO PICK UP CAT FROM KENNEL", row: 17, col, arg: 90 },
+    { text: "- A COMEDY SHOW ON ORK", row: 18, col, arg: 95 },
+    { text: "- SINIBON AT THE MALL - I HUNGER!", row: 19, col, arg: 99 },
+    { text: "CONGRATS YOU FOUND ALL THE ENERGY!", row: 21, col, arg: 99 }
 ]
 
 const getTextBytes = (text) => {
@@ -232,15 +251,29 @@ noGoldVictory.forEach(rec => {
 saveFile('../text/nogold.bin', noGoldBytes);
 
 // ***********************************************
-// Victory Screen
+// Gold Screen
 // ***********************************************
-const victoryBytes = [
+const goldBytes = [
     0,0,
-    victoryScreen.length
+    goldScreen.length
 ]
 
-victoryScreen.forEach(rec => {
-    victoryBytes.push(...createTextRecord(rec))
+goldScreen.forEach(rec => {
+    goldBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/victory.bin', victoryBytes);
+saveFile('../text/gold.bin', goldBytes);
+
+// ***********************************************
+// Energy Screen
+// ***********************************************
+const energyBytes = [
+    0,0,
+    energyScreen.length
+]
+
+energyScreen.forEach(rec => {
+    energyBytes.push(...createTextRecord(rec))
+})
+
+saveFile('../text/energy.bin', energyBytes);
