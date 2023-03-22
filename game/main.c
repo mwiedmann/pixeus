@@ -122,7 +122,7 @@ Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 void gameStartValues() {
     energy = 0;
     gold = 0;
-    lives = 0;
+    lives = 2;
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;
@@ -150,7 +150,7 @@ void levelExitCleanup(unsigned char hideShip) {
 
 /**
  * Parse the current level, draw the tiles, create the enemies,
- * and run the level until the player hits an exit.
+ * and run the level until the player hits an exit or dies.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsigned char showShipScene) {
     unsigned char collision, joy, loopCount, fallSpeed;

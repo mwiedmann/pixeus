@@ -4,7 +4,8 @@
 #include "gamesprites.h"
 
 /**
- * Find the 1st enemy that overlaps with this sprite
+ * The X16 collision system doesn't tell you what sprites have collided (only that they collided).
+ * We use this to find the first sprite that overlaps.
 */
 AISprite *findEnemyCollision(Sprite *s);
 

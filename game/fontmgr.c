@@ -40,6 +40,9 @@ unsigned char letterToTile(unsigned char letter) {
     return tile + FONT_TILEID_START;
 }
 
+/**
+ * String length get with a cap of 40 (our max screen width)
+*/
 unsigned char textLengthGet(unsigned char* text) {
     unsigned char i;
 
@@ -222,18 +225,4 @@ void drawTextFile(unsigned char *filename, unsigned short argComp) {
 void preloadTextFiles() {
     loadTextFile("text/welcome.bin", WELCOME_BANK);
     loadTextFile("text/instr.bin", INSTRUCTIONS_BANK);
-}
-
-void debugMsg(unsigned char* text, unsigned char val) {
-    unsigned char line[41];
-    unsigned char i;
-
-    sprintf(line, "%s %u", text, val);
-
-    // Pause the game for a moment since player died
-    for (i=0; i<120; i++) {
-        loopUpdates();
-    }
-
-    showMessage(line);
 }

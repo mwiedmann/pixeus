@@ -39,7 +39,7 @@ void cacheLevelData(LevelOveralLayout *level) {
     if (cachedEntityLists[level->levelNum] == 0) {
         cachedEntityLists[level->levelNum] = level->entityList;
 
-        // Memory for enemy health (1 byte per enemy)
+        // Memory for enemy death frame counts (4 bytes per)
         cachedEnemyDiedFrame[level->levelNum] = malloc(level->enemyList->length * 4);
         for (i=0; i<level->enemyList->length; i++) {
             cachedEnemyDiedFrame[level->levelNum][i] = 0;
@@ -92,7 +92,6 @@ void entitiesReset(unsigned char length) {
 
     // Reset entities
     for (i=0; i<length; i++) {
-        // TODO: This seems to be a standard sprite reset, create common function
         entity = &entitySprites[i];
         spriteReset(entity);
     }
@@ -100,22 +99,10 @@ void entitiesReset(unsigned char length) {
 
 void entitiesAnimate(unsigned char length) {
     unsigned char i;
-    Sprite *entity;
 
     // Animate entities
     for (i=0; i<length; i++) {
-        // TODO: This seems to be a standard sprite animation, create common function
-        entity = &entitySprites[i];
-        entity->animationCount++;
-        if (entity->animationCount >= entity->animationSpeed) {
-            entity->animationCount=0;
-            entity->animationFrame++;
-            if (entity->animationFrame >= entity->frames) {
-                entity->animationFrame = 0;
-            }
-            x16SpriteIdxSetGraphicsPointer(entity->index, entity->clrMode, entity->graphicsBank,
-                entity->graphicsAddress+(entity->animationFrame * entity->frameSize));
-        }
+        spriteAnimationAdvance(&entitySprites[i]);
     }
 }
 

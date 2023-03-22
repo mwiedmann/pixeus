@@ -47,6 +47,11 @@ const enemyCount = {
   Shark: 0,
 }
 
+const resourceCount = {
+  gold: 0,
+  energy: 0
+}
+
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
 const tilesStartTileId = 49
 
@@ -102,11 +107,14 @@ const createLevelCode = (levelNum, level) => {
     const energies = entityInstances
       .filter((e) => e.__identifier === "Energy")
       .map((e) => {
+        const amount = fiGet(e.fieldInstances, 'amount')
+        resourceCount.energy+= amount
+
         return {
           entityType: EntityTypeEnum['Energy'],
           x: e.__grid[0],
           y: e.__grid[1],
-          amount: fiGet(e.fieldInstances, 'amount'),
+          amount,
           unused1: 0
         };
       });
@@ -119,11 +127,14 @@ const createLevelCode = (levelNum, level) => {
     const goldpiles = entityInstances
       .filter((e) => e.__identifier === "Gold")
       .map((e) => {
+        const amount = fiGet(e.fieldInstances, 'amount')
+        resourceCount.gold+= amount
+
         return {
           entityType: EntityTypeEnum['Gold'],
           x: e.__grid[0],
           y: e.__grid[1],
-          amount: fiGet(e.fieldInstances, 'amount'),
+          amount,
           unused1: 0
         };
       });
@@ -269,3 +280,4 @@ d.levels.forEach((l) => {
 });
 
 console.log(enemyCount)
+console.log(resourceCount)
