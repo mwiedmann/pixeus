@@ -48,8 +48,12 @@ const enemyCount = {
 }
 
 const resourceCount = {
-  gold: 0,
-  energy: 0
+  Gold: 0,
+  Energy: 0,
+  Weapon: 0,
+  Boots: 0,
+  Scuba: 0,
+  ExtraLife: 0
 }
 
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
@@ -108,7 +112,7 @@ const createLevelCode = (levelNum, level) => {
       .filter((e) => e.__identifier === "Energy")
       .map((e) => {
         const amount = fiGet(e.fieldInstances, 'amount')
-        resourceCount.energy+= amount
+        resourceCount.Energy+= amount
 
         return {
           entityType: EntityTypeEnum['Energy'],
@@ -128,7 +132,7 @@ const createLevelCode = (levelNum, level) => {
       .filter((e) => e.__identifier === "Gold")
       .map((e) => {
         const amount = fiGet(e.fieldInstances, 'amount')
-        resourceCount.gold+= amount
+        resourceCount.Gold+= amount
 
         return {
           entityType: EntityTypeEnum['Gold'],
@@ -147,8 +151,11 @@ const createLevelCode = (levelNum, level) => {
     const items = entityInstances
       .filter((e) => e.__identifier === "Item")
       .map((e) => {
+        const entityTypeName = fiGet(e.fieldInstances, 'type')
+        resourceCount[entityTypeName]+= 1
+
         return {
-          entityType: EntityTypeEnum[fiGet(e.fieldInstances, 'type')],
+          entityType: EntityTypeEnum[entityTypeName],
           x: e.__grid[0],
           y: e.__grid[1],
           unused0: 0,
@@ -281,3 +288,8 @@ d.levels.forEach((l) => {
 
 console.log(enemyCount)
 console.log(resourceCount)
+
+if (resourceCount.Gold !== 9999 || resourceCount.Energy !== 99 || resourceCount.Weapon !== 1 || 
+  resourceCount.Boots !== 1 || resourceCount.Scuba !== 1 || resourceCount.ExtraLife !== 3) {
+    console.error("*****ERROR***** resourceCount error. Missing required count for 1 or more items.")
+}
