@@ -83,7 +83,7 @@
 #define PLAYER_FREEZES_COUNT 60
 #define PLAYER_OVERHEATS_COUNT 30
 
-#define ENERGY_TO_ESCAPE 5
+#define ENERGY_TO_ESCAPE 10
 
 unsigned char testMode = 0;
 unsigned long mainFrameCount = 0;

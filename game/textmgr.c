@@ -328,6 +328,9 @@ void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
     unsigned char text[41];
     unsigned char loop = 0;
     
+    loadCreditsMusic();
+    loopUpdates();
+    
     while (loop <= 1) {
         layerMapsClear();
 
