@@ -40,7 +40,7 @@ EnemyStats enemyStats[25] = {
     // graphicsIdx              asp spd hea fbs  fbj  ais
     { SPRITE_MEM_SNAKE_IDX,     6,  8,  3,  90,  300, 0 },
     { SPRITE_MEM_BEE_IDX,       6,  13, 2,  70,  0,   1 },
-    { SPRITE_MEM_GHOST_IDX,     20, 3,  4,  180, 0,   1 },
+    { SPRITE_MEM_GHOST_IDX,     20, 3,  5,  150, 0,   1 },
     { SPRITE_MEM_SCORPION_IDX,  6,  6,  3,  90,  240, 0 },
     { SPRITE_MEM_WASP_IDX,      6,  12, 2,  120, 0,   1 },
     { SPRITE_MEM_FISH1_IDX,     30, 4,  2,  120, 105, 1 },
