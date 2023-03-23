@@ -45,11 +45,11 @@
 #define ICE_SLIDE_AMOUNT 3
 
 #define BULLET_DIST_NORMAL 128
-#define BULLET_DIST_WITH_WEAPON 150
+#define BULLET_DIST_WITH_WEAPON 144
 #define BULLET_SPEED_NORMAL 30
-#define BULLET_SPEED_WITH_WEAPON 45
+#define BULLET_SPEED_WITH_WEAPON 40
 
-#define DEATH_PAUSE_FRAMES = 60
+#define DEATH_PAUSE_FRAMES 60
 
 #define LEAVE_LEVEL_X_LEFT -8
 #define LEAVE_LEVEL_X_RIGHT 631
@@ -287,7 +287,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 updateHeader = 1;
             } else if (entityCollision->entityType == WeaponEnum) {
                 hasWeapon = 1;
-                showMessage("WEAPON: IMPROVED RANGE AND VELOCITY");
+                showMessage("WEAPON UPGRADE");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == BootsEnum) {
