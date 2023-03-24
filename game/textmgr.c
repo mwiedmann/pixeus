@@ -17,7 +17,11 @@
 
 #define SELECTION_START_GAME 1
 #define SELECTION_JUKEBOX 2
-#define SELECTION_TEST_MODE 3
+#define SELECTION_MUTE_SOUND 3
+#define SELECTION_TEST_MODE 4
+
+#define TEST_MODE_HIDE 0
+#define SELECTION_MAX 4 - TEST_MODE_HIDE
 
 // Uncomment if we use the game start sound
 // unsigned char gameStartDone;
@@ -109,7 +113,11 @@ unsigned char showSelectionScreen() {
 
         drawCenteredTextRow(selection == 1 ? "::START GAME::" : "  START GAME  ", 0, 17);
         drawCenteredTextRow(selection == 2 ? "::JUKEBOX::" : "  JUKEBOX  ", 0, 18);
-        drawCenteredTextRow(selection == 3 ? "::TEST MODE::" : "  TEST MODE  ", 0, 19);
+        drawCenteredTextRow(selection == 3 ? "::MUTE TOGGLE::" : "  MUTE TOGGLE  ", 0, 19);
+
+        #if !TEST_MODE_HIDE
+            drawCenteredTextRow(selection == 4 ? "::TEST MODE::" : "  TEST MODE  ", 0, 20);
+        #endif
 
         while(1) {
             loopUpdates();
@@ -119,7 +127,7 @@ unsigned char showSelectionScreen() {
             if (JOY_UP(joy)) {
                 selection--;
                 if (selection==0) {
-                    selection = 3;
+                    selection = SELECTION_MAX;
                 }
                 while(JOY_UP(joy)) {
                     loopUpdates();
@@ -129,7 +137,7 @@ unsigned char showSelectionScreen() {
                 break;
             } else if (JOY_DOWN(joy)) {
                 selection++;
-                if (selection>3) {
+                if (selection>SELECTION_MAX) {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
@@ -263,6 +271,11 @@ unsigned char showIntroScene(Sprite *ship) {
         // Test Mode - Jump right to the game
         if (selection == SELECTION_TEST_MODE) {
             return 1;
+        } else if (selection == SELECTION_MUTE_SOUND) {
+            muteToggle();
+            layerMapsClear();
+            loopUpdates();
+            continue;
         } else if (selection == SELECTION_JUKEBOX) {
             showJukebox();
             continue;
@@ -330,7 +343,7 @@ void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
     
     loadCreditsMusic();
     loopUpdates();
-    
+
     while (loop <= 1) {
         layerMapsClear();
 

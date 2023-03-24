@@ -9,6 +9,7 @@
 unsigned char MUSIC_ON = 1;
 unsigned char SOUND_ON = 1;
 unsigned char musicPlaying = 0;
+unsigned char muted = 0;
 
 void pauseSounds() {
     if (musicPlaying) {
@@ -48,25 +49,27 @@ void loadSounds() {
 void startMusic(zsm_callback cb) {
     unsigned char currentMemBank;
 
-    // Save the current bank
-    currentMemBank = PEEK(0);
+    if (!muted) {
+        // Save the current bank
+        currentMemBank = PEEK(0);
 
-    zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
+        zsm_startmusic(MUSIC_BANK, (unsigned short)BANK_RAM);
 
-    if (cb != 0) {
-        zsm_setcallback(cb);
-    } else {
-        zsm_forceloop(0);
+        if (cb != 0) {
+            zsm_setcallback(cb);
+        } else {
+            zsm_forceloop(0);
+        }
+
+        musicPlaying = 1;
+
+        // Back to the previous bank
+        POKE(0, currentMemBank);
     }
-
-    musicPlaying = 1;
-
-    // Back to the previous bank
-    POKE(0, currentMemBank);
 }
 
 void loadMusic(unsigned char* filename, zsm_callback cb) {
-    if (MUSIC_ON) {
+    if (MUSIC_ON && !muted) {
         unsigned char currentMemBank;
 
         // Save the current bank
@@ -128,7 +131,7 @@ void loadVictoryMusic(zsm_callback cb) {
 }
 
 void playSoundsThisGameLoop() {
-    if (SOUND_ON) {
+    if (SOUND_ON && !muted) {
         pcm_play();
     }
 
@@ -146,15 +149,25 @@ void soundsCleanup() {
 }
 
 void playLaser() {
-    if (SOUND_ON) {
+    if (SOUND_ON && !muted) {
         pcm_stop();
         pcm_trigger_digi(SOUND_BANK_LASER, (unsigned short)BANK_RAM);
     }
 }
 
 void playAlienHit() {
-    if (SOUND_ON) {
+    if (SOUND_ON && !muted) {
         pcm_stop();
         pcm_trigger_digi(SOUND_BANK_ALIEN_HIT, (unsigned short)BANK_RAM);
+    }
+}
+
+void muteToggle() {
+    if (!muted) {
+        loadEmptyMusic();
+        muted = 1 - muted;
+    } else {
+        muted = 1 - muted;
+        loadTitleMusic();
     }
 }

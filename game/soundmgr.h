@@ -3,6 +3,7 @@
 
 #include "zsmplayer.h"
 
+void muteToggle();
 void loadSounds();
 void playSoundsThisGameLoop();
 void soundsCleanup();
