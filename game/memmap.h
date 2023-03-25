@@ -90,10 +90,15 @@
 #define LEVEL_BANK 2
 
 /**
+ * Cached level data like entities that don't respawn (gold, energy, items) and enemy respawn status
+*/
+#define LEVEL_CACHE_BANK 3
+
+/**
  * Starting bank used when loading images
  * Needs to not collide with the LEVEL_BANK
 */
-#define IMAGE_LOAD_BANK 3
+#define IMAGE_LOAD_BANK 4
 
 #define WELCOME_BANK 10
 #define INSTRUCTIONS_BANK 11

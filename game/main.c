@@ -122,7 +122,7 @@ Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 void gameStartValues() {
     energy = 0;
     gold = 0;
-    lives = 2;
+    lives = 4;
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;
@@ -319,6 +319,33 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         }
 
         joy = joy_read(0);
+
+        // FOR TESTING...LEVEL WARPS
+        // if (JOY_BTN_3(joy)) {
+        //     playerScreenExit.level = 255;
+        //     if (JOY_DOWN(joy)) {
+        //         levelExitCleanup(1);
+        //         spriteMove(&player, player.x, LEAVE_LEVEL_Y_UP);
+        //         playerScreenExit.level = level->downLevel;
+        //     } else if (JOY_UP(joy)) {
+        //         levelExitCleanup(1);
+        //         spriteMove(&player, player.x, LEAVE_LEVEL_Y_DOWN-8);
+        //         playerScreenExit.level = level->upLevel;
+        //     } else if (JOY_LEFT(joy)) {
+        //         levelExitCleanup(1);
+        //         spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
+        //         playerScreenExit.level = level->leftLevel;
+        //     } else if (JOY_RIGHT(joy)) {
+        //         levelExitCleanup(1);
+        //         spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
+        //         playerScreenExit.level = level->rightLevel;
+        //     }
+            
+        //     if (playerScreenExit.level != 255) {
+        //         showMessage("WARP");
+        //         return &playerScreenExit;
+        //     }
+        // }
 
         // Falling
         // jumpFrames are the number of frames the player moves UP (jumps)
@@ -805,7 +832,7 @@ void main() {
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
                 }
             } else {
-                // Pause the game for a moment since player died
+                // Pause the game for a moment since player died (or escaped!)
                 for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
                     loopUpdates();
                 }
@@ -838,6 +865,10 @@ void main() {
                         gameOverScreen(gold, energy);
                     }
                     break;
+                } else {
+                    // We will recreate and redraw the level they are on
+                    // Cleanup the level first though
+                    levelExitCleanup(1);
                 }
                 
                 // One less life remaining

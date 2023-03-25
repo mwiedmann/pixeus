@@ -56,6 +56,11 @@ const resourceCount = {
   ExtraLife: 0
 }
 
+const enemyMax = {
+  level: 0,
+  count: 0
+}
+
 const EntityTypeEnum = { Empty: 0, Entrance: 1, Exit: 2, Energy: 3, Gold: 4, Scuba: 5, Weapon: 6, Boots: 7, ExtraLife: 8  }
 const tilesStartTileId = 49
 
@@ -219,6 +224,11 @@ const createLevelCode = (levelNum, level) => {
         };
       });
 
+    if (enemies.length > enemyMax.count) {
+      enemyMax.count = enemies.length
+      enemyMax.level = levelNum
+    }
+
     enemies.forEach((e) => {
         enemiesBytes.push(...[e.x, e.y, e.moveDir, e.patrolA, e.patrolB, e.patrolDir, e.type, 0])
       })
@@ -288,6 +298,7 @@ d.levels.forEach((l) => {
 
 console.log(enemyCount)
 console.log(resourceCount)
+console.log(enemyMax)
 
 if (resourceCount.Gold !== 9999 || resourceCount.Energy !== 99 || resourceCount.Weapon !== 1 || 
   resourceCount.Boots !== 1 || resourceCount.Scuba !== 1 || resourceCount.ExtraLife !== 3) {

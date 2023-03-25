@@ -47,7 +47,7 @@ EnemyStats enemyStats[25] = {
     { SPRITE_MEM_BIG_GHOST_IDX, 8,  3,  7, 120, 0,   1 },
     { SPRITE_MEM_EYEBALL_IDX,   6,  6,  3,  90,  0,   1 },
     { SPRITE_MEM_MUSHROOM_IDX,  30, 4,  3,  90,  0,   1 },
-    { SPRITE_MEM_SLIME_IDX,     20, 4,  3,  90,  300, 1 },
+    { SPRITE_MEM_SLIME_IDX,     20, 4,  3,  120, 300, 1 },
     { SPRITE_MEM_SPIDER_IDX,    6,  9,  2,  90,  120, 0 },
     { SPRITE_MEM_RAT_IDX,       6,  10, 2,  90,  180, 0 },
     { SPRITE_MEM_ROCKMAN_IDX,   10, 2,  4,  90,  0,   1 },

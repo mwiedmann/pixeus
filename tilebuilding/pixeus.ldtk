@@ -2743,7 +2743,7 @@
 				{ "__identifier": "LeftLevel", "__value": 4, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
 				{ "__identifier": "RightLevel", "__value": 17, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [17] }] },
 				{ "__identifier": "DownLevel", "__value": 23, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [23] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 1, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 			],
 			"layerInstances": [
 				{
@@ -7190,7 +7190,7 @@
 				{ "__identifier": "LeftLevel", "__value": 48, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [48] }] },
 				{ "__identifier": "RightLevel", "__value": 11, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
 				{ "__identifier": "DownLevel", "__value": 12, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 8, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [8] }] }
 			],
 			"layerInstances": [
 				{
@@ -7906,7 +7906,7 @@
 				{ "__identifier": "LeftLevel", "__value": 10, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [10] }] },
 				{ "__identifier": "RightLevel", "__value": 15, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [15] }] },
 				{ "__identifier": "DownLevel", "__value": 13, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [13] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 6, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [6] }] }
 			],
 			"layerInstances": [
 				{
@@ -8030,8 +8030,8 @@
 							"defUid": 11,
 							"px": [480,416],
 							"fieldInstances": [
-								{ "__identifier": "Level", "__value": 15, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [15] }] },
-								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
+								{ "__identifier": "Level", "__value": 11, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
+								{ "__identifier": "EntranceId", "__value": 1, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							]
 						},
 						{
@@ -8075,6 +8075,37 @@
 							"defUid": 34,
 							"px": [176,368],
 							"fieldInstances": [{ "__identifier": "amount", "__value": 1, "__type": "Int", "__tile": null, "defUid": 35, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [34,7],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "75546340-c640-11ed-8655-0f756944b04d",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [544,112],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 1, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [35,7],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "879bf400-c640-11ed-8655-5555ed6245e5",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [560,112],
+							"fieldInstances": [
+								{ "__identifier": "Level", "__value": 11, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
+								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -8105,6 +8136,7 @@
 						{ "px": [432,32], "src": [112,0], "f": 0, "t": 7, "d": [107] },
 						{ "px": [560,64], "src": [128,0], "f": 0, "t": 8, "d": [195] },
 						{ "px": [576,64], "src": [144,0], "f": 0, "t": 9, "d": [196] },
+						{ "px": [560,112], "src": [16,80], "f": 0, "t": 101, "d": [315] },
 						{ "px": [304,128], "src": [80,0], "f": 0, "t": 5, "d": [339] },
 						{ "px": [192,144], "src": [16,16], "f": 0, "t": 21, "d": [372] },
 						{ "px": [208,144], "src": [32,16], "f": 0, "t": 22, "d": [373] },
@@ -8332,7 +8364,6 @@
 					"overrideTilesetUid": 29,
 					"gridTiles": [
 						{ "px": [544,112], "src": [48,80], "f": 0, "t": 103, "d": [314] },
-						{ "px": [560,112], "src": [64,80], "f": 0, "t": 104, "d": [315] },
 						{ "px": [576,112], "src": [80,80], "f": 0, "t": 105, "d": [316] },
 						{ "px": [592,112], "src": [96,80], "f": 0, "t": 106, "d": [317] },
 						{ "px": [608,112], "src": [112,80], "f": 0, "t": 107, "d": [318] },
@@ -9103,7 +9134,7 @@
 			"fieldInstances": [
 				{ "__identifier": "LeftLevel", "__value": 12, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
 				{ "__identifier": "RightLevel", "__value": 14, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
-				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [null] },
+				{ "__identifier": "DownLevel", "__value": 56, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [56] }] },
 				{ "__identifier": "UpLevel", "__value": 11, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [11] }] }
 			],
 			"layerInstances": [
@@ -9860,29 +9891,6 @@
 						},
 						{
 							"__identifier": "Enemy",
-							"__grid": [18,11],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#842B17",
-							"iid": "e0d5c580-9f30-11ed-8655-3fef7b2660aa",
-							"width": 16,
-							"height": 16,
-							"defUid": 19,
-							"px": [288,176],
-							"fieldInstances": [
-								{ "__identifier": "type", "__value": "Mushroom", "__type": "LocalEnum.Enemies", "__tile": null, "defUid": 21, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Mushroom"]
-								}] },
-								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
-								{ "__identifier": "patrolA", "__value": 0, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [] },
-								{ "__identifier": "patrolB", "__value": 0, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [] },
-								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Enemy",
 							"__grid": [20,5],
 							"__pivot": [0,0],
 							"__tags": [],
@@ -10357,7 +10365,7 @@
 				{ "__identifier": "LeftLevel", "__value": 11, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
 				{ "__identifier": "RightLevel", "__value": 4, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
 				{ "__identifier": "DownLevel", "__value": 14, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 5, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 			],
 			"layerInstances": [
 				{
@@ -10515,37 +10523,6 @@
 							]
 						},
 						{
-							"__identifier": "LevelExit",
-							"__grid": [3,7],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#D77643",
-							"iid": "27bf40a0-9f30-11ed-8655-cd8fee6fc740",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [48,112],
-							"fieldInstances": [
-								{ "__identifier": "Level", "__value": 11, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
-								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "LevelEntrance",
-							"__grid": [2,7],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "2c53bce0-9f30-11ed-8655-f5d5fa8c50f2",
-							"width": 16,
-							"height": 16,
-							"defUid": 9,
-							"px": [32,112],
-							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
-						},
-						{
 							"__identifier": "Enemy",
 							"__grid": [13,13],
 							"__pivot": [0,0],
@@ -10635,7 +10612,6 @@
 					"seed": 9678358,
 					"overrideTilesetUid": 28,
 					"gridTiles": [
-						{ "px": [48,112], "src": [0,96], "f": 0, "t": 108, "d": [283] },
 						{ "px": [512,336], "src": [192,96], "f": 0, "t": 120, "d": [872] },
 						{ "px": [528,336], "src": [208,96], "f": 0, "t": 121, "d": [873] },
 						{ "px": [80,384], "src": [32,96], "f": 0, "t": 110, "d": [965] },
@@ -11161,7 +11137,7 @@
 						},
 						{
 							"__identifier": "Gold",
-							"__grid": [22,12],
+							"__grid": [19,14],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -11170,7 +11146,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 36,
-							"px": [352,192],
+							"px": [304,224],
 							"fieldInstances": [{ "__identifier": "amount", "__value": 50, "__type": "Int", "__tile": null, "defUid": 37, "realEditorValues": [{ "id": "V_Int", "params": [50] }] }]
 						},
 						{
@@ -11209,6 +11185,20 @@
 								{ "__identifier": "patrolB", "__value": 4, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [20,9],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "8eae3b20-c640-11ed-8655-4b6a5353c651",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [320,144],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
 						}
 					]
 				},
@@ -11221,8 +11211,8 @@
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
-					"__tilesetDefUid": null,
-					"__tilesetRelPath": null,
+					"__tilesetDefUid": 28,
+					"__tilesetRelPath": "foresttiles.png",
 					"iid": "fcb7efd3-9f30-11ed-8be2-7dc7469dc62d",
 					"levelId": 59,
 					"layerDefUid": 4,
@@ -11233,8 +11223,8 @@
 					"intGridCsv": [],
 					"autoLayerTiles": [],
 					"seed": 1278137,
-					"overrideTilesetUid": null,
-					"gridTiles": [],
+					"overrideTilesetUid": 28,
+					"gridTiles": [{ "px": [320,144], "src": [0,96], "f": 0, "t": 108, "d": [380] }],
 					"entityInstances": []
 				},
 				{
@@ -14769,7 +14759,7 @@
 				{ "__identifier": "LeftLevel", "__value": 17, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [17] }] },
 				{ "__identifier": "RightLevel", "__value": 25, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [25] }] },
 				{ "__identifier": "DownLevel", "__value": 33, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [33] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 18, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [18] }] }
 			],
 			"layerInstances": [
 				{
@@ -15476,7 +15466,7 @@
 				{ "__identifier": "LeftLevel", "__value": 16, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [16] }] },
 				{ "__identifier": "RightLevel", "__value": 24, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [24] }] },
 				{ "__identifier": "DownLevel", "__value": 36, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [36] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 3, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
 			],
 			"layerInstances": [
 				{
@@ -15660,7 +15650,7 @@
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
 								{ "__identifier": "patrolA", "__value": 5, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
-								{ "__identifier": "patrolB", "__value": 5, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+								{ "__identifier": "patrolB", "__value": 3, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
 						},
@@ -15682,7 +15672,7 @@
 									"params": ["Slime"]
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
-								{ "__identifier": "patrolA", "__value": 4, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [4] }] },
+								{ "__identifier": "patrolA", "__value": 8, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [8] }] },
 								{ "__identifier": "patrolB", "__value": 3, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
@@ -15728,6 +15718,23 @@
 							"defUid": 34,
 							"px": [464,400],
 							"fieldInstances": [{ "__identifier": "amount", "__value": 1, "__type": "Int", "__tile": null, "defUid": 35, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [1,27],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "a2fc7150-c640-11ed-8655-83d6a09bcfbc",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [16,432],
+							"fieldInstances": [
+								{ "__identifier": "Level", "__value": 16, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [16] }] },
+								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -15782,7 +15789,8 @@
 						{ "px": [256,400], "src": [112,48], "f": 0, "t": 61, "d": [1016] },
 						{ "px": [352,400], "src": [112,16], "f": 0, "t": 25, "d": [1022] },
 						{ "px": [400,400], "src": [96,64], "f": 0, "t": 78, "d": [1025] },
-						{ "px": [416,400], "src": [112,64], "f": 0, "t": 79, "d": [1026] }
+						{ "px": [416,400], "src": [112,64], "f": 0, "t": 79, "d": [1026] },
+						{ "px": [16,432], "src": [0,96], "f": 0, "t": 108, "d": [1081] }
 					],
 					"entityInstances": []
 				},
@@ -16218,7 +16226,7 @@
 				{ "__identifier": "LeftLevel", "__value": 23, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [23] }] },
 				{ "__identifier": "RightLevel", "__value": 33, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [33] }] },
 				{ "__identifier": "DownLevel", "__value": 37, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [37] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 17, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [17] }] }
 			],
 			"layerInstances": [
 				{
@@ -16844,7 +16852,7 @@
 				{ "__identifier": "LeftLevel", "__value": 22, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [22] }] },
 				{ "__identifier": "RightLevel", "__value": 26, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [26] }] },
 				{ "__identifier": "DownLevel", "__value": 34, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [34] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 19, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [19] }] }
 			],
 			"layerInstances": [
 				{
@@ -19623,7 +19631,7 @@
 									"params": ["BigBear"]
 								}] },
 								{ "__identifier": "moveDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 25, "realEditorValues": [] },
-								{ "__identifier": "patrolA", "__value": 14, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
+								{ "__identifier": "patrolA", "__value": 20, "__type": "Int", "__tile": null, "defUid": 22, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
 								{ "__identifier": "patrolB", "__value": 1, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
@@ -20619,7 +20627,7 @@
 			"fieldInstances": [
 				{ "__identifier": "LeftLevel", "__value": 30, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
 				{ "__identifier": "RightLevel", "__value": 32, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [32] }] },
-				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
+				{ "__identifier": "DownLevel", "__value": 58, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [58] }] },
 				{ "__identifier": "UpLevel", "__value": 27, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [27] }] }
 			],
 			"layerInstances": [
@@ -22481,7 +22489,7 @@
 				{ "__identifier": "LeftLevel", "__value": 33, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [33] }] },
 				{ "__identifier": "RightLevel", "__value": 30, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 25, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [25] }] }
 			],
 			"layerInstances": [
 				{
@@ -23443,7 +23451,7 @@
 				{ "__identifier": "LeftLevel", "__value": 35, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [35] }] },
 				{ "__identifier": "RightLevel", "__value": 37, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [37] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
+				{ "__identifier": "UpLevel", "__value": 23, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [23] }] }
 			],
 			"layerInstances": [
 				{
@@ -24053,8 +24061,8 @@
 			"fieldInstances": [
 				{ "__identifier": "LeftLevel", "__value": 36, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [36] }] },
 				{ "__identifier": "RightLevel", "__value": 38, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [38] }] },
-				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
+				{ "__identifier": "DownLevel", "__value": 57, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [57] }] },
+				{ "__identifier": "UpLevel", "__value": 24, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [24] }] }
 			],
 			"layerInstances": [
 				{
@@ -28406,7 +28414,7 @@
 				{ "__identifier": "LeftLevel", "__value": 45, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [45] }] },
 				{ "__identifier": "RightLevel", "__value": 43, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [43] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 47, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [47] }] }
 			],
 			"layerInstances": [
 				{
@@ -29748,7 +29756,7 @@
 				{ "__identifier": "LeftLevel", "__value": 28, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [28] }] },
 				{ "__identifier": "RightLevel", "__value": 41, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [41] }] },
 				{ "__identifier": "DownLevel", "__value": 47, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [47] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 39, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [39] }] }
 			],
 			"layerInstances": [
 				{
@@ -30376,7 +30384,7 @@
 				{ "__identifier": "LeftLevel", "__value": 32, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [32] }] },
 				{ "__identifier": "RightLevel", "__value": 42, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [42] }] },
 				{ "__identifier": "DownLevel", "__value": 44, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [44] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 46, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [46] }] }
 			],
 			"layerInstances": [
 				{
@@ -31641,7 +31649,7 @@
 				{ "__identifier": "LeftLevel", "__value": 52, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [52] }] },
 				{ "__identifier": "RightLevel", "__value": 12, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
 				{ "__identifier": "DownLevel", "__value": 54, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [54] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 48, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [48] }] }
 			],
 			"layerInstances": [
 				{
@@ -33601,7 +33609,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": 49, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [49] }] },
 				{ "__identifier": "DownLevel", "__value": 53, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [53] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 51, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [51] }] }
 			],
 			"layerInstances": [
 				{
@@ -34181,7 +34189,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": 54, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [54] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 52, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [52] }] }
 			],
 			"layerInstances": [
 				{
@@ -34878,7 +34886,7 @@
 				{ "__identifier": "LeftLevel", "__value": 53, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [53] }] },
 				{ "__identifier": "RightLevel", "__value": 55, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 49, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [49] }] }
 			],
 			"layerInstances": [
 				{
@@ -35558,8 +35566,8 @@
 						2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -35700,6 +35708,68 @@
 								{ "__identifier": "patrolB", "__value": 12, "__type": "Int", "__tile": null, "defUid": 23, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
 								{ "__identifier": "patrolDir", "__value": 0, "__type": "Int", "__tile": null, "defUid": 24, "realEditorValues": [] }
 							]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [9,8],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "b0d168e0-c640-11ed-8655-1380f52cac9f",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [144,128],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "LevelEntrance",
+							"__grid": [31,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "b9781200-c640-11ed-8655-25567dd4141e",
+							"width": 16,
+							"height": 16,
+							"defUid": 9,
+							"px": [496,304],
+							"fieldInstances": [{ "__identifier": "Id", "__value": 0, "__type": "Int", "__tile": null, "defUid": 26, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [32,19],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "bc121dd0-c640-11ed-8655-e5ae315a9553",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [512,304],
+							"fieldInstances": [
+								{ "__identifier": "Level", "__value": 55, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
+								{ "__identifier": "EntranceId", "__value": 0, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "LevelExit",
+							"__grid": [8,8],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#D77643",
+							"iid": "c06cc560-c640-11ed-8655-d3cbb85e94ee",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [128,128],
+							"fieldInstances": [
+								{ "__identifier": "Level", "__value": 55, "__type": "Int", "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
+								{ "__identifier": "EntranceId", "__value": 1, "__type": "Int", "__tile": null, "defUid": 27, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							]
 						}
 					]
 				},
@@ -35726,9 +35796,11 @@
 					"seed": 8786065,
 					"overrideTilesetUid": 29,
 					"gridTiles": [
+						{ "px": [128,128], "src": [16,80], "f": 0, "t": 101, "d": [328] },
 						{ "px": [128,176], "src": [192,96], "f": 0, "t": 132, "d": [448] },
 						{ "px": [176,176], "src": [160,96], "f": 0, "t": 130, "d": [451] },
-						{ "px": [192,176], "src": [176,96], "f": 0, "t": 131, "d": [452] }
+						{ "px": [192,176], "src": [176,96], "f": 0, "t": 131, "d": [452] },
+						{ "px": [512,304], "src": [16,80], "f": 0, "t": 101, "d": [792] }
 					],
 					"entityInstances": []
 				},
@@ -35872,14 +35944,7 @@
 						{ "px": [576,240], "src": [32,0], "f": 0, "t": 2, "d": [636] },
 						{ "px": [592,240], "src": [48,0], "f": 0, "t": 3, "d": [637] },
 						{ "px": [608,240], "src": [16,0], "f": 0, "t": 1, "d": [638] },
-						{ "px": [624,240], "src": [32,0], "f": 0, "t": 2, "d": [639] },
-						{ "px": [528,288], "src": [0,0], "f": 0, "t": 0, "d": [753] },
-						{ "px": [544,288], "src": [16,0], "f": 0, "t": 1, "d": [754] },
-						{ "px": [560,288], "src": [32,0], "f": 0, "t": 2, "d": [755] },
-						{ "px": [576,288], "src": [48,0], "f": 0, "t": 3, "d": [756] },
-						{ "px": [592,288], "src": [16,0], "f": 0, "t": 1, "d": [757] },
-						{ "px": [608,288], "src": [32,0], "f": 0, "t": 2, "d": [758] },
-						{ "px": [624,288], "src": [48,0], "f": 0, "t": 3, "d": [759] },
+						{ "px": [624,240], "src": [0,0], "f": 1, "t": 0, "d": [639] },
 						{ "px": [528,304], "src": [0,32], "f": 0, "t": 40, "d": [793] },
 						{ "px": [320,320], "src": [0,0], "f": 0, "t": 0, "d": [820] },
 						{ "px": [336,320], "src": [16,0], "f": 0, "t": 1, "d": [821] },
@@ -36085,6 +36150,19 @@
 						{ "px": [528,224], "src": [96,96], "f": 0, "t": 126, "d": [593] },
 						{ "px": [544,224], "src": [112,96], "f": 0, "t": 127, "d": [594] },
 						{ "px": [576,224], "src": [32,64], "f": 0, "t": 82, "d": [596] },
+						{ "px": [528,272], "src": [0,0], "f": 0, "t": 0, "d": [713] },
+						{ "px": [544,272], "src": [16,0], "f": 0, "t": 1, "d": [714] },
+						{ "px": [560,272], "src": [32,0], "f": 0, "t": 2, "d": [715] },
+						{ "px": [576,272], "src": [48,0], "f": 0, "t": 3, "d": [716] },
+						{ "px": [592,272], "src": [16,0], "f": 0, "t": 1, "d": [717] },
+						{ "px": [608,272], "src": [32,0], "f": 0, "t": 2, "d": [718] },
+						{ "px": [624,272], "src": [48,0], "f": 0, "t": 3, "d": [719] },
+						{ "px": [528,288], "src": [0,16], "f": 0, "t": 20, "d": [753] },
+						{ "px": [544,288], "src": [32,80], "f": 2, "t": 102, "d": [754] },
+						{ "px": [560,288], "src": [48,80], "f": 2, "t": 103, "d": [755] },
+						{ "px": [576,288], "src": [64,80], "f": 2, "t": 104, "d": [756] },
+						{ "px": [592,288], "src": [80,80], "f": 2, "t": 105, "d": [757] },
+						{ "px": [608,288], "src": [96,80], "f": 2, "t": 106, "d": [758] },
 						{ "px": [336,304], "src": [112,96], "f": 1, "t": 127, "d": [781] },
 						{ "px": [352,304], "src": [96,96], "f": 1, "t": 126, "d": [782] },
 						{ "px": [368,304], "src": [80,96], "f": 1, "t": 125, "d": [783] },
@@ -36095,10 +36173,6 @@
 						{ "px": [448,304], "src": [64,80], "f": 0, "t": 104, "d": [788] },
 						{ "px": [464,304], "src": [80,80], "f": 0, "t": 105, "d": [789] },
 						{ "px": [480,304], "src": [96,80], "f": 0, "t": 106, "d": [790] },
-						{ "px": [560,304], "src": [48,96], "f": 2, "t": 123, "d": [795] },
-						{ "px": [576,304], "src": [64,96], "f": 2, "t": 124, "d": [796] },
-						{ "px": [592,304], "src": [80,96], "f": 2, "t": 125, "d": [797] },
-						{ "px": [608,304], "src": [96,96], "f": 2, "t": 126, "d": [798] },
 						{ "px": [112,336], "src": [32,80], "f": 0, "t": 102, "d": [847] },
 						{ "px": [128,336], "src": [48,80], "f": 0, "t": 103, "d": [848] },
 						{ "px": [144,336], "src": [64,80], "f": 0, "t": 104, "d": [849] },
@@ -36177,7 +36251,7 @@
 				{ "__identifier": "LeftLevel", "__value": 55, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
 				{ "__identifier": "RightLevel", "__value": 57, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [57] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 13, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [13] }] }
 			],
 			"layerInstances": [
 				{
@@ -36786,7 +36860,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [] },
 				{ "__identifier": "DownLevel", "__value": 67, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [67] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 37, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [37] }] }
 			],
 			"layerInstances": [
 				{
@@ -38803,7 +38877,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": 65, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [65] }] },
 				{ "__identifier": "DownLevel", "__value": 61, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [61] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 59, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [59] }] }
 			],
 			"layerInstances": [
 				{
@@ -39537,7 +39611,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": 62, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [62] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 60, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [60] }] }
 			],
 			"layerInstances": [
 				{
@@ -40581,7 +40655,7 @@
 				{ "__identifier": "LeftLevel", "__value": 61, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [61] }] },
 				{ "__identifier": "RightLevel", "__value": 64, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [64] }] },
 				{ "__identifier": "DownLevel", "__value": 63, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [63] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 65, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [65] }] }
 			],
 			"layerInstances": [
 				{
@@ -41304,7 +41378,7 @@
 				{ "__identifier": "LeftLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [] },
 				{ "__identifier": "RightLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 62, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [62] }] }
 			],
 			"layerInstances": [
 				{
@@ -43519,7 +43593,7 @@
 				{ "__identifier": "LeftLevel", "__value": 60, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [60] }] },
 				{ "__identifier": "RightLevel", "__value": 66, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [66] }] },
 				{ "__identifier": "DownLevel", "__value": 62, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [62] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 67, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [67] }] }
 			],
 			"layerInstances": [
 				{
@@ -44241,7 +44315,7 @@
 				{ "__identifier": "LeftLevel", "__value": 65, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [65] }] },
 				{ "__identifier": "RightLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [] },
 				{ "__identifier": "DownLevel", "__value": 64, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [64] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 68, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [68] }] }
 			],
 			"layerInstances": [
 				{
@@ -44892,7 +44966,7 @@
 				{ "__identifier": "LeftLevel", "__value": 59, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [59] }] },
 				{ "__identifier": "RightLevel", "__value": 68, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [68] }] },
 				{ "__identifier": "DownLevel", "__value": 65, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [65] }] },
-				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [] }
+				{ "__identifier": "UpLevel", "__value": 57, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [57] }] }
 			],
 			"layerInstances": [
 				{

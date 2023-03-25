@@ -9,19 +9,21 @@
 #include "entitymgr.h"
 
 #define ENEMY_LASER_DIST 200
-#define ENEMY_JUMP_SPEED_NORMAL 17
+#define ENEMY_JUMP_SPEED_NORMAL 13
 #define ENEMY_WATER_JUMP_SPEED_NORMAL 4
-#define ENEMY_JUMP_FRAMES 15
+#define ENEMY_JUMP_FRAMES 20
 #define ENEMY_WATER_JUMP_FRAMES 90
+#define ENEMY_LASER_COUNT 8
+#define ENEMY_SPRITE_COUNT 8
 
-AISprite masterEnemiesList[16];
-Sprite enemyLasers[16];
+AISprite masterEnemiesList[ENEMY_SPRITE_COUNT];
+Sprite enemyLasers[ENEMY_LASER_COUNT];
 
 AISprite *findEnemyCollision(Sprite *s) {
     unsigned char i;
     AISprite *enemy;
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_SPRITE_COUNT; i++) {
         enemy = &masterEnemiesList[i];
         if (doOverlap(
             s->x, s->y, pixelSizes[s->width], pixelSizes[s->height],
@@ -37,7 +39,7 @@ Sprite *findEnemyLaserCollision(Sprite *s) {
     unsigned char i;
     Sprite *laser;
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_LASER_COUNT; i++) {
         laser = &enemyLasers[i];
         if (laser->active && doOverlap(
             s->x, s->y, pixelSizes[s->width], pixelSizes[s->height],
@@ -109,7 +111,7 @@ void enemiesReset(unsigned char length) {
     }
 
     // Reset lasers
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_LASER_COUNT; i++) {
         laser = &enemyLasers[i];
         spriteMove(laser, 0, 0);
         laser->active = 0;
@@ -123,7 +125,7 @@ void enemyShot(short x, short y, unsigned char direction) {
     unsigned char i;
     Sprite *laser;
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_LASER_COUNT; i++) {
         laser = &enemyLasers[i];
 
         if (!laser->active) {
@@ -246,7 +248,7 @@ void enemyLasersMove(LevelOveralLayout *level) {
     TileInfo tileCollision;
     Sprite *laser;
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_LASER_COUNT; i++) {
         laser = &enemyLasers[i];
         if (laser->active) {
             spriteMoveX(laser, laser->animationDirection == 0 ? laser->x-laser->speed : laser->x+laser->speed);
@@ -269,7 +271,7 @@ void enemyLasersMove(LevelOveralLayout *level) {
 unsigned char enemyLasersCreate(unsigned char nextSpriteIndex) {
     unsigned char i;
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<ENEMY_LASER_COUNT; i++) {
         laserCreate(&enemyLasers[i], nextSpriteIndex++);
     }
 
