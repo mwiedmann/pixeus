@@ -19,6 +19,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     unsigned char rightLevel;
     unsigned char downLevel;
     unsigned char upLevel;
+    unsigned char *cachedEntityTypes;
 
     char filename[32];
     unsigned char *movementTypes;
@@ -72,20 +73,24 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     ramstart+= tilesLength * sizeof(TileLayout);
 
     // Entities
-    // See if we have already cached the entity list
-    // We cache this because entities like energy and gold don't respawn
-    // We don't use HI RAM here because we cache it
-    // Its not much memory but we could refactor this into other HI RAM (later)
-    entityList = cachedEntityListGet(levelNum);
-    if (entityList == 0) {
-        entities = malloc(entitiesLength * sizeof(Entity));
-        for (x=0; x<entitiesLength * sizeof(Entity); x++) {
-            ((unsigned char*)entities)[x] = *(unsigned char*)(ramstart+x);
-        }
-        entityList = malloc(4);
-        entityList->length = entitiesLength;
-        entityList->entities = entities;
+    // Copy the entity data from HIRAM byte-by-byte
+    entities = malloc(entitiesLength * sizeof(Entity));
+    for (x=0; x<entitiesLength * sizeof(Entity); x++) {
+        ((unsigned char*)entities)[x] = *(unsigned char*)(ramstart+x);
     }
+    entityList = malloc(4);
+    entityList->length = entitiesLength;
+    entityList->entities = entities;
+
+    // See if we have already cached the entity list (entityType for each entity)
+    // We cache this because entities like energy and gold don't respawn
+    cachedEntityTypes = cachedEntityListGet(levelNum);
+    if (cachedEntityTypes != 0) {
+        for (x=0; x < entitiesLength; x++) {
+            entities[x].entityType = cachedEntityTypes[x];
+        }
+    }
+
     ramstart+= entitiesLength * sizeof(Entity);
 
     // Enemies
@@ -119,6 +124,8 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
 void freeLevel(LevelOveralLayout *level) {
     free(level->tileList);
     free(level->enemyList);
+    free(level->entityList->entities);
+    free(level->entityList);
     free(level);
 }
 

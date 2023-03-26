@@ -27,9 +27,14 @@ unsigned char enemyAlive(unsigned long frameCount, unsigned char level, unsigned
 void enemyFrameSet(unsigned long frameCount, unsigned char level, unsigned char enemyIdx);
 
 /**
- * Get the cached entity list for this level. Can return NULL/0 if not cached.
+ * Set the entityType on a cached entity. Needed when entityType is set to Empty after it is collected.
 */
-EntityList *cachedEntityListGet(unsigned char levelNum);
+void entityTypeSet(unsigned char entityType, unsigned char level, unsigned char entityIdx);
+
+/**
+ * Get the cached entity list (entityType for each entity) for this level. Can return NULL/0 if not cached.
+*/
+unsigned char *cachedEntityListGet(unsigned char levelNum);
 
 /**
  * Create the sprites for the entities (gold, energy, items) on this level

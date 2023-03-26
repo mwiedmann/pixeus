@@ -85,13 +85,17 @@ unsigned char enemiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIn
 /**
  * Any dead enemies will have the framecount cached so we know when to respawn them
 */
-void enemyCacheUpdate(LevelOveralLayout *level, unsigned long mainFrameCount) {
+void levelCacheUpdate(LevelOveralLayout *level, unsigned long mainFrameCount) {
     unsigned char i;
 
     for (i=0; i<level->enemyList->length; i++) {
         if (masterEnemiesList[i].health == 0) {
            enemyFrameSet(mainFrameCount, level->levelNum, i);
         }
+    }
+
+    for (i=0; i<level->entityList->length; i++) {
+        entityTypeSet(level->entityList->entities[i].entityType, level->levelNum, i);
     }
 }
 

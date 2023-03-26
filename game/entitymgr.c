@@ -17,7 +17,17 @@ Sprite entitySprites[16];
 */
 #define ENEMY_FRAMES_STAY_DEAD 18000 // 18000=5 mins
 
-EntityList *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
+/**
+ * List of the entityTypes for entities in each level.
+ * When they are collected the type is changed to EmptyType.
+ * We need to hold this for the entire game so entities don't respawn
+*/
+unsigned char *cachedEntityLists[CACHED_ENTITY_LIST_LENGTH];
+
+/**
+ * This tracks how many frames have past since the enemy died.
+ * They respawn after ENEMY_FRAMES_STAY_DEAD frames
+*/
 unsigned long* cachedEnemyDiedFrame[CACHED_ENTITY_LIST_LENGTH];
 
 void initCachedLevelData(unsigned char clearFirst) {
@@ -37,7 +47,12 @@ void cacheLevelData(LevelOveralLayout *level) {
     unsigned char i;
 
     if (cachedEntityLists[level->levelNum] == 0) {
-        cachedEntityLists[level->levelNum] = level->entityList;
+        // Track the entityType for each entity
+        // It will change to EmptyType when the entity is collected
+        cachedEntityLists[level->levelNum] = malloc(level->entityList->length);
+        for (i=0; i<level->entityList->length; i++) {
+            cachedEntityLists[level->levelNum][i] = level->entityList->entities[i].entityType;
+        }
 
         // Memory for enemy death frame counts (4 bytes per)
         cachedEnemyDiedFrame[level->levelNum] = malloc(level->enemyList->length * 4);
@@ -63,7 +78,11 @@ void enemyFrameSet(unsigned long frameCount, unsigned char level, unsigned char 
     cachedEnemyDiedFrame[level][enemyIdx] = frameCount;
 }
 
-EntityList *cachedEntityListGet(unsigned char levelNum) {
+void entityTypeSet(unsigned char entityType, unsigned char level, unsigned char entityIdx) {
+    cachedEntityLists[level][entityIdx] = entityType;
+}
+
+unsigned char *cachedEntityListGet(unsigned char levelNum) {
     return cachedEntityLists[levelNum];
 }
 

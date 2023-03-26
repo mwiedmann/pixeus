@@ -816,7 +816,7 @@ void main() {
 
             // Get a copy of the exitCollision because we will free the level next
             exitCollision = *runLevel(nextSpriteIndex, &lastTilesetId, showShipScene);
-            enemyCacheUpdate(level, mainFrameCount);
+            levelCacheUpdate(level, mainFrameCount);
             showShipScene = 0;
 
             // If this was a normal level exit (not a player death)
