@@ -91,6 +91,7 @@ bundle:
 	cp -R sounds bundle
 	cp -R text bundle
 	cp pixeus.prg bundle
+	cp releaseinfo.txt bundle
 
 .PHONY: bundle
 	
