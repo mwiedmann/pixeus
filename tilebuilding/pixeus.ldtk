@@ -23451,7 +23451,7 @@
 				{ "__identifier": "LeftLevel", "__value": 35, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [35] }] },
 				{ "__identifier": "RightLevel", "__value": 37, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [37] }] },
 				{ "__identifier": "DownLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [] },
-				{ "__identifier": "UpLevel", "__value": 23, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [23] }] }
+				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
 			],
 			"layerInstances": [
 				{
@@ -24062,7 +24062,7 @@
 				{ "__identifier": "LeftLevel", "__value": 36, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [36] }] },
 				{ "__identifier": "RightLevel", "__value": 38, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [38] }] },
 				{ "__identifier": "DownLevel", "__value": 57, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [57] }] },
-				{ "__identifier": "UpLevel", "__value": 24, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [24] }] }
+				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
 			],
 			"layerInstances": [
 				{
@@ -30384,7 +30384,7 @@
 				{ "__identifier": "LeftLevel", "__value": 32, "__type": "Int", "__tile": null, "defUid": 42, "realEditorValues": [{ "id": "V_Int", "params": [32] }] },
 				{ "__identifier": "RightLevel", "__value": 42, "__type": "Int", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [42] }] },
 				{ "__identifier": "DownLevel", "__value": 44, "__type": "Int", "__tile": null, "defUid": 44, "realEditorValues": [{ "id": "V_Int", "params": [44] }] },
-				{ "__identifier": "UpLevel", "__value": 46, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [{ "id": "V_Int", "params": [46] }] }
+				{ "__identifier": "UpLevel", "__value": null, "__type": "Int", "__tile": null, "defUid": 47, "realEditorValues": [null] }
 			],
 			"layerInstances": [
 				{

@@ -25,7 +25,7 @@ run41:
 
 runbundle:
 	cd bundle && \
-	../../emu-r42/x16emu -prg pixeus.prg -run
+	../../emu-r41/x16emu -prg pixeus.prg -run
 
 level:
 	cd tilebuilding && node ldtk-to-bin.js

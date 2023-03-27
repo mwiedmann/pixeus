@@ -20,7 +20,7 @@
 #define SELECTION_MUTE_SOUND 3
 #define SELECTION_TEST_MODE 4
 
-#define TEST_MODE_HIDE 0
+#define TEST_MODE_HIDE 1
 #define SELECTION_MAX 4 - TEST_MODE_HIDE
 
 // Uncomment if we use the game start sound
