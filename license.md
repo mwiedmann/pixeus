@@ -1,5 +1,10 @@
 # License
 
-In general, for personal use only as detailed below.
+Code:
+You may modify and compile the code for your personal use. You may review the code and borrow functions and techniques from the repo as long as you are not repackaging or reselling the game or any of the assets. In otherwords, feel free to use pieces of the code in your projects but don't lift the entire game or just rebuild it with different assets.
 
-I'm still deciding on what the final license will be, so until then, you may pull this code for the purpose of building the pixeus.prg (final build file) and may run it with the CX16 emulator for your personal use. Don't distribute the code, reuse any of it in another project, or distribute the pixeus.prg file.
+Music:
+All music rights are controlled by Crisps and the songs in here cannot be used without his consent.
+
+Art Assets:
+All art assets rights are controlled by Mark Wiedmann and cannot be used without his consent.
