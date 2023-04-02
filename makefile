@@ -36,6 +36,11 @@ pal:
 txt:
 	cd tools && node text-screen-gen.js
 
+snd:
+	cd tools && \
+	node wav2pcm.js shoot.wav 48 && \
+	node wav2pcm.js hit.wav 64
+
 img:
 	cd tools && \
 	node gimp-convert-bin.js title.data && \

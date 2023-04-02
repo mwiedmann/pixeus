@@ -12,7 +12,8 @@ I haven't tried this on actual X16 hardware. It has only been tested on the offi
 
 Q: How to run this?
 - Unzip somewhere
-- Open a terminal and CD (change directory) into the folder where the "pixeus.prg" file is located
+- Open a terminal and CD (change directory) into the folder where the "pixeus.prg" file is located.
+  NOTE: You must run the emulator from this directory because the game tries to load the assets from the current directory.
 - Run the emulator with the options  -prg pixeus.prg -run
 - Example: pathToEmulator\x16emu -prg pixeus.prg -run
 
@@ -25,5 +26,10 @@ A: I will publish the code at some point with a "for personal use" type of licen
 
 Known Issues/Pending Work
 - Still work to do on the sound effects (the laser and hit sounds for instance). Would like to add some more as well.
-- The music stutters if the game lags and there are some slight pauses here and there. I'm unsure how much of this is due to the emulator or just my game being a hog and the music system not having enough time to catch up. On r41 on my machine it still sounds good. I'll be curious to see how (if?) it runs on actual hardware.
+- Sound effects sometimes freakout and play static. I'm using zsound and it seems to have some issues? Looking into this.
+- The music stutters if the game lags and there are some slight pauses here and there.
+  I'm unsure how much of this is due to the emulator or just my game being a hog and the music system not having enough time to catch up.
+  On r41 on my machine it still sounds good. I'll be curious to see how (if?) it runs on actual hardware.
 - There have been level changes that probably haven't all been tested (still alpha!)
+- General balance issues with enemies
+- Jumping and some other "feel" things will be tweaked as dev continues

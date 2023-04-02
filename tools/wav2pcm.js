@@ -3,7 +3,9 @@ const fs = require("fs");
 const filename = process.argv[2];
 const fileparts = filename.split(".");
 
-const chopcount = parseInt(process.argv[3] ?? 44)
+const sampleRate = parseInt(process.argv[3] ?? 64)
+
+const chopcount = parseInt(process.argv[4] ?? 44)
 
 console.log("filename", filename);
 
@@ -27,8 +29,8 @@ const choppedBytes = [
     sizeLo,
     sizeMid,
     sizeHi,
-    0b00111111, // Full volume, stero, 16bit
-    32 // Sample rate - Still figuring this one out
+    0b00101111, // Full volume, stero, 16bit
+    sampleRate // Sample rate - Still figuring this one out
 ]
 
 for (let i=chopcount; i<data.length; i++) {

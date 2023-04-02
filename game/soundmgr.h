@@ -19,8 +19,8 @@ void loadDesertMusic();
 void loadTundraMusic();
 void loadUnderworldMusic();
 
-void loadStartMusic(zsm_callback cb);
-void loadGameOverMusic(zsm_callback cb);
-void loadVictoryMusic(zsm_callback cb);
+// void loadStartMusic(zsm_callback cb);
+// void loadGameOverMusic(zsm_callback cb);
+// void loadVictoryMusic(zsm_callback cb);
 
 #endif

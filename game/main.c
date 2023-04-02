@@ -25,6 +25,8 @@
 #include "soundmgr.h"
 #include "loopmgr.h"
 
+#define PLAYER_SHOOT_FRAMES 15
+
 #define PLAYER_FALL_SPEED 20
 #define PLAYER_WATER_FALL_SPEED 3
 #define PLAYER_WATER_FALL_SPEED_FORCED 5
@@ -157,6 +159,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
     unsigned char jumpFrames = 0;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
+    unsigned char framesUntilNextShot = 0;
     short momentum = 0;
     short momentumChange, moveBase;
 
@@ -604,8 +607,14 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
         }
 
+        
+        // Player has to wait a certain number of frames before shooting
+        if (framesUntilNextShot > 0) {
+            framesUntilNextShot--;
+        }
+
         // See if player is shooting
-        if (JOY_BTN_2(joy) && bullet.active==0) {
+        if (bullet.active==0 && framesUntilNextShot == 0 && JOY_BTN_2(joy)) {
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
             // Start the bullet out of the player's grid
@@ -618,6 +627,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
 
             playLaser();
+            framesUntilNextShot = PLAYER_SHOOT_FRAMES;
         }
 
         // See if the player is touching any tiles left/right
