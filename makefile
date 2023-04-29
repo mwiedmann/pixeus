@@ -1,7 +1,7 @@
 CC=cl65
 
 make:
-	$(CC) -O -I lib -I zsound -o pixeus.prg -t cx16 \
+	$(CC) -O -I lib -I zsound -o bundle/PIXEUS.PRG -t cx16 \
 	game/main.c \
 	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c game/loopmgr.c \
 	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
@@ -18,14 +18,12 @@ clean:
 	rm lib/*.o images/*.o game/*.o
 
 run:
-	../emu-r42/x16emu -prg pixeus.prg -run
-
-run41:
-	../emu-r41/x16emu -prg pixeus.prg -run
-
-runbundle:
 	cd bundle && \
-	../../emu-r41/x16emu -prg pixeus.prg -run
+	../../emu-r41/x16emu -prg PIXEUS.PRG -run
+
+run42:
+	cd bundle && \
+	../../emu-r42/x16emu -prg PIXEUS.PRG -run
 
 level:
 	cd tilebuilding && node ldtk-to-bin.js
@@ -37,6 +35,7 @@ txt:
 	cd tools && node text-screen-gen.js
 
 snd:
+	cp sounds/*.ZSM bundle && \
 	cd tools && \
 	node wav2pcm.js shoot.wav 48 && \
 	node wav2pcm.js hit.wav 64
@@ -48,9 +47,9 @@ img:
 	node gimp-convert-tiles-bin.js tileset2.data 20 7 16 16 && \
 	node gimp-convert-tiles-bin.js tileset3.data 20 7 16 16 && \
 	node gimp-convert-tiles-bin.js tileset4.data 20 7 16 16 && \
-	node gimp-convert-tiles-bin.js fontsimple.data 42 1 16 16 && \
+	node gimp-convert-tiles-bin.js font.data 42 1 16 16 && \
 	node gimp-convert-tiles-bin.js flame.data 1 1 16 16 && \
-	node gimp-convert-tiles-bin.js snowflake.data 1 1 16 16 && \
+	node gimp-convert-tiles-bin.js snow.data 1 1 16 16 && \
 	node gimp-convert-tiles-bin.js guyrun.data 6 1 16 16 sp0 && \
 	node gimp-convert-tiles-bin.js guyscuba.data 4 1 16 16 sp1 && \
 	node gimp-convert-tiles-bin.js expsmall.data 4 1 16 16 sp2 && \
@@ -87,20 +86,3 @@ img:
 	node gimp-convert-tiles-bin.js beetle.data 4 1 16 16 sp33 && \
     node gimp-convert-tiles-bin.js jellyfish.data 4 1 16 16 sp34 && \
 	node gimp-convert-tiles-bin.js wolf.data 4 1 16 16 sp35
-
-bundle:
-	rm -rf bundle
-	mkdir bundle
-	cp -R images bundle
-	cp -R levels bundle
-	cp -R sounds bundle
-	cp -R text bundle
-	cp pixeus.prg bundle
-	cp releaseinfo.txt bundle
-
-.PHONY: bundle
-	
-	
-	
-	
-	

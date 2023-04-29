@@ -42,7 +42,7 @@ for (let i=chopcount; i<data.length; i++) {
 // Its an optional address to load into. We don't use it but its required
 const output = new Uint8Array(choppedBytes);
 
-const outputFilename = `../sounds/${fileparts[0]}.zcm`.toLowerCase();
+const outputFilename = `../bundle/${fileparts[0].toUpperCase()}.ZCM`
 fs.writeFileSync(outputFilename, output, "binary");
 
 console.log('Created', outputFilename, ' Size', data.length-chopcount)

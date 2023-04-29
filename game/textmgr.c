@@ -26,6 +26,20 @@
 // Uncomment if we use the game start sound
 // unsigned char gameStartDone;
 
+unsigned short loadingMessage() {
+    unsigned short bytes = 0;
+
+    printf("Loading...\nYou must run PIXEUS.PRG from its directory.\n\n");
+
+    POKE(0, IMAGE_LOAD_BANK);
+    cbm_k_setnam("level0.bin");
+    cbm_k_setlfs(0, 8, 0);
+    bytes = cbm_k_load(0, (unsigned short)BANK_RAM) - (unsigned short)BANK_RAM;
+
+    // Level 0 should show 2374 because minus the 2 byte header
+    return bytes;
+}
+
 void showTitleScreen() {
     unsigned char joy = 0;
     unsigned char wait = 60;
@@ -49,7 +63,7 @@ void showTitleScreen() {
     // Start in VBank 0, Addr 0
     POKE(LAYER_1_TILEBASE, 0);
 
-    imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "images/title.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "title.bin");
     preloadTextFiles();
 
     loadTitleMusic();
@@ -327,7 +341,7 @@ void gameOverScreen(unsigned short gold, unsigned char energy) {
     sprintf(scoreRow, "GOLD:%04u ENERGY:%03u", gold, energy);
     drawCenteredTextRow(scoreRow, 0, 4);
 
-    drawTextFile("text/gameover.bin", 0);
+    drawTextFile("gameover.bin", 0);
 
     while(1) {
         loopUpdates();
@@ -351,18 +365,18 @@ void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
 
         if (loop == 0) {
             if (gold == 0) {
-                drawTextFile("text/nogold.bin", 0);
+                drawTextFile("nogold.bin", 0);
             } else {
                 sprintf(text, "PIXEUS SPENDS %u GOLD ON:", gold);
                 drawCenteredTextRow(text, 0, 6);
 
-                drawTextFile("text/gold.bin", gold);
+                drawTextFile("gold.bin", gold);
             }
         } else {
             sprintf(text, "%u ENERGY TAKES PIXEUS TO:", energy);
             drawCenteredTextRow(text, 0, 6);
 
-            drawTextFile("text/energy.bin", energy);
+            drawTextFile("energy.bin", energy);
         }
 
         spriteMove(ship, 288, 366);

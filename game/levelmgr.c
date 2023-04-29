@@ -33,7 +33,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     LevelOveralLayout *level;
     
     unsigned short ramstart = (unsigned short)BANK_RAM;
-    sprintf(filename, "levels/level%u.bin", levelNum);
+    sprintf(filename, "level%u.bin", levelNum);
 
     // Load the level file into Banked RAM
     POKE(0, LEVEL_BANK);

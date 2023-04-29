@@ -27,13 +27,13 @@ void standardTilesLoad() {
 
     // These are sprites because they also show as items in the game
     // Load them via their sprite IDs.
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "images/sp7.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "images/sp8.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "images/sp9.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "sp7.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "sp8.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "sp9.bin");
 
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_FLAME, "images/flame.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SNOWFLAKE, "images/snowflake.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_FONT, "images/fontsimple.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_FLAME, "flame.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SNOWFLAKE, "snow.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_FONT, "font.bin");
 }
 
 void tilesConfig(unsigned char tilesetId) {
@@ -44,10 +44,10 @@ void tilesConfig(unsigned char tilesetId) {
     vMemSetAddr(TILE_MEM);
     vMemSetIncMode(1);
 
-    sprintf(filename, "images/tileset%d.bin", tilesetId);
+    sprintf(filename, "tileset%d.bin", tilesetId);
     imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
 }
 
 void paletteLoad() {
-    imageFileLoad(IMAGE_LOAD_BANK, PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR, "images/palette.bin");
+    imageFileLoad(IMAGE_LOAD_BANK, PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR, "palette.bin");
 }

@@ -206,7 +206,7 @@ welcomeScreen.forEach(rec => {
     welcomeBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/welcome.bin', welcomeBytes);
+saveFile('../bundle/WELCOME.BIN', welcomeBytes);
 
 // ***********************************************
 // Instructions Screen
@@ -220,7 +220,7 @@ instructionsScreen.forEach(rec => {
     instructionBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/instr.bin', instructionBytes);
+saveFile('../bundle/INSTR.BIN', instructionBytes);
 
 // ***********************************************
 // Game Over Screen
@@ -234,7 +234,7 @@ gameOverScreen.forEach(rec => {
     gameOverBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/gameover.bin', gameOverBytes);
+saveFile('../bundle/GAMEOVER.BIN', gameOverBytes);
 
 // ***********************************************
 // No Gold Victory Screen
@@ -248,7 +248,7 @@ noGoldVictory.forEach(rec => {
     noGoldBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/nogold.bin', noGoldBytes);
+saveFile('../bundle/NOGOLD.BIN', noGoldBytes);
 
 // ***********************************************
 // Gold Screen
@@ -262,7 +262,7 @@ goldScreen.forEach(rec => {
     goldBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/gold.bin', goldBytes);
+saveFile('../bundle/GOLD.BIN', goldBytes);
 
 // ***********************************************
 // Energy Screen
@@ -276,4 +276,4 @@ energyScreen.forEach(rec => {
     energyBytes.push(...createTextRecord(rec))
 })
 
-saveFile('../text/energy.bin', energyBytes);
+saveFile('../bundle/ENERGY.BIN', energyBytes);

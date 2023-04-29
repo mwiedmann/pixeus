@@ -287,7 +287,7 @@ const createLevelCode = (levelNum, level) => {
     ...enemiesBytes
   ]);
 
-  const outputFilename = `../levels/level${levelNum}.bin`.toLowerCase();
+  const outputFilename = `../bundle/LEVEL${levelNum}.BIN`
   fs.writeFileSync(outputFilename, output, "binary");
 };
 

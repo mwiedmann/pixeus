@@ -223,6 +223,6 @@ void drawTextFile(unsigned char *filename, unsigned short argComp) {
 }
 
 void preloadTextFiles() {
-    loadTextFile("text/welcome.bin", WELCOME_BANK);
-    loadTextFile("text/instr.bin", INSTRUCTIONS_BANK);
+    loadTextFile("welcome.bin", WELCOME_BANK);
+    loadTextFile("instr.bin", INSTRUCTIONS_BANK);
 }

@@ -1,5 +1,3 @@
 **/*.o
-**/*.prg
 **/*.data
 **/.DS_Store
-bundle

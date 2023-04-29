@@ -27,12 +27,12 @@ void loadSounds() {
     if (SOUND_ON) {
         pcm_init();
         POKE(0, SOUND_BANK_LASER);
-        cbm_k_setnam("sounds/shoot.zcm");
+        cbm_k_setnam("shoot.zcm");
         cbm_k_setlfs(0, 8, 2);
         cbm_k_load(0, (unsigned short)BANK_RAM);
 
         POKE(0, SOUND_BANK_ALIEN_HIT);
-        cbm_k_setnam("sounds/hit.zcm");
+        cbm_k_setnam("hit.zcm");
         cbm_k_setlfs(0, 8, 2);
         cbm_k_load(0, (unsigned short)BANK_RAM);
     }
@@ -91,43 +91,43 @@ void loadMusic(unsigned char* filename, zsm_callback cb) {
 }
 
 void loadEmptyMusic() {
-    loadMusic("sounds/empty.zsm", 0);
+    loadMusic("empty.zsm", 0);
 }
 
 void loadTitleMusic() {
-    loadMusic("sounds/title.zsm", 0);
+    loadMusic("title.zsm", 0);
 }
 
 void loadCreditsMusic() {
-    loadMusic("sounds/credits.zsm", 0);
+    loadMusic("credits.zsm", 0);
 }
 
 void loadForestMusic() {
-    loadMusic("sounds/forest.zsm", 0);
+    loadMusic("forest.zsm", 0);
 }
 
 void loadDesertMusic() {
-    loadMusic("sounds/desert.zsm", 0);
+    loadMusic("desert.zsm", 0);
 }
 
 void loadTundraMusic() {
-    loadMusic("sounds/tundra.zsm", 0);
+    loadMusic("tundra.zsm", 0);
 }
 
 void loadUnderworldMusic() {
-    loadMusic("sounds/hell.zsm", 0);
+    loadMusic("hell.zsm", 0);
 }
 
 // void loadStartMusic(zsm_callback cb) {
-//     loadMusic("sounds/start.zsm", cb);
+//     loadMusic("start.zsm", cb);
 // }
 
 // void loadGameOverMusic(zsm_callback cb) {
-//     loadMusic("sounds/gameover.zsm", cb);
+//     loadMusic("gameover.zsm", cb);
 // }
 
 // void loadVictoryMusic(zsm_callback cb) {
-//     loadMusic("sounds/victory.zsm", cb);
+//     loadMusic("victory.zsm", cb);
 // }
 
 void playSoundsThisGameLoop() {

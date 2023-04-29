@@ -23,7 +23,7 @@ const xTiles = parseInt(process.argv[3]);
 const yTiles = parseInt(process.argv[4]);
 const frameWidth = parseInt(process.argv[5]);
 const frameHeight = parseInt(process.argv[6]);
-const outputFilename = `../images/${process.argv[7] || fileparts[0]}.bin`.toLowerCase(); 
+const outputFilename = `../bundle/${(process.argv[7] || fileparts[0]).toUpperCase()}.BIN`; 
 
 console.log(
   `filename: ${filename} xTiles:${xTiles} yTiles:${yTiles} frameWidth:${frameWidth} frameHeight:${frameHeight}`

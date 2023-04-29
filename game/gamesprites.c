@@ -75,7 +75,7 @@ void spriteDataLoad() {
     unsigned short allBytes = SPRITE_MEM;
 
     for (i=0; i<ENEMY_SPRITE_IDX_START; i++) {
-        sprintf(filename, "images/sp%u.bin", i);
+        sprintf(filename, "sp%u.bin", i);
         spriteMemAddresses[i] = allBytes;
         allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
     }
@@ -97,7 +97,7 @@ void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
     for (i=0; i<length; i++) {
         gIdx = enemyStats[enemies[i].enemyType].graphicsIdx;
         if (spriteMemAddresses[gIdx] == 0) {
-            sprintf(filename, "images/sp%u.bin", gIdx);
+            sprintf(filename, "sp%u.bin", gIdx);
             spriteMemAddresses[gIdx] = allBytes;
             allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
         }

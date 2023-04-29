@@ -751,6 +751,13 @@ void main() {
     // For the starting level, the game looks for EntranceId=0
     Entrance *entrance;
     
+    // Pixeus must run in its directory
+    // otherwise it will not be able to find any of its files and the game crashes
+    // Show a message explaining this so if it crashes the user has some reason why
+    if (loadingMessage() == 0) {
+        return;
+    }
+
     // Sounds are loaded into HIRAM Banks for use later
     // Make sure not to overwrite these banks
     loadSounds();

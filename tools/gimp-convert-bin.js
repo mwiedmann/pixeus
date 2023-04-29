@@ -122,7 +122,7 @@ if (conversionError.length > 0) {
 // Its an optional address to load into. We don't use it but its required
 const output = new Uint8Array([0, 0, ...convertedPixels.map((cp) => cp.i)]);
 
-const outputFilename = `../images/${fileparts[0]}.bin`.toLowerCase();
+const outputFilename = `../bundle/${fileparts[0].toUpperCase()}.BIN`;
 fs.writeFileSync(outputFilename, output, "binary");
 
 console.log(`Generated file ${outputFilename} with ${pixelData.length} pixels`);

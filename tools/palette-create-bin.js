@@ -16,5 +16,5 @@ palette.forEach(p => {
 
 const output = new Uint8Array([0, 0, ...palBytes]);
 
-const outputFilename = '../images/palette.bin'
+const outputFilename = '../bundle/PALETTE.BIN'
 fs.writeFileSync(outputFilename, output, "binary");

@@ -1,8 +1,8 @@
-Pixeus - v0.1.0-alpha-1
+Pixeus - v0.1.0-alpha-2
 Game design and code: Mark Wiedmann
 Music: Crisps
 
-This is an alpha release version 1 of Pixeus, a lite Metroidvania/platformer for the Commander X16. It is written entirely in C by Mark Wiedmann and compiled with cc65 other than:
+This is an alpha release version 2 of Pixeus, a lite Metroidvania/platformer for the Commander X16. It is written entirely in C by Mark Wiedmann and compiled with cc65 other than:
 - The awesome zsound library from ZeroByteOrg (https://github.com/ZeroByteOrg/zsound)
 - A waitforjiffy routine
 
