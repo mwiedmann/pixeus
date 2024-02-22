@@ -77,7 +77,7 @@ void spriteDataLoad() {
     for (i=0; i<ENEMY_SPRITE_IDX_START; i++) {
         sprintf(filename, "sp%u.bin", i);
         spriteMemAddresses[i] = allBytes;
-        allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
+        allBytes+= loadFileToVRAM(filename, SPRITE_MEM_BANK, allBytes);
     }
 
     // Enemy sprites are loaded on demand and can start at this mem addr.
@@ -99,7 +99,7 @@ void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
         if (spriteMemAddresses[gIdx] == 0) {
             sprintf(filename, "sp%u.bin", gIdx);
             spriteMemAddresses[gIdx] = allBytes;
-            allBytes+= imageFileLoad(IMAGE_LOAD_BANK, SPRITE_MEM_BANK, allBytes, filename);
+            allBytes+= loadFileToVRAM(filename, SPRITE_MEM_BANK, allBytes);
         }
     }
 }

@@ -27,13 +27,13 @@ void standardTilesLoad() {
 
     // These are sprites because they also show as items in the game
     // Load them via their sprite IDs.
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SCUBA, "sp7.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_WEAPON, "sp8.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_BOOTS, "sp9.bin");
+    loadFileToVRAM("sp7.bin", TILE_MEM_BANK, TILE_SCUBA);
+    loadFileToVRAM("sp8.bin", TILE_MEM_BANK, TILE_WEAPON);
+    loadFileToVRAM("sp9.bin", TILE_MEM_BANK, TILE_BOOTS);
 
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_FLAME, "flame.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SNOWFLAKE, "snow.bin");
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_FONT, "font.bin");
+    loadFileToVRAM("flame.bin", TILE_MEM_BANK, TILE_FLAME);
+    loadFileToVRAM("snow.bin", TILE_MEM_BANK, TILE_SNOWFLAKE);
+    loadFileToVRAM("font.bin", TILE_MEM_BANK, TILE_SET_FONT);
 }
 
 void tilesConfig(unsigned char tilesetId) {
@@ -45,9 +45,9 @@ void tilesConfig(unsigned char tilesetId) {
     vMemSetIncMode(1);
 
     sprintf(filename, "tileset%d.bin", tilesetId);
-    imageFileLoad(IMAGE_LOAD_BANK, TILE_MEM_BANK, TILE_SET_1_MEM, filename);
+    loadFileToVRAM(filename, TILE_MEM_BANK, TILE_SET_1_MEM);
 }
 
 void paletteLoad() {
-    imageFileLoad(IMAGE_LOAD_BANK, PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR, "palette.bin");
+    loadFileToVRAM("palette.bin", PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR);
 }

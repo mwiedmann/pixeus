@@ -2,7 +2,8 @@
 #define SOUND_H
 
 #define SOUND_PRIORITY_MUSIC 0
-#define SOUND_PRIORITY_SFX 1
+#define SOUND_PRIORITY_SFX_1 1
+#define SOUND_PRIORITY_SFX_2 2
 
 #define SOUND_INDEX_NONE 0
 #define SOUND_INDEX_TITLE 1
@@ -15,6 +16,7 @@
 #define SOUND_SFX_SHOOT 0
 #define SOUND_SFX_HIT 1
 
+void musicVolume(unsigned char volume);
 void soundInit();
 void soundPlaySFX(unsigned char effect, unsigned char priority) ;
 void soundStopChannel(unsigned char priority);

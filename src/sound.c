@@ -6,6 +6,8 @@
 
 #include "sound.h"
 #include "memmap.h"
+#include "waitforjiffy.h"
+
 #include <cbm.h>
 #include <cx16.h>
 
@@ -49,6 +51,15 @@ void soundLoadMusic(unsigned char index) {
 	cbm_k_load(0, 0xa000);
 	loadedMusic = index;
 	RAM_BANK = prevBank;
+}
+
+void musicVolume(unsigned char volume) {
+	param1 = SOUND_PRIORITY_MUSIC;
+	param2 = volume; // 0=FULL - 63=MUTE
+
+	asm volatile ("ldx %v", param1);
+	asm volatile ("lda %v", param2);
+	asm volatile ("jsr zsm_setatten");
 }
 
 void soundInit() {
@@ -139,6 +150,10 @@ void soundPlayMusic(unsigned char index) {
 	asm volatile ("ldx %v", param2); //music loops
 	asm volatile ("sec");
 	asm volatile ("jsr zsm_setloop");
+
+	waitforjiffy();
+
+	musicVolume(48);
 
 	RAM_BANK = prevBank;
 }

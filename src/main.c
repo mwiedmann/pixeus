@@ -626,7 +626,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
             x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
 
-            soundPlaySFX(SOUND_SFX_SHOOT, SOUND_PRIORITY_SFX);
+            soundPlaySFX(SOUND_SFX_SHOOT, SOUND_PRIORITY_SFX_1);
             framesUntilNextShot = PLAYER_SHOOT_FRAMES;
         }
 
@@ -679,7 +679,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             // Enemy was hit by the player's laser
             // Show explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
-            soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX);
+            soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX_2);
 
             // Find the enemy
             hitEnemy = findEnemyCollision(&bullet);
@@ -708,7 +708,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
-                    soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX);
+                    soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX_2);
                 }
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
@@ -774,6 +774,8 @@ void main() {
         // Use this to track the last tileset so we know if we need to load
         unsigned char lastTilesetId = 255;
 
+        soundStopChannel(SOUND_PRIORITY_MUSIC);
+        
         nextSpriteIndex = 0;
         gameStartValues();
 
