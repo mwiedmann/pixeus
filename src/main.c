@@ -31,8 +31,8 @@
 #define PLAYER_WATER_FALL_SPEED 3
 #define PLAYER_WATER_FALL_SPEED_FORCED 5
 
-#define PLAYER_JUMP_SPEED_NORMAL 21
-#define PLAYER_JUMP_SPEED_BOOTS 24
+#define PLAYER_JUMP_SPEED_NORMAL 16
+#define PLAYER_JUMP_SPEED_BOOTS 20
 #define PLAYER_WATER_JUMP_SPEED_NORMAL 12
 #define PLAYER_WATER_JUMP_SPEED_BOOTS 14
 
@@ -41,15 +41,15 @@
 #define PLAYER_SWIM_SPEED_NORMAL 6
 #define PLAYER_SWIM_SPEED_WITH_BOOTS 7
 
-#define PLAYER_JUMP_FRAMES 17
+#define PLAYER_JUMP_FRAMES 24
 #define PLAYER_WATER_JUMP_FRAMES 16
 
 #define ICE_SLIDE_AMOUNT 3
 
 #define BULLET_DIST_NORMAL 128
 #define BULLET_DIST_WITH_WEAPON 144
-#define BULLET_SPEED_NORMAL 30
-#define BULLET_SPEED_WITH_WEAPON 40
+#define BULLET_SPEED_NORMAL 35
+#define BULLET_SPEED_WITH_WEAPON 45
 
 #define DEATH_PAUSE_FRAMES 60
 
@@ -102,6 +102,7 @@ unsigned char lives;
 unsigned char hasScuba;
 unsigned char hasWeapon;
 unsigned char hasBoots;
+unsigned char hasShield;
 unsigned char coldCount;
 unsigned char hotCount;
 
@@ -128,6 +129,7 @@ void gameStartValues() {
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;
+    hasShield = 1;
     coldCount = 0;
     hotCount = 0;
 }
@@ -148,6 +150,7 @@ void levelExitCleanup(unsigned char hideShip) {
     bullet.active = 0;
     bullet.zDepth = Disabled;
     x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
+    hasShield = 1;
 }
 
 /**
@@ -672,7 +675,11 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             if (hitLaser != 0) {
                 resetLaser(hitLaser);
                 if (!testMode) {
-                    return &playerShot;
+                    if (hasShield) {
+                        hasShield = 0;
+                    } else {
+                        return &playerShot;
+                    }
                 }
             }
         } else if (((collision & COLLISION_RESULT_ENEMY_PLAYER_LASER) == COLLISION_RESULT_ENEMY_PLAYER_LASER) && bullet.active) {
@@ -775,7 +782,7 @@ void main() {
         unsigned char lastTilesetId = 255;
 
         soundStopChannel(SOUND_PRIORITY_MUSIC);
-        
+
         nextSpriteIndex = 0;
         gameStartValues();
 
