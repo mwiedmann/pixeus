@@ -37,7 +37,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     // Load the level file into Banked RAM
     RAM_BANK = LEVEL_BANK;
     cbm_k_setnam(filename);
-    cbm_k_setlfs(0, 8, 0);
+    cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)ramstart);
 
     // The level file has a structure that starts with

@@ -14,7 +14,7 @@ palette.forEach(p => {
     palBytes.push(b2)
 })
 
-const output = new Uint8Array([0, 0, ...palBytes]);
+const output = new Uint8Array(palBytes);
 
 const outputFilename = '../bundle/PALETTE.BIN'
 fs.writeFileSync(outputFilename, output, "binary");

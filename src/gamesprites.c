@@ -14,9 +14,6 @@
 #define IRQ_HANDLER_STACK_SIZE 8
 unsigned char IRQHandlerStack[IRQ_HANDLER_STACK_SIZE];
 
-#define SPRITE_COUNT 36
-#define ENEMY_SPRITE_IDX_START SPRITE_MEM_SNAKE_IDX
-
 unsigned short spriteMemAddresses[SPRITE_COUNT];
 
 unsigned short enemySpritesMemStart = 0;
@@ -197,7 +194,7 @@ void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     p->clrMode = 1;
     p->collisionMask = COLLISION_MASK_PLAYER;
     p->zDepth = Disabled;
-    p->graphicsAddress = spriteMemAddresses[SPRITE_MEM_PLAYER_IDX];
+    p->graphicsAddress = spriteMemAddresses[SPRITE_MEM_PLAYER_SHIELD_IDX];
     p->animationSpeed = 6;
     if (entrance != 0) {
         p->x = entrance->x * TILE_PIXEL_WIDTH;

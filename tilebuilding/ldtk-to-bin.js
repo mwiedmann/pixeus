@@ -271,7 +271,6 @@ const createLevelCode = (levelNum, level) => {
   // Added a 0, 0 2 byte header required for cbm_k_load
   // Its an optional address to load into. We don't use it but its required
   const output = new Uint8Array([
-    0, 0,
     tilesetId,
     leftLevel ?? 255,
     rightLevel ?? 255,

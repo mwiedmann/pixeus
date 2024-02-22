@@ -150,7 +150,6 @@ void levelExitCleanup(unsigned char hideShip) {
     bullet.active = 0;
     bullet.zDepth = Disabled;
     x16SpriteIdxSetZDepth(bullet.index, bullet.zDepth);
-    hasShield = 1;
 }
 
 /**
@@ -281,6 +280,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 energy+= energyCollision->amount;
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
+                hasShield=1; // Energy also restores the shield
             } else if (entityCollision->entityType == GoldEnum) {
                 goldCollision = (Gold*)entityCollision;
                 gold+= goldCollision->amount;
@@ -471,7 +471,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 }
             }
 
-            spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_IDX);
+            spriteAnimationAddressSet(&player, hasShield ? SPRITE_MEM_PLAYER_SHIELD_IDX : SPRITE_MEM_PLAYER_IDX);
         } else if (tileCollision.type == Water) {
             // Player freezes in the cold water after some time
             if (level->tileList->tilesetId == TILESETID_WINTER) {
@@ -500,7 +500,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 return &playerDrowned;
             }
 
-            spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_SCUBA_IDX);
+            spriteAnimationAddressSet(&player, hasShield ? SPRITE_MEM_PLAYER_SCUBA_SHIELD_IDX : SPRITE_MEM_PLAYER_SCUBA_IDX);
         } else if (tileCollision.type == Lava) {
             return &playerBurned;
         }
@@ -677,6 +677,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (!testMode) {
                     if (hasShield) {
                         hasShield = 0;
+                        spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_IDX);
                     } else {
                         return &playerShot;
                     }
@@ -901,6 +902,8 @@ void main() {
                     // We will recreate and redraw the level they are on
                     // Cleanup the level first though
                     levelExitCleanup(1);
+                    hasShield = 1;
+                    spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_SHIELD_IDX);
                 }
                 
                 // One less life remaining

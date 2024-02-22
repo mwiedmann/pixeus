@@ -172,7 +172,7 @@ void loadTextFile(char *filename, unsigned char bank) {
     RAM_BANK = bank;
 
     cbm_k_setnam(filename);
-    cbm_k_setlfs(0, 8, 0);
+    cbm_k_setlfs(0, 8, 2);
     cbm_k_load(0, (unsigned short)BANK_RAM);
 
     RAM_BANK = prevBank;

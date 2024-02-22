@@ -29,6 +29,7 @@
 #pragma code-name (push, "BANKRAM01")
 
 void showTitleScreen() {
+    unsigned char w;
     unsigned char joy = 0;
     unsigned char wait = 60;
 
@@ -54,6 +55,10 @@ void showTitleScreen() {
     loadFileToVRAM("title.bin", 0, 0);
     preloadTextFiles();
 
+    for (w=0; w<60; w++) {
+        waitforjiffy();
+    }
+    
     soundPlayMusic(SOUND_INDEX_TITLE);
 
     while(1) {

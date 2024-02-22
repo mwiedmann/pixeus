@@ -4,6 +4,9 @@
 #include "sprites.h"
 #include "level.h"
 
+#define SPRITE_COUNT 38
+#define ENEMY_SPRITE_IDX_START SPRITE_MEM_SNAKE_IDX
+
 /*
 COLLISION MASKS:
    ENEMY: 1 0 1 0
@@ -87,5 +90,7 @@ void weaponCreate(Sprite *b, Entity *entityInfo, unsigned char index);
 void extraLifeCreate(Sprite *b, Entity *entityInfo, unsigned char index);
 void shipCreate(Sprite *b, unsigned char index);
 void explosionSmallCreate(Sprite *b, unsigned char index);
+
+extern unsigned short spriteMemAddresses[SPRITE_COUNT];
 
 #endif

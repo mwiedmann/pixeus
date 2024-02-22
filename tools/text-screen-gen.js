@@ -198,7 +198,6 @@ const createTextRecord = (rec) => {
 
 // header record 1 byte, number of records
 const welcomeBytes = [
-    0,0, // 2 byte cbm x16 header (ignored)
     welcomeScreen.length
 ]
 
@@ -212,7 +211,6 @@ saveFile('../bundle/WELCOME.BIN', welcomeBytes);
 // Instructions Screen
 // ***********************************************
 const instructionBytes = [
-    0,0,
     instructionsScreen.length
 ]
 
@@ -226,7 +224,6 @@ saveFile('../bundle/INSTR.BIN', instructionBytes);
 // Game Over Screen
 // ***********************************************
 const gameOverBytes = [
-    0,0,
     gameOverScreen.length
 ]
 
@@ -240,7 +237,6 @@ saveFile('../bundle/GAMEOVER.BIN', gameOverBytes);
 // No Gold Victory Screen
 // ***********************************************
 const noGoldBytes = [
-    0,0,
     noGoldVictory.length
 ]
 
@@ -254,7 +250,6 @@ saveFile('../bundle/NOGOLD.BIN', noGoldBytes);
 // Gold Screen
 // ***********************************************
 const goldBytes = [
-    0,0,
     goldScreen.length
 ]
 
@@ -268,7 +263,6 @@ saveFile('../bundle/GOLD.BIN', goldBytes);
 // Energy Screen
 // ***********************************************
 const energyBytes = [
-    0,0,
     energyScreen.length
 ]
 

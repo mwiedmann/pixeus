@@ -43,7 +43,7 @@ unsigned long loadFileToVRAM(char *filename, unsigned char vramBank, unsigned sh
     // 0 - File has the 2 byte header, but skip it
     // 1 - File has the 2 byte header, use it
     // 2 - File does NOT have the 2 byte header
-    cbm_k_setlfs(0, 8, 0);
+    cbm_k_setlfs(0, 8, 2);
 
     // Finally, load the file somewhere into RAM or VRAM
     // First param of cbm_k_load means:
