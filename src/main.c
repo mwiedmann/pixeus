@@ -5,6 +5,7 @@
 // Libs
 #include "x16graphics.h"
 #include "sprites.h"
+#include "waitforjiffy.h"
 
 // Game specific
 #include "startup.h"
@@ -22,8 +23,7 @@
 #include "levelutils.h"
 #include "fontmgr.h"
 #include "entitymgr.h"
-#include "soundmgr.h"
-#include "loopmgr.h"
+#include "sound.h"
 
 #define PLAYER_SHOOT_FRAMES 15
 
@@ -180,16 +180,16 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         // Play the music for this environment/tileset
         switch (level->tileList->tilesetId)
         {
-            case 1: loadForestMusic(); break;
-            case 2: loadDesertMusic(); break;
-            case 3: loadTundraMusic(); break;
-            case 4: loadUnderworldMusic(); break;
+            case 1: soundPlayMusic(SOUND_INDEX_FOREST); break;
+            case 2: soundPlayMusic(SOUND_INDEX_DESERT); break;
+            case 3: soundPlayMusic(SOUND_INDEX_TUNDRA); break;
+            case 4: soundPlayMusic(SOUND_INDEX_HELL); break;
         }
 
         // Stopping music causes issues with the layer maps (zsound bug?)
         // Call the loop update to allow music change to take effect,
         // then layerMapsClear should clean things up
-        loopUpdates();
+        waitforjiffy();
 
         // Clear before loading the next tileset or the existing level
         // briefly shows with a new tileset. Looks kinda weird for a sec.
@@ -232,7 +232,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
     loopCount = 0;
 
     while (1) {
-        loopUpdates();
+        waitforjiffy();
 
         // Special ship landing scene before the player can move
         if (showShipScene) {
@@ -626,7 +626,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             x16SpriteIdxSetXY(bullet.index, bullet.x, bullet.y);
             x16SpriteIdxSetHFlip(bullet.index, bullet.animationDirection);
 
-            playLaser();
+            soundPlaySFX(SOUND_SFX_SHOOT, SOUND_PRIORITY_SFX);
             framesUntilNextShot = PLAYER_SHOOT_FRAMES;
         }
 
@@ -679,7 +679,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             // Enemy was hit by the player's laser
             // Show explosion
             smallExplosion(&expSmall, BetweenL0L1, bullet.x, bullet.y);
-            playAlienHit();
+            soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX);
 
             // Find the enemy
             hitEnemy = findEnemyCollision(&bullet);
@@ -708,7 +708,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
                     // Explosion
                     smallExplosion(&expSmall, InFrontOfL1, bullet.x, bullet.y);
-                    playAlienHit();
+                    soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX);
                 }
                 bullet.active = 0;
                 bullet.zDepth = Disabled;
@@ -750,17 +750,16 @@ void main() {
     // Need this to hold onto any specific entrance the player is jumping to
     // For the starting level, the game looks for EntranceId=0
     Entrance *entrance;
-    
-    // Pixeus must run in its directory
-    // otherwise it will not be able to find any of its files and the game crashes
-    // Show a message explaining this so if it crashes the user has some reason why
-    if (loadingMessage() == 0) {
-        return;
-    }
 
     // Sounds are loaded into HIRAM Banks for use later
     // Make sure not to overwrite these banks
-    loadSounds();
+    soundInit();
+
+    RAM_BANK = CODE_BANK;
+    cbm_k_setnam("pixeus.prg.01");
+    cbm_k_setlfs(0, 8, 0);
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+    RAM_BANK = LEVEL_BANK;
 
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -792,7 +791,9 @@ void main() {
         layerMapsClear();
 
         // Show the bitmap title screen
+        RAM_BANK = CODE_BANK;
         showTitleScreen();
+        RAM_BANK = LEVEL_BANK;
 
         // Clear the maps to remove the title screen junk
         layerMapsClear();
@@ -819,7 +820,10 @@ void main() {
         standardTilesLoad();
 
         // Show the intro screen before starting the level
+        RAM_BANK = CODE_BANK;
         testMode = showIntroScene(&ship);
+        RAM_BANK = LEVEL_BANK;
+
         showShipScene = !testMode;
 
         // We use this as a general counter for game length to reset enemies after some time
@@ -851,7 +855,7 @@ void main() {
             } else {
                 // Pause the game for a moment since player died (or escaped!)
                 for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
-                    loopUpdates();
+                    waitforjiffy();
                 }
                 switch(exitCollision.entityType) {
                     case PLAYER_EATEN: showMessage("PIXEUS IS CONSUMED BY THE CREATURE"); break;
@@ -879,7 +883,9 @@ void main() {
                         x16SpriteIdxSetXY(player.index, player.x, player.y);
                         x16SpriteIdxSetZDepth(ship.index, Disabled);
                         
+                        RAM_BANK = CODE_BANK;
                         gameOverScreen(gold, energy);
+                        RAM_BANK = LEVEL_BANK;
                     }
                     break;
                 } else {
@@ -905,8 +911,6 @@ void main() {
 
     // Disable sprite collisions before quitting
     x16SpriteCollisionsDisable();
-
-    soundsCleanup();
 
     // TODO: Restore the text video mode
 

@@ -92,7 +92,9 @@
 /**
  * Cached level data like entities that don't respawn (gold, energy, items) and enemy respawn status
 */
-#define LEVEL_CACHE_BANK 3
+// We don't seem to use this any longer
+// Cached lists are in low RAM...yikes!
+// #define LEVEL_CACHE_BANK 3 
 
 /**
  * Starting bank used when loading images
@@ -100,11 +102,12 @@
 */
 #define IMAGE_LOAD_BANK 4
 
-#define WELCOME_BANK 10
-#define INSTRUCTIONS_BANK 11
+#define CODE_BANK 10
+#define WELCOME_BANK 11
+#define INSTRUCTIONS_BANK 12
 
-#define MUSIC_BANK 20
-#define SOUND_BANK_LASER 40
-#define SOUND_BANK_ALIEN_HIT 44
+#define ZSM_BANK 20
+#define SFX_BANK 21
+#define MUSIC_BANK 22
 
 #endif

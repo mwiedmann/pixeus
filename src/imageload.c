@@ -36,7 +36,7 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
     // I had to increment the bank and do it in chunks though.
     for (i=0; i<length/8192+1; i++) {
         // Set the bank to read from
-        POKE(0, startMemBank+i);
+        RAM_BANK = startMemBank+i;
 
         // void memory_copy(word source: r0, word target: r1, word num_bytes: r2);
         POKEW(0x2, (unsigned int)startingImageAddr);
@@ -52,18 +52,46 @@ void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned char vramBank, uns
     }
 }
 
-unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, unsigned char *filename)
+void loadFileToVRAM(char *filename, unsigned char vramBank, unsigned short vramAddr) {
+    // These 3 functions are basic wrappers for the Kernal Functions
+
+    // You have to first set the name of the file you are working with.
+    cbm_k_setnam(filename);
+
+    // Next you setup the LFS (Logical File) for the file
+    // First param is the Logical File Number
+    //   Use 0 if you are just loading the file
+    //   You can use other values to keep multiple files open
+    // Second param is the device number
+    //   The SD Card on the CX16 is 8
+    // The last param is the Secondary Address
+    // 0 - File has the 2 byte header, but skip it
+    // 1 - File has the 2 byte header, use it
+    // 2 - File does NOT have the 2 byte header
+    cbm_k_setlfs(0, 8, 0);
+
+    // Finally, load the file somewhere into RAM or VRAM
+    // First param of cbm_k_load means:
+    //   0, loads into system memory.
+    //   1, perform a verify.
+    //   2, loads into VRAM, starting from 0x00000 + the specified starting address.
+    //   3, loads into VRAM, starting from 0x10000 + the specified starting address.
+    // Second param is the 16 bit address 
+    cbm_k_load(vramBank ? 3 : 2, vramAddr);
+}
+
+unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, unsigned short vramAddr, char *filename)
 {
     unsigned char endingMemBank;
     unsigned short finalmem;
     unsigned long length;
     unsigned char currentMemBank;
 
-    currentMemBank = PEEK(0);
+    currentMemBank = RAM_BANK;
 
     // The memory bank to start loading data into.
     // The bank will auto-jump to the next bank when this bank is full (pretty neat).
-    POKE(0, startMemBank);
+    RAM_BANK = startMemBank;
 
     // Note about the files
     // The first 2 bytes are ignored in this mode so you have to pad your images with 2 leading bytes
@@ -95,7 +123,7 @@ unsigned long imageFileLoad(unsigned char startMemBank, unsigned char vramBank, 
     copyBankedRAMToVRAM(startMemBank, vramBank, vramAddr, length, (unsigned short)BANK_RAM);
 
     // Restore the previous mem bank
-    POKE(0, currentMemBank);
+    RAM_BANK = currentMemBank;
 
     return length;
 }

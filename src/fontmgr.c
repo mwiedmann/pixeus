@@ -2,15 +2,13 @@
 #include <stdlib.h>
 #include <cbm.h>
 #include <cx16.h>
-#include <peekpoke.h>
 
 #include "memmap.h"
 #include "gametiles.h"
 #include "x16graphics.h"
 #include "levelutils.h"
-#include "loopmgr.h"
 
-unsigned char letterToTile(unsigned char letter) {
+unsigned char letterToTile(char letter) {
     unsigned char tile;
 
     if (letter >= 193 && letter <= 218) {
@@ -43,7 +41,7 @@ unsigned char letterToTile(unsigned char letter) {
 /**
  * String length get with a cap of 40 (our max screen width)
 */
-unsigned char textLengthGet(unsigned char* text) {
+unsigned char textLengthGet(char* text) {
     unsigned char i;
 
     for (i=0; i<40; i++) {
@@ -82,7 +80,7 @@ void tileRowSet(unsigned char *orig, unsigned char row) {
     }
 }
 
-void drawTextRow(unsigned char* text, unsigned char* orig, unsigned char row, unsigned char col) {
+void drawTextRow(char* text, unsigned char* orig, unsigned char row, unsigned char col) {
     unsigned char i;
     
     if (orig != 0) {
@@ -103,7 +101,7 @@ void drawTextRow(unsigned char* text, unsigned char* orig, unsigned char row, un
     }
 }
 
-void drawCenteredTextRow(unsigned char* text, unsigned char* orig, unsigned char row) {
+void drawCenteredTextRow(char* text, unsigned char* orig, unsigned char row) {
     unsigned char col;
     unsigned char length;
 
@@ -115,8 +113,8 @@ void drawCenteredTextRow(unsigned char* text, unsigned char* orig, unsigned char
 void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char lives,
     unsigned short hasScuba, unsigned char hasWeapon, unsigned char hasBoots,
     unsigned char coldCount, unsigned char hotCount) {
-    unsigned char text[41];
-    unsigned char dangerText[5] = "    ";
+    char text[41];
+    char dangerText[5] = "    ";
     
     // Show the snowflake or flame tile with count if needed
     if (coldCount > 0 || hotCount > 0) {
@@ -135,10 +133,10 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
     drawTextRow(text, 0, 0, 0);
 }
 
-void showMessage(unsigned char* text) {
+void showMessage(char* text) {
     unsigned char i, length;
     unsigned char *orig1, *orig2, *orig3;
-    unsigned char line[41];
+    char line[41];
 
     orig1 = malloc(80);
     orig2 = malloc(80);
@@ -169,19 +167,25 @@ void showMessage(unsigned char* text) {
     free(orig3);
 }
 
-void loadTextFile(unsigned char *filename, unsigned char bank) {
-    POKE(0, bank);
+void loadTextFile(char *filename, unsigned char bank) {
+    unsigned char prevBank = RAM_BANK;
+    RAM_BANK = bank;
+
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
     cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    RAM_BANK = prevBank;
 }
 
 void drawTextFileFromBank(unsigned char bank, unsigned short argComp) {
+    unsigned char prevBank = RAM_BANK;
     unsigned char i;
-    unsigned char *length, *text, *row, *col;
+    unsigned char *length, *row, *col;
+    char *text;
     unsigned short *arg;
 
-    POKE(0, bank);
+    RAM_BANK = bank;
 
     // 1 byte header with length
     length = BANK_RAM;
@@ -197,7 +201,7 @@ void drawTextFileFromBank(unsigned char bank, unsigned short argComp) {
         row = BANK_RAM + 1 + (45*i);
         col = BANK_RAM + 1 + (45*i) + 1;
         arg = (unsigned short *)(BANK_RAM + 1 + (45*i) + 2);
-        text = BANK_RAM + 1 + (45*i) + 4;
+        text = (char *)(BANK_RAM + 1 + (45*i) + 4);
         // arg/argComp are used to optionally display text
         // We use it to show what Pixeus buys depending on how much gold
         if (argComp >= *arg) {
@@ -209,17 +213,19 @@ void drawTextFileFromBank(unsigned char bank, unsigned short argComp) {
             }
         }
     }
+
+    RAM_BANK = prevBank;
 }
 
-void drawTextFile(unsigned char *filename, unsigned short argComp) {
+void drawTextFile(char *filename, unsigned short argComp) {
     unsigned char currentMemBank;
 
-    currentMemBank = PEEK(0);
+    currentMemBank = RAM_BANK;
 
     loadTextFile(filename, IMAGE_LOAD_BANK);
     drawTextFileFromBank(IMAGE_LOAD_BANK, argComp);
 
-    POKE(0, currentMemBank);
+    RAM_BANK =  currentMemBank;
 }
 
 void preloadTextFiles() {

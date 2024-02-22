@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <joystick.h>
+#include <cx16.h>
 
+#include "waitforjiffy.h"
 #include "level.h"
 #include "sprites.h"
 #include "gametiles.h"
-#include "soundmgr.h"
-#include "loopmgr.h"
+#include "sound.h"
 
 #define PLAYER_NEAR_X 180
 #define PLAYER_NEAR_Y 40
@@ -32,7 +33,7 @@ void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tile
     tileCollision->y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;
 
     // NOTE: Some IDEs complain about this array cast but it compiles
-    tileCollision->type = ((unsigned char[30][40])level->movementTypes)[tileCollision->y][tileCollision->x];
+    tileCollision->type = ((unsigned char(*)[40])level->movementTypes)[tileCollision->y][tileCollision->x];
 }
 
 unsigned char playerNear(Sprite *player, short x, short y) {
@@ -73,21 +74,21 @@ void waitForButtonPress() {
     unsigned char joy = 0;
 
     while(1) {
-        loopUpdates();
+        waitforjiffy();
         
         joy = joy_read(0);
 
         // Exit when either button is pressed
         if (JOY_BTN_1(joy)) {
             while(JOY_BTN_1(joy)) {
-                loopUpdates();
+                waitforjiffy();
         
                 joy = joy_read(0);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
-                loopUpdates();
+                waitforjiffy();
         
                 joy = joy_read(0);
             }
@@ -105,14 +106,14 @@ unsigned char readButtonPress() {
     // Exit when either button is pressed
     if (JOY_BTN_1(joy)) {
         while(JOY_BTN_1(joy)) {
-            loopUpdates();
+            waitforjiffy();
         
             joy = joy_read(0);
         }
         pressed = 1;
     } else if (JOY_BTN_2(joy)) {
         while(JOY_BTN_2(joy)) {
-            loopUpdates();
+            waitforjiffy();
         
             joy = joy_read(0);
         }

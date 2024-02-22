@@ -2,7 +2,6 @@
 #include <cbm.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <peekpoke.h>
 #include "x16graphics.h"
 #include "memmap.h"
 #include "level.h"
@@ -36,7 +35,7 @@ LevelOveralLayout *levelGet(unsigned char levelNum) {
     sprintf(filename, "level%u.bin", levelNum);
 
     // Load the level file into Banked RAM
-    POKE(0, LEVEL_BANK);
+    RAM_BANK = LEVEL_BANK;
     cbm_k_setnam(filename);
     cbm_k_setlfs(0, 8, 0);
     cbm_k_load(0, (unsigned short)ramstart);

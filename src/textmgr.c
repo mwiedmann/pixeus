@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <cbm.h>
 #include <cx16.h>
-
 #include <peekpoke.h>
 #include <joystick.h>
-#include "loopmgr.h"
+
+#include "waitforjiffy.h"
 #include "x16graphics.h"
 #include "memmap.h"
 #include "imageload.h"
@@ -13,7 +13,7 @@
 #include "levelutils.h"
 #include "gamesprites.h"
 #include "levelmgr.h"
-#include "soundmgr.h"
+#include "sound.h"
 
 #define SELECTION_START_GAME 1
 #define SELECTION_JUKEBOX 2
@@ -26,19 +26,7 @@
 // Uncomment if we use the game start sound
 // unsigned char gameStartDone;
 
-unsigned short loadingMessage() {
-    unsigned short bytes = 0;
-
-    printf("Loading...\nYou must run PIXEUS.PRG from its directory.\n\n");
-
-    POKE(0, IMAGE_LOAD_BANK);
-    cbm_k_setnam("level0.bin");
-    cbm_k_setlfs(0, 8, 0);
-    bytes = cbm_k_load(0, (unsigned short)BANK_RAM) - (unsigned short)BANK_RAM;
-
-    // Level 0 should show 2374 because minus the 2 byte header
-    return bytes;
-}
+#pragma code-name (push, "BANKRAM01")
 
 void showTitleScreen() {
     unsigned char joy = 0;
@@ -63,13 +51,13 @@ void showTitleScreen() {
     // Start in VBank 0, Addr 0
     POKE(LAYER_1_TILEBASE, 0);
 
-    imageFileLoad(IMAGE_LOAD_BANK, 0, 0, "title.bin");
+    loadFileToVRAM("title.bin", 0, 0);
     preloadTextFiles();
 
-    loadTitleMusic();
+    soundPlayMusic(SOUND_INDEX_TITLE);
 
     while(1) {
-        loopUpdates();
+        waitforjiffy();
 
         joy = joy_read(0);
 
@@ -77,14 +65,14 @@ void showTitleScreen() {
         // Exit with testMode ON if UP is pressed
         if (JOY_BTN_1(joy)) {
             while(JOY_BTN_1(joy)) {
-                loopUpdates();
+                waitforjiffy();
         
                 joy = joy_read(0);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
-                loopUpdates();
+                waitforjiffy();
         
                 joy = joy_read(0);
             }
@@ -94,19 +82,6 @@ void showTitleScreen() {
 
     // Turn off Layer 1 (both layers will be off while things are loading)
     POKE(VMEM_VIDEO, PEEK(VMEM_VIDEO) ^ 0b00100000);
-}
-
-void waitWithShipAnimation(Sprite *ship) {
-    while(1) {
-        // Wait for screen to finish drawing since we are animating the ship
-        loopUpdates();
-        spriteAnimationAdvance(ship);
-
-        // Exit when either button is pressed
-        if (readButtonPress()) {
-            break;
-        }
-    }
 }
 
 unsigned char showSelectionScreen() {
@@ -134,7 +109,7 @@ unsigned char showSelectionScreen() {
         #endif
 
         while(1) {
-            loopUpdates();
+            waitforjiffy();
             
             joy = joy_read(0);
 
@@ -144,7 +119,7 @@ unsigned char showSelectionScreen() {
                     selection = SELECTION_MAX;
                 }
                 while(JOY_UP(joy)) {
-                    loopUpdates();
+                    waitforjiffy();
             
                     joy = joy_read(0);
                 }
@@ -155,7 +130,7 @@ unsigned char showSelectionScreen() {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
-                    loopUpdates();
+                    waitforjiffy();
             
                     joy = joy_read(0);
                 }
@@ -168,19 +143,6 @@ unsigned char showSelectionScreen() {
         }
     }
 }
-
-void songOverEmpty(unsigned char a, unsigned char b) {
-    (void)a;
-    (void)b;
-    loadEmptyMusic();
-}
-
-// void gameStartOver(unsigned char a, unsigned char b) {
-//     (void)a;
-//     (void)b;
-//     loadTitleMusic();
-//     gameStartDone = 1;
-// }
 
 void showJukebox() {
     unsigned char selection = 1;
@@ -218,7 +180,7 @@ void showJukebox() {
         playMusic = 0;
 
         while(1) {
-            loopUpdates();
+            waitforjiffy();
             
             joy = joy_read(0);
 
@@ -228,7 +190,7 @@ void showJukebox() {
                     selection = 8;
                 }
                 while(JOY_UP(joy)) {
-                    loopUpdates();
+                    waitforjiffy();
             
                     joy = joy_read(0);
                 }
@@ -239,7 +201,7 @@ void showJukebox() {
                     selection = 1;
                 }
                 while(JOY_DOWN(joy)) {
-                    loopUpdates();
+                    waitforjiffy();
             
                     joy = joy_read(0);
                 }
@@ -254,26 +216,39 @@ void showJukebox() {
 
         if (playMusic) {
             switch(selection) {
-                case 1: loadTitleMusic(); break;
-                case 2: loadCreditsMusic(); break;
-                case 3: loadForestMusic(); break;
-                case 4: loadDesertMusic(); break;
-                case 5: loadTundraMusic(); break;
-                case 6: loadUnderworldMusic(); break;
+                case 1: soundPlayMusic(SOUND_INDEX_TITLE); break;
+                case 2: soundPlayMusic(SOUND_INDEX_CREDITS); break;
+                case 3: soundPlayMusic(SOUND_INDEX_FOREST); break;
+                case 4: soundPlayMusic(SOUND_INDEX_DESERT); break;
+                case 5: soundPlayMusic(SOUND_INDEX_TUNDRA); break;
+                case 6: soundPlayMusic(SOUND_INDEX_HELL); break;
                 // case 7: loadStartMusic(songOverEmpty); break;
                 // case 8: loadGameOverMusic(songOverEmpty); break;
                 // case 9: loadVictoryMusic(songOverEmpty); break;
                 
                 // Stopping the music breaks everything right now...WTF!
                 // Cheat by playing an empty song
-                case 7: loadEmptyMusic(); break; 
+                case 7: soundStopChannel(SOUND_PRIORITY_MUSIC); break; 
                 case 8: return;
             }
 
             // zsound bug throws junk into the layer map when you stop/switch music
             // Just clear it as a workaround.
             layerMapsClear();
-            loopUpdates();
+            waitforjiffy();
+        }
+    }
+}
+
+void waitWithShipAnimation(Sprite *ship) {
+    while(1) {
+        // Wait for screen to finish drawing since we are animating the ship
+        waitforjiffy();
+        spriteAnimationAdvance(ship);
+
+        // Exit when either button is pressed
+        if (readButtonPress()) {
+            break;
         }
     }
 }
@@ -288,26 +263,14 @@ unsigned char showIntroScene(Sprite *ship) {
         if (selection == SELECTION_TEST_MODE) {
             return 1;
         } else if (selection == SELECTION_MUTE_SOUND) {
-            muteToggle();
+            toggleMusic();
             layerMapsClear();
-            loopUpdates();
+            waitforjiffy();
             continue;
         } else if (selection == SELECTION_JUKEBOX) {
             showJukebox();
             continue;
         }
-
-        // I don't love this Game Start sound but leaving this hook here
-        /*
-        gameStartDone = 0;
-        loadStartMusic(gameStartOver);
-
-        while(gameStartDone == 0) {
-            loopUpdates();
-        }
-        
-        loopUpdates();
-        */
 
         layerMapsClear();
         drawTextFileFromBank(WELCOME_BANK, 0);
@@ -334,7 +297,7 @@ unsigned char showIntroScene(Sprite *ship) {
 }
 
 void gameOverScreen(unsigned short gold, unsigned char energy) {
-    unsigned char scoreRow[41];
+    char scoreRow[41];
 
     layerMapsClear();
 
@@ -344,7 +307,7 @@ void gameOverScreen(unsigned short gold, unsigned char energy) {
     drawTextFile("gameover.bin", 0);
 
     while(1) {
-        loopUpdates();
+        waitforjiffy();
         
         // Exit when either button is pressed
         if (readButtonPress()) {
@@ -354,11 +317,11 @@ void gameOverScreen(unsigned short gold, unsigned char energy) {
 }
 
 void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
-    unsigned char text[41];
+    char text[41];
     unsigned char loop = 0;
     
-    loadCreditsMusic();
-    loopUpdates();
+    soundPlayMusic(SOUND_INDEX_CREDITS);
+    waitforjiffy();
 
     while (loop <= 1) {
         layerMapsClear();
@@ -386,7 +349,7 @@ void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
 
         while(1) {
             // Wait for screen to finish drawing since we are animating the ship
-            loopUpdates();
+            waitforjiffy();
             
             spriteAnimationAdvance(ship);
 
@@ -399,3 +362,5 @@ void victoryScreen(Sprite *ship, unsigned short gold, unsigned char energy) {
         loop++;
     }
 }
+
+#pragma code-name (pop)

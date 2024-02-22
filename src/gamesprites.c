@@ -71,7 +71,7 @@ EnemyStats enemyStats[25] = {
 */
 void spriteDataLoad() {
     unsigned char i;
-    unsigned char filename[32];
+    char filename[32];
     unsigned short allBytes = SPRITE_MEM;
 
     for (i=0; i<ENEMY_SPRITE_IDX_START; i++) {
@@ -86,7 +86,7 @@ void spriteDataLoad() {
 
 void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
     unsigned char i, gIdx;
-    unsigned char filename[32];
+    char filename[32];
     unsigned short allBytes = enemySpritesMemStart;
 
     // Clear any existing sprite memory addresses

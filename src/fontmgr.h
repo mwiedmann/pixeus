@@ -4,7 +4,7 @@
 /**
  * Convert a char to a Tile ID
 */
-unsigned char letterToTile(unsigned char letter);
+unsigned char letterToTile(char letter);
 
 /**
  * Get a list of the Tile IDs for a screen row.
@@ -21,13 +21,13 @@ void tileRowSet(unsigned char *orig, unsigned char row);
  * Draw text to the screen starting at a row and col.
  * Optional pointer to a buffer to save the current Tile IDs that will be overwritten.
 */
-void drawTextRow(unsigned char* text, unsigned char* orig, unsigned char row, unsigned char col);
+void drawTextRow(char* text, unsigned char* orig, unsigned char row, unsigned char col);
 
 /**
  * Draw text to the screen centered in a row.
  * Optional pointer to a buffer to save the current Tile IDs that will be overwritten.
 */
-void drawCenteredTextRow(unsigned char* text, unsigned char* orig, unsigned char row);
+void drawCenteredTextRow(char* text, unsigned char* orig, unsigned char row);
 
 /**
  * Draw the top row game header
@@ -40,12 +40,12 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
  * Show a centered (row and col) text message. It is dismissed with a button press.
  * It will restore the overwritten tiles when dismissed.
 */
-void showMessage(unsigned char* text);
+void showMessage(char* text);
 
 /**
  * Load a "text file" to Banked RAM
 */
-void loadTextFile(unsigned char *filename, unsigned char bank);
+void loadTextFile(char *filename, unsigned char bank);
 
 /**
  * Draw a previously loaded "text file".
@@ -57,7 +57,7 @@ void drawTextFileFromBank(unsigned char bank, unsigned short argComp);
 /**
  * Load and draw a "text file". See "drawTextFileFromBank" for more info.
 */
-void drawTextFile(unsigned char *filename, unsigned short argComp);
+void drawTextFile(char *filename, unsigned short argComp);
 
 /**
  * Preload a few common "text files"

@@ -66,9 +66,7 @@ for (ty = 0; ty < yTiles; ty++) {
 
 // console.log(JSON.stringify(pixelData))
 
-// Added a 0, 0 2 byte header required for cbm_k_load
-// Its an optional address to load into. We don't use it but its required
-const output = new Uint8Array([0, 0, ...flattenedTiles]);
+const output = new Uint8Array(flattenedTiles);
 
 const outputFilename = `../bundle/${fileparts[0].toUpperCase()}.BIN`;
 fs.writeFileSync(outputFilename, output, "binary");

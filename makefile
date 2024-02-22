@@ -1,29 +1,21 @@
 CC=cl65
 
 make:
-	$(CC) -O -I lib -I zsound -o bundle/PIXEUS.PRG -t cx16 \
-	game/main.c \
-	game/startup.c game/level.c game/levelmgr.c game/enemymgr.c game/entitymgr.c game/soundmgr.c game/textmgr.c game/loopmgr.c \
-	game/fontmgr.c game/levelutils.c game/gametiles.c game/gamesprites.c \
-	lib/x16graphics.c lib/sprites.c lib/imageload.c lib/waitforjiffy.s \
-	zsound/zsound.lib
+	$(CC) --cpu 65C02 -Or -Cl -C cx16-zsm-bank.cfg -o bundle/PIXEUS.PRG -t cx16 \
+	src/main.c \
+	src/startup.c src/level.c src/levelmgr.c src/enemymgr.c src/entitymgr.c src/sound.c src/textmgr.c \
+	src/fontmgr.c src/levelutils.c src/gametiles.c src/gamesprites.c \
+	src/x16graphics.c src/sprites.c src/imageload.c src/waitforjiffy.s src/zsmkit.lib
 
 test:
-	$(CC) -O -o test.prg -t cx16 game/test.c
+	$(CC) -O -o test.prg -t cx16 src/test.c
 
 testrun:
 	../emu-r42/x16emu -prg test.prg -run
 
-clean:
-	rm lib/*.o images/*.o game/*.o
-
 run:
 	cd bundle && \
-	../../emu-r41/x16emu -prg PIXEUS.PRG -run
-
-run42:
-	cd bundle && \
-	../../emu-r42/x16emu -prg PIXEUS.PRG -run
+	../../emu-r46/x16emu -prg PIXEUS.PRG -run
 
 level:
 	cd tilebuilding && node ldtk-to-bin.js
@@ -35,10 +27,7 @@ txt:
 	cd tools && node text-screen-gen.js
 
 snd:
-	cp sounds/*.ZSM bundle && \
-	cd tools && \
-	node wav2pcm.js shoot.wav 48 && \
-	node wav2pcm.js hit.wav 64
+	cp sounds/*.ZSM bundle
 
 img:
 	cd tools && \

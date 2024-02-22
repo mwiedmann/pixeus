@@ -31,7 +31,7 @@
 typedef enum { Disabled = 0, BetweenBackL0 = 1, BetweenL0L1 = 2, InFrontOfL1 = 3 } ZDepth;
 typedef enum { PX8 = 0, PX16 = 1, PX32 = 2, PX64 = 3 } SpriteSize;
 
-unsigned char pixelSizes[];
+extern unsigned char pixelSizes[4];
 
 struct MemSplit {
     unsigned char low; 

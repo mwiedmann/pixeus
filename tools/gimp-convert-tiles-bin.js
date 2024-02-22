@@ -144,9 +144,7 @@ for (ty = 0; ty < yTiles; ty++) {
   }
 }
 
-// Added a 0, 0 2 byte header required for cbm_k_load
-// Its an optional address to load into. We don't use it but its required
-const output = new Uint8Array([0, 0, ...flattenedTiles]);
+const output = new Uint8Array(flattenedTiles);
 
 fs.writeFileSync(outputFilename, output, "binary");
 
