@@ -158,7 +158,7 @@ void showJukebox() {
 
     while (1) {
         drawCenteredTextRow("JUKEBOX", 0, 3);
-        drawCenteredTextRow("ENJOY THESE AMAZING TUNES AND FX", 0, 5);
+        drawCenteredTextRow("ENJOY THESE AMAZING TUNES", 0, 5);
         drawCenteredTextRow("BY CRISPS", 0, 6);
 
         drawCenteredTextRow("USE THE JOYSTICK TO SELECT", 0, 9);

@@ -135,12 +135,8 @@ void drawGameHeader(unsigned short gold, unsigned char energy, unsigned char liv
 
 void showMessage(char* text) {
     unsigned char i, length;
-    unsigned char *orig1, *orig2, *orig3;
+    unsigned char orig1[80], orig2[80], orig3[80];
     char line[41];
-
-    orig1 = malloc(80);
-    orig2 = malloc(80);
-    orig3 = malloc(80);
 
     length = textLengthGet(text);
     sprintf(line, "- %s -", text);
@@ -161,10 +157,6 @@ void showMessage(char* text) {
     tileRowSet(orig1, 14);
     tileRowSet(orig2, 13);
     tileRowSet(orig3, 15);
-
-    free(orig1);
-    free(orig2);
-    free(orig3);
 }
 
 void loadTextFile(char *filename, unsigned char bank) {

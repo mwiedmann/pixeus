@@ -885,7 +885,9 @@ void main() {
                     if (exitCollision.entityType == PLAYER_ESCAPED) {
                         levelExitCleanup(0);
                         x16SpriteIdxSetZDepth(player.index, Disabled);
+                        RAM_BANK = CODE_BANK;
                         victoryScreen(&ship, gold, energy);
+                        RAM_BANK = LEVEL_BANK;
                     } else {
                         levelExitCleanup(1);
                         // Place Pixeus for the game over screen
