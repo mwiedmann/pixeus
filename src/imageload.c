@@ -6,6 +6,8 @@
 #define ROM_START 0xC000
 #define BANK_SIZE 8192
 
+#pragma code-name (push, "BANKRAM01")
+
 void clearVRAM(unsigned char vramBank, unsigned short vramAddr, unsigned long length) {
     vMemSetBank(vramBank);
     vMemSetAddr(vramAddr);
@@ -58,3 +60,5 @@ unsigned long loadFileToVRAM(char *filename, unsigned char vramBank, unsigned sh
 
     return length;
 }
+
+#pragma code-name (pop)

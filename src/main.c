@@ -198,7 +198,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         layerMapsClear();
 
         // Load in the new tileset
-        tilesConfig(level->tileList->tilesetId);        
+        RAM_BANK = CODE_BANK;
+        tilesConfig(level->tileList->tilesetId);
+        RAM_BANK = LEVEL_BANK;    
     } else {
         // No music/tileset change. Just clear the maps/screen
         layerMapsClear();
@@ -767,7 +769,6 @@ void main() {
     cbm_k_setnam("pixeus.prg.01");
     cbm_k_setlfs(0, 8, 0);
     cbm_k_load(0, (unsigned short)BANK_RAM);
-    RAM_BANK = LEVEL_BANK;
 
     // Configure the joysticks
     joy_install(cx16_std_joy);
@@ -776,6 +777,7 @@ void main() {
     // It is mostly the standard palette but some colors in the 17-30-ish range
     // have been swapped out
     paletteLoad();
+    RAM_BANK = LEVEL_BANK;
 
     while(1) {
         // When we go to the next level, we may need to load a new tileset
@@ -803,7 +805,6 @@ void main() {
         // Show the bitmap title screen
         RAM_BANK = CODE_BANK;
         showTitleScreen();
-        RAM_BANK = LEVEL_BANK;
 
         // Clear the maps to remove the title screen junk
         layerMapsClear();
@@ -813,6 +814,8 @@ void main() {
         // Currently we have enough memory for this BUT as the game grows...
         // Maybe refactor to load just the needed sprites with each level?
         spriteDataLoad();
+        RAM_BANK = LEVEL_BANK;
+        
         spriteIRQConfig();
         playerCreate(&player, entrance, nextSpriteIndex++);
         bulletCreate(&bullet, nextSpriteIndex++);
@@ -824,13 +827,15 @@ void main() {
         // If you switch video modes first, you get crazy stuff on screen (kinda cool?)
         videoConfig();
 
+        RAM_BANK = CODE_BANK;
+
         // Load some standard tiles (empty, black, font)
         // These stay in the Tileset RAM for the entire game
         // Level tilesets are loaded in RAM after
         standardTilesLoad();
 
         // Show the intro screen before starting the level
-        RAM_BANK = CODE_BANK;
+        
         testMode = showIntroScene(&ship);
         RAM_BANK = LEVEL_BANK;
 

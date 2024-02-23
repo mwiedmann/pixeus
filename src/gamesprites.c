@@ -62,6 +62,8 @@ EnemyStats enemyStats[25] = {
     { SPRITE_MEM_WOLF_IDX,      6,  6,  3,  120, 240, 1 },
 };
 
+#pragma code-name (push, "BANKRAM01")
+
 /**
  * These are non-enemy sprites that we just load once.
  * Other sprites (enemies) are loaded on demand.
@@ -81,6 +83,8 @@ void spriteDataLoad() {
     enemySpritesMemStart = allBytes;
 }
 
+#pragma code-name (pop)
+
 void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
     unsigned char i, gIdx;
     char filename[32];
@@ -96,7 +100,9 @@ void spriteEnemyDataLoad(EnemyLayout *enemies, unsigned char length) {
         if (spriteMemAddresses[gIdx] == 0) {
             sprintf(filename, "sp%u.bin", gIdx);
             spriteMemAddresses[gIdx] = allBytes;
+            RAM_BANK = CODE_BANK;
             allBytes+= loadFileToVRAM(filename, SPRITE_MEM_BANK, allBytes);
+            RAM_BANK = LEVEL_BANK;
         }
     }
 }

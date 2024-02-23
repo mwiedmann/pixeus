@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <cx16.h>
 
 #include "x16graphics.h"
 #include "gamesprites.h"
@@ -7,6 +8,7 @@
 #include "levelutils.h"
 #include "layoutdefs.h"
 #include "entitymgr.h"
+#include "memmap.h"
 
 #define ENEMY_LASER_DIST 200
 #define ENEMY_JUMP_SPEED_NORMAL 13

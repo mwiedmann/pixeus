@@ -3,6 +3,8 @@
 #include "memmap.h"
 #include "imageload.h"
 
+#pragma code-name (push, "BANKRAM01")
+
 void standardTilesLoad() {
     unsigned short x;
     unsigned short y;
@@ -51,3 +53,5 @@ void tilesConfig(unsigned char tilesetId) {
 void paletteLoad() {
     loadFileToVRAM("palette.bin", PALETTE_VRAM_BANK, PALETTE_VRAM_ADDR);
 }
+
+#pragma code-name (pop)
