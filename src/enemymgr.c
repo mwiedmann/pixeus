@@ -274,6 +274,8 @@ void enemyLasersMove(LevelOveralLayout *level) {
     }
 }
 
+#pragma code-name (push, "BANKRAM01")
+
 unsigned char enemyLasersCreate(unsigned char nextSpriteIndex) {
     unsigned char i;
 
@@ -283,3 +285,5 @@ unsigned char enemyLasersCreate(unsigned char nextSpriteIndex) {
 
     return nextSpriteIndex;
 }
+
+#pragma code-name (pop)

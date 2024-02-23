@@ -29,9 +29,9 @@ void standardTilesLoad() {
 
     // These are sprites because they also show as items in the game
     // Load them via their sprite IDs.
-    loadFileToVRAM("sp7.bin", TILE_MEM_BANK, TILE_SCUBA);
-    loadFileToVRAM("sp8.bin", TILE_MEM_BANK, TILE_WEAPON);
-    loadFileToVRAM("sp9.bin", TILE_MEM_BANK, TILE_BOOTS);
+    loadFileToVRAM("sp9.bin", TILE_MEM_BANK, TILE_SCUBA);
+    loadFileToVRAM("sp10.bin", TILE_MEM_BANK, TILE_WEAPON);
+    loadFileToVRAM("sp11.bin", TILE_MEM_BANK, TILE_BOOTS);
 
     loadFileToVRAM("flame.bin", TILE_MEM_BANK, TILE_FLAME);
     loadFileToVRAM("snow.bin", TILE_MEM_BANK, TILE_SNOWFLAKE);

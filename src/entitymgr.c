@@ -1,10 +1,12 @@
 #include <stdlib.h>
+#include <cx16.h>
 
 #include "x16graphics.h"
 #include "gamesprites.h"
 #include "gametiles.h"
 #include "level.h"
 #include "levelutils.h"
+#include "memmap.h"
 
 Sprite entitySprites[16];
 
@@ -86,9 +88,11 @@ unsigned char *cachedEntityListGet(unsigned char levelNum) {
     return cachedEntityLists[levelNum];
 }
 
+#pragma code-name (push, "BANKRAM01")
+
 unsigned char entitiesCreate(LevelOveralLayout *level, unsigned char nextSpriteIndex) {
     unsigned char i, index;
-    
+
     // Some of these are 0 because we don't create anything for them. They are skipped.
     void (*entityCreate[])(Sprite*, Entity*, unsigned char) = {
         0, 0, 0, energyCreate, goldCreate, scubaCreate, weaponCreate, bootsCreate, extraLifeCreate
@@ -105,15 +109,19 @@ unsigned char entitiesCreate(LevelOveralLayout *level, unsigned char nextSpriteI
     return index;
 }
 
+#pragma code-name (pop)
+
 void entitiesReset(unsigned char length) {
     unsigned char i;
     Sprite *entity;
 
+    RAM_BANK = CODE_BANK;
     // Reset entities
     for (i=0; i<length; i++) {
         entity = &entitySprites[i];
         spriteReset(entity);
     }
+    RAM_BANK = LEVEL_BANK;
 }
 
 void entitiesAnimate(unsigned char length) {
@@ -137,7 +145,9 @@ void hideEntity(unsigned char length, Entity *entity) {
         // TODO: We need an ID to associate between the Entity and Sprite
         if (entity->x == ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH) &&
             entity->y == ((sprite->y + TILE_PIXEL_HEIGHT_HALF) / TILE_PIXEL_HEIGHT)) {
+            RAM_BANK = CODE_BANK;
             spriteReset(sprite);
+            RAM_BANK = LEVEL_BANK;
             return;
         }
     }

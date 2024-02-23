@@ -213,7 +213,9 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
     drawGameHeader(gold, energy, lives, hasScuba, hasWeapon, hasBoots, coldCount, hotCount);
     enemyCount = enemiesCreate(level, nextSpriteIndex, mainFrameCount);
     nextSpriteIndex+= enemyCount;
+    RAM_BANK = CODE_BANK;
     entityCount = entitiesCreate(level, nextSpriteIndex);
+    RAM_BANK = LEVEL_BANK;
     nextSpriteIndex+= entityCount;
 
     if (level->levelNum == 0) {
@@ -814,7 +816,6 @@ void main() {
         // Currently we have enough memory for this BUT as the game grows...
         // Maybe refactor to load just the needed sprites with each level?
         spriteDataLoad();
-        RAM_BANK = LEVEL_BANK;
         
         spriteIRQConfig();
         playerCreate(&player, entrance, nextSpriteIndex++);
@@ -823,6 +824,7 @@ void main() {
         nextSpriteIndex = enemyLasersCreate(nextSpriteIndex);
         shipCreate(&ship, nextSpriteIndex++);
 
+        RAM_BANK = LEVEL_BANK;
         // Wait to switch to game mode until everything is loaded
         // If you switch video modes first, you get crazy stuff on screen (kinda cool?)
         videoConfig();

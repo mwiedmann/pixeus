@@ -137,14 +137,6 @@ void spriteAnimationAddressSet(Sprite *sp, unsigned char idx) {
     }
 }
 
-void spriteReset(Sprite *sp) {
-    spriteMove(sp, 0, 0);
-    sp->active = 0;
-    sp->zDepth = Disabled;
-    x16SpriteIdxSetZDepth(sp->index, Disabled);
-    x16SpriteIdxSetXY(sp->index, sp->x, sp->y);
-}
-
 void spriteDefaults(Sprite *sp) {
     sp->graphicsBank = SPRITE_MEM_BANK;
     sp->width = PX16;
@@ -192,6 +184,16 @@ void standardAISpriteConfig(AISprite *sp, EnemyLayout *layout, unsigned char ind
     x16SpriteIdxSetHFlip(sp->sprite.index, sp->sprite.animationDirection);
 }
 
+#pragma code-name (push, "BANKRAM01")
+
+void spriteReset(Sprite *sp) {
+    spriteMove(sp, 0, 0);
+    sp->active = 0;
+    sp->zDepth = Disabled;
+    x16SpriteIdxSetZDepth(sp->index, Disabled);
+    x16SpriteIdxSetXY(sp->index, sp->x, sp->y);
+}
+
 void playerCreate(Sprite *p, Entrance *entrance, unsigned char index) {
     spriteDefaults(p);
     
@@ -234,28 +236,6 @@ void largeFlatSpriteAdjust(AISprite *largeSprite)
     largeSprite->sprite.width = PX32;
     largeSprite->sprite.height = PX16;
     largeSprite->sprite.frameSize = 512; // Calculated as width * height
-}
-
-void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned char index) {
-    spriteDefaults(&enemy->sprite);
-
-    enemy->sprite.graphicsAddress = spriteMemAddresses[enemyStats[type].graphicsIdx];
-    enemy->sprite.animationSpeed = enemyStats[type].animationSpeed;
-    enemy->sprite.speed = enemyStats[type].speed;
-    enemy->health = enemyStats[type].health;
-    enemy->framesBetweenShots = enemyStats[type].framesBetweenShots;
-    enemy->framesBetweenJumps = enemyStats[type].framesBetweenJumps;
-    enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
-    enemy->yLaserAdjust = 0;
-    
-    // Some special settings for large sprites
-    if (type == BigGhost || type == BigBear || type == Flies) {
-        largeSpriteAdjust(enemy);
-    } else if (type == Shark) {
-        largeFlatSpriteAdjust(enemy);
-    }
-
-    standardAISpriteConfig(enemy, layout, index);
 }
 
 void explosionSmallCreate(Sprite *b, unsigned char index) {
@@ -429,4 +409,31 @@ void shipCreate(Sprite *b, unsigned char index) {
     b->speed = 8;
 
     spriteInit(b);
+}
+
+#pragma code-name (pop)
+
+void enemyCreate(EnemyType type, AISprite *enemy, EnemyLayout *layout, unsigned char index) {
+    spriteDefaults(&enemy->sprite);
+
+    enemy->sprite.graphicsAddress = spriteMemAddresses[enemyStats[type].graphicsIdx];
+    enemy->sprite.animationSpeed = enemyStats[type].animationSpeed;
+    enemy->sprite.speed = enemyStats[type].speed;
+    enemy->health = enemyStats[type].health;
+    enemy->framesBetweenShots = enemyStats[type].framesBetweenShots;
+    enemy->framesBetweenJumps = enemyStats[type].framesBetweenJumps;
+    enemy->sprite.animateIfStill = enemyStats[type].animateIfStill;
+    enemy->yLaserAdjust = 0;
+    
+    RAM_BANK = CODE_BANK;
+    // Some special settings for large sprites
+    if (type == BigGhost || type == BigBear || type == Flies) {
+        largeSpriteAdjust(enemy);
+    } else if (type == Shark) {
+        largeFlatSpriteAdjust(enemy);
+    }
+    RAM_BANK = LEVEL_BANK;
+
+    standardAISpriteConfig(enemy, layout, index);
+    
 }
