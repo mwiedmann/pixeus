@@ -188,10 +188,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             case 4: soundPlayMusic(SOUND_INDEX_HELL); break;
         }
 
-        // Stopping music causes issues with the layer maps (zsound bug?)
-        // Call the loop update to allow music change to take effect,
-        // then layerMapsClear should clean things up
-        waitforjiffy();
+        // Pause for a moment after loading music to let it start
+        for (loopCount=0; loopCount<30; loopCount++) {
+            waitforjiffy();
+        }
 
         // Clear before loading the next tileset or the existing level
         // briefly shows with a new tileset. Looks kinda weird for a sec.
@@ -285,28 +285,34 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
                 hasShield=1; // Energy also restores the shield
+                soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
             } else if (entityCollision->entityType == GoldEnum) {
                 goldCollision = (Gold*)entityCollision;
                 gold+= goldCollision->amount;
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
+                soundPlaySFX(SOUND_SFX_GOLD, SOUND_PRIORITY_SFX_2);
             } else if (entityCollision->entityType == ScubaEnum) {
                 hasScuba = 1;
+                soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
                 showMessage("SCUBA GEAR: EXPLORE THE WATER");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == WeaponEnum) {
                 hasWeapon = 1;
+                soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
                 showMessage("WEAPON UPGRADE");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == BootsEnum) {
                 hasBoots = 1;
+                soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
                 showMessage("BOOTS: ENHANCED SPEED AND JUMPING");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
             } else if (entityCollision->entityType == ExtraLifeEnum) {
                 lives++;
+                soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
                 showMessage("EXTRA LIFE!!!");
                 hideEntity(entityCount, entityCollision);
                 updateHeader = 1;
@@ -681,6 +687,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (!testMode) {
                     if (hasShield) {
                         hasShield = 0;
+                        soundPlaySFX(SOUND_SFX_POWER_DOWN, SOUND_PRIORITY_SFX_2);
                         spriteAnimationAddressSet(&player, SPRITE_MEM_PLAYER_IDX);
                     } else {
                         return &playerShot;
@@ -870,6 +877,12 @@ void main() {
                     spriteMoveToTile(&player, entrance->x, entrance->y, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
                 }
             } else {
+                if (exitCollision.entityType != PLAYER_ESCAPED) {
+                    soundPlaySFX(SOUND_SFX_HIT, SOUND_PRIORITY_SFX_2);
+                } else {
+                    soundPlaySFX(SOUND_SFX_POWER_UP, SOUND_PRIORITY_SFX_2);
+                }
+
                 // Pause the game for a moment since player died (or escaped!)
                 for (i=0; i<DEATH_PAUSE_FRAMES; i++) {
                     waitforjiffy();

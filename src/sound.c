@@ -53,8 +53,8 @@ void soundLoadMusic(unsigned char index) {
 	RAM_BANK = prevBank;
 }
 
-void musicVolume(unsigned char volume) {
-	param1 = SOUND_PRIORITY_MUSIC;
+void volume(unsigned char volume, unsigned char priority) {
+	param1 = priority;
 	param2 = volume; // 0=FULL - 63=MUTE
 
 	asm volatile ("ldx %v", param1);
@@ -72,6 +72,12 @@ void soundInit() {
 
 	loadSound("shoot.zsm", SOUND_SFX_SHOOT);
 	loadSound("hit.zsm", SOUND_SFX_HIT);
+	loadSound("powerdn.zsm", SOUND_SFX_POWER_DOWN);
+	loadSound("powerup.zsm", SOUND_SFX_POWER_UP);
+	loadSound("gold.zsm", SOUND_SFX_GOLD);
+
+	volume(24, SOUND_PRIORITY_SFX_1);
+	volume(24, SOUND_PRIORITY_SFX_2);
 
 	soundLoadMusic(SOUND_INDEX_TITLE);
 }
@@ -153,7 +159,7 @@ void soundPlayMusic(unsigned char index) {
 
 	waitforjiffy();
 
-	musicVolume(48);
+	volume(48, SOUND_PRIORITY_MUSIC);
 
 	RAM_BANK = prevBank;
 }

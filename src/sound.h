@@ -15,6 +15,9 @@
 
 #define SOUND_SFX_SHOOT 0
 #define SOUND_SFX_HIT 1
+#define SOUND_SFX_POWER_DOWN 2
+#define SOUND_SFX_POWER_UP 3
+#define SOUND_SFX_GOLD 4
 
 void musicVolume(unsigned char volume);
 void soundInit();
