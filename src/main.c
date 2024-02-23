@@ -334,7 +334,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             player.animationCount=player.animationSpeed;
         }
 
-        joy = joy_read(0);
+        joy = joy_read(0) | joy_read(1);
 
         // FOR TESTING...LEVEL WARPS
         // if (JOY_BTN_3(joy)) {

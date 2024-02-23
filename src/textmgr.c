@@ -64,7 +64,7 @@ void showTitleScreen() {
     while(1) {
         waitforjiffy();
 
-        joy = joy_read(0);
+        joy = joy_read(0) | joy_read(1);
 
         // Exit when either button is pressed
         // Exit with testMode ON if UP is pressed
@@ -72,14 +72,14 @@ void showTitleScreen() {
             while(JOY_BTN_1(joy)) {
                 waitforjiffy();
         
-                joy = joy_read(0);
+                joy = joy_read(0) | joy_read(1);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
                 waitforjiffy();
         
-                joy = joy_read(0);
+                joy = joy_read(0) | joy_read(1);
             }
             break;
         }
@@ -116,7 +116,7 @@ unsigned char showSelectionScreen() {
         while(1) {
             waitforjiffy();
             
-            joy = joy_read(0);
+            joy = joy_read(0) | joy_read(1);
 
             if (JOY_UP(joy)) {
                 selection--;
@@ -126,7 +126,7 @@ unsigned char showSelectionScreen() {
                 while(JOY_UP(joy)) {
                     waitforjiffy();
             
-                    joy = joy_read(0);
+                    joy = joy_read(0) | joy_read(1);
                 }
                 break;
             } else if (JOY_DOWN(joy)) {
@@ -137,7 +137,7 @@ unsigned char showSelectionScreen() {
                 while(JOY_DOWN(joy)) {
                     waitforjiffy();
             
-                    joy = joy_read(0);
+                    joy = joy_read(0) | joy_read(1);
                 }
                 break;
             }
@@ -187,7 +187,7 @@ void showJukebox() {
         while(1) {
             waitforjiffy();
             
-            joy = joy_read(0);
+            joy = joy_read(0) | joy_read(1);
 
             if (JOY_UP(joy)) {
                 selection--;
@@ -197,7 +197,7 @@ void showJukebox() {
                 while(JOY_UP(joy)) {
                     waitforjiffy();
             
-                    joy = joy_read(0);
+                    joy = joy_read(0) | joy_read(1);
                 }
                 break;
             } else if (JOY_DOWN(joy)) {
@@ -208,7 +208,7 @@ void showJukebox() {
                 while(JOY_DOWN(joy)) {
                     waitforjiffy();
             
-                    joy = joy_read(0);
+                    joy = joy_read(0) | joy_read(1);
                 }
                 break;
             }

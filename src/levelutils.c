@@ -76,21 +76,21 @@ void waitForButtonPress() {
     while(1) {
         waitforjiffy();
         
-        joy = joy_read(0);
+        joy = joy_read(0) | joy_read(1);
 
         // Exit when either button is pressed
         if (JOY_BTN_1(joy)) {
             while(JOY_BTN_1(joy)) {
                 waitforjiffy();
         
-                joy = joy_read(0);
+                joy = joy_read(0) | joy_read(1);
             }
             break;
         } else if (JOY_BTN_2(joy)) {
             while(JOY_BTN_2(joy)) {
                 waitforjiffy();
         
-                joy = joy_read(0);
+                joy = joy_read(0) | joy_read(1);
             }
             break;
         }
@@ -101,21 +101,21 @@ unsigned char readButtonPress() {
     unsigned char joy = 0;
     unsigned char pressed = 0;
 
-    joy = joy_read(0);
+    joy = joy_read(0) | joy_read(1);
 
     // Exit when either button is pressed
     if (JOY_BTN_1(joy)) {
         while(JOY_BTN_1(joy)) {
             waitforjiffy();
         
-            joy = joy_read(0);
+            joy = joy_read(0) | joy_read(1);
         }
         pressed = 1;
     } else if (JOY_BTN_2(joy)) {
         while(JOY_BTN_2(joy)) {
             waitforjiffy();
         
-            joy = joy_read(0);
+            joy = joy_read(0) | joy_read(1);
         }
         pressed = 1;
     }
