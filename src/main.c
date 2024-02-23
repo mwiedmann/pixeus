@@ -56,7 +56,7 @@
 #define LEAVE_LEVEL_X_LEFT -8
 #define LEAVE_LEVEL_X_RIGHT 631
 #define LEAVE_LEVEL_Y_DOWN 463
-#define LEAVE_LEVEL_Y_UP 8
+#define LEAVE_LEVEL_Y_UP 4
 
 // TEST LEVEL has a bunch of enemies, items, gold, energy, and tile types
 #define TEST_LEVEL 7
