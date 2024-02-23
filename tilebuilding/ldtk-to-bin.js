@@ -158,7 +158,7 @@ const createLevelCode = (levelNum, level) => {
       .map((e) => {
         const entityTypeName = fiGet(e.fieldInstances, 'type')
         resourceCount[entityTypeName]+= 1
-
+        console.log('ITEM', entityTypeName, levelNum)
         return {
           entityType: EntityTypeEnum[entityTypeName],
           x: e.__grid[0],
@@ -300,6 +300,6 @@ console.log(resourceCount)
 console.log(enemyMax)
 
 if (resourceCount.Gold !== 9999 || resourceCount.Energy !== 99 || resourceCount.Weapon !== 1 || 
-  resourceCount.Boots !== 1 || resourceCount.Scuba !== 1 || resourceCount.ExtraLife !== 3) {
+  resourceCount.Boots !== 1 || resourceCount.Scuba !== 1 || resourceCount.ExtraLife !== 6) {
     console.error("*****ERROR***** resourceCount error. Missing required count for 1 or more items.")
 }
