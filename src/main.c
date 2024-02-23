@@ -125,7 +125,7 @@ Exit playerScreenExit = { ExitEnum, 0, 0, 0, LEAVE_SCREEN_ENTRACE_ID };
 void gameStartValues() {
     energy = 0;
     gold = 0;
-    lives = 4;
+    lives = 6;
     hasScuba = 0;
     hasWeapon = 0;
     hasBoots = 0;

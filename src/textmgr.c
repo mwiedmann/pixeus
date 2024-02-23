@@ -107,7 +107,7 @@ unsigned char showSelectionScreen() {
 
         drawCenteredTextRow(selection == 1 ? "::START GAME::" : "  START GAME  ", 0, 17);
         drawCenteredTextRow(selection == 2 ? "::JUKEBOX::" : "  JUKEBOX  ", 0, 18);
-        drawCenteredTextRow(selection == 3 ? "::MUTE TOGGLE::" : "  MUTE TOGGLE  ", 0, 19);
+        drawCenteredTextRow(selection == 3 ? "::MUSIC TOGGLE::" : "  MUSIC TOGGLE  ", 0, 19);
 
         #if !TEST_MODE_HIDE
             drawCenteredTextRow(selection == 4 ? "::TEST MODE::" : "  TEST MODE  ", 0, 20);
@@ -227,19 +227,10 @@ void showJukebox() {
                 case 4: soundPlayMusic(SOUND_INDEX_DESERT); break;
                 case 5: soundPlayMusic(SOUND_INDEX_TUNDRA); break;
                 case 6: soundPlayMusic(SOUND_INDEX_HELL); break;
-                // case 7: loadStartMusic(songOverEmpty); break;
-                // case 8: loadGameOverMusic(songOverEmpty); break;
-                // case 9: loadVictoryMusic(songOverEmpty); break;
-                
-                // Stopping the music breaks everything right now...WTF!
-                // Cheat by playing an empty song
                 case 7: soundStopChannel(SOUND_PRIORITY_MUSIC); break; 
                 case 8: return;
             }
 
-            // zsound bug throws junk into the layer map when you stop/switch music
-            // Just clear it as a workaround.
-            layerMapsClear();
             waitforjiffy();
         }
     }
