@@ -31,8 +31,8 @@
 #define PLAYER_WATER_FALL_SPEED 3
 #define PLAYER_WATER_FALL_SPEED_FORCED 6
 
-#define PLAYER_JUMP_SPEED_NORMAL 16
-#define PLAYER_JUMP_SPEED_BOOTS 20
+#define PLAYER_JUMP_SPEED_NORMAL 26
+#define PLAYER_JUMP_SPEED_BOOTS 32
 #define PLAYER_WATER_JUMP_SPEED_NORMAL 12
 #define PLAYER_WATER_JUMP_SPEED_BOOTS 14
 
@@ -157,8 +157,9 @@ void levelExitCleanup(unsigned char hideShip) {
  * and run the level until the player hits an exit or dies.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, loopCount, fallSpeed;
+    unsigned char collision, joy, loopCount, fallSpeed = 0;
     unsigned char jumpFrames = 0;
+    unsigned char jumpAmount;
     unsigned char releasedBtnAfterJump = 1;
     unsigned char updateHeader = 0;
     unsigned char framesUntilNextShot = 0;
@@ -372,23 +373,29 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
 
             // See how quickly the player is falling (based on if in air or water)
             // In water they can slowly float down or press DOWN and swim down more quickly
-            fallSpeed = tileCollision.type == Empty ?
-                PLAYER_FALL_SPEED :
-                JOY_DOWN(joy)
+            if (tileCollision.type == Empty) {
+                fallSpeed += 1;
+                if (fallSpeed > PLAYER_FALL_SPEED) {
+                    fallSpeed = PLAYER_FALL_SPEED;
+                }
+            } else {
+                fallSpeed = JOY_DOWN(joy)
                     // The player falls in water too, just more slowly
                     ? PLAYER_WATER_FALL_SPEED_FORCED
                     : PLAYER_WATER_FALL_SPEED;
-            
-            // If swimming down, animate the player
-            if (fallSpeed == PLAYER_WATER_FALL_SPEED_FORCED) {
-                player.going = 1;
+                
+                // If swimming down, animate the player
+                if (fallSpeed == PLAYER_WATER_FALL_SPEED_FORCED) {
+                    player.going = 1;
+                }
             }
-            
+
             spriteMoveYL(&player, player.yL + fallSpeed);
             spriteTouchingTile(level, &player, &tileCollision);
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != Empty) {
+                fallSpeed = 0;
                 // If a solid tile, move the player to the top of the tile
                 // We do this because as the player falls they may end up wedged a few pixels into the tile
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
@@ -404,6 +411,14 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                     // Without this, the player just hops as you hold the button.
                     if (releasedBtnAfterJump) {
                         jumpFrames = tileCollision.type == Water ? PLAYER_WATER_JUMP_FRAMES : PLAYER_JUMP_FRAMES;
+                        jumpAmount = tileCollision.type == Water
+                            ? hasBoots 
+                                ? PLAYER_WATER_JUMP_SPEED_BOOTS
+                                : PLAYER_WATER_JUMP_SPEED_NORMAL
+                            : hasBoots
+                                ? PLAYER_JUMP_SPEED_BOOTS
+                                : PLAYER_JUMP_SPEED_NORMAL;
+
                         releasedBtnAfterJump = 0;
                         // The jump animation wasn't great. The normal animation is fine
                     }
@@ -426,22 +441,18 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             // Player is jumping, move them up
             jumpFrames--;
             player.going=1;
-            spriteMoveYL(&player, player.yL-(
-                tileCollision.type == Water 
-                ? hasBoots 
-                    ? PLAYER_WATER_JUMP_SPEED_BOOTS
-                    : PLAYER_WATER_JUMP_SPEED_NORMAL 
-                : hasBoots
-                    ? PLAYER_JUMP_SPEED_BOOTS
-                    : PLAYER_JUMP_SPEED_NORMAL
-                )
-            );
-            
+            spriteMoveYL(&player, player.yL-jumpAmount);
+        
             // Don't let the player jump through solid ground
             // Move them back if they hit something
             spriteTouchingTile(level, &player, &tileCollision);
             if (tileCollision.type == Ground || tileCollision.type == Ice) {
                 spriteMoveBackY(&player);
+            }
+
+            // Gravity starts slowing the jump
+            if (tileCollision.type == Empty && jumpAmount > 1) {
+                jumpAmount-= 1;
             }
 
             // Player leaving top of screen (normally only by swimming)
