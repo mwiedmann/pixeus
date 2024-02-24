@@ -406,7 +406,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 }
 
                 // Since the player is touching something, see if they pressed the jump button
-                if (JOY_BTN_1(joy) || JOY_UP(joy)) {
+                if (JOY_BTN_2(joy) || JOY_UP(joy)) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
                     if (releasedBtnAfterJump) {
@@ -638,7 +638,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         }
 
         // See if player is shooting
-        if (bullet.active==0 && framesUntilNextShot == 0 && JOY_BTN_2(joy)) {
+        if (bullet.active==0 && framesUntilNextShot == 0 && JOY_BTN_1(joy)) {
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
             // Start the bullet out of the player's grid

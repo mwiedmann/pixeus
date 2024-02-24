@@ -1,9 +1,9 @@
-Pixeus - v1.0-beta (and probably final version unless bugs are reported)
+Pixeus - v1.1-rc
 Game design and code: Mark Wiedmann
 Music: Crisps
 Graphics: Vexed (v3x3d.itch.io)
 
-This is a beta release of Pixeus, a lite Metroidvania/platformer for the Commander X16. It is written entirely in C by Mark Wiedmann and compiled with cc65 other than:
+This is a release candidate of Pixeus, a lite Metroidvania/platformer for the Commander X16. It is written entirely in C by Mark Wiedmann and compiled with cc65 other than:
 - The awesome zsmkit library from MooingLemur (https://github.com/mooinglemur/zsmkit)
 - A waitforjiffy routine
 
