@@ -28,6 +28,14 @@ Entity *playerTouchingEntity(EntityList *entityList, Sprite *sprite) {
     return 0;
 }
 
+void spriteHeadTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision, unsigned char yAdjust) {
+    tileCollision->x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
+    tileCollision->y = ((sprite->y + yAdjust) / TILE_PIXEL_HEIGHT);
+
+    // NOTE: Some IDEs complain about this array cast but it compiles
+    tileCollision->type = ((unsigned char(*)[40])level->movementTypes)[tileCollision->y][tileCollision->x];
+}
+
 void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision) {
     tileCollision->x = ((sprite->x + TILE_PIXEL_WIDTH_HALF) / TILE_PIXEL_WIDTH);
     tileCollision->y = (sprite->y + pixelSizes[sprite->height]) / TILE_PIXEL_HEIGHT;

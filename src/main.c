@@ -157,7 +157,8 @@ void levelExitCleanup(unsigned char hideShip) {
  * and run the level until the player hits an exit or dies.
 */
 Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsigned char showShipScene) {
-    unsigned char collision, joy, loopCount, fallSpeed = 0;
+    unsigned char collision, joy, loopCount, wasInWater;
+    signed char fallSpeed = 0;
     unsigned char jumpFrames = 0;
     unsigned char jumpAmount;
     unsigned char releasedBtnAfterJump = 1;
@@ -370,6 +371,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         if (jumpFrames == 0) {
             // See what the player is currently touching to see his fall (or swim-fall) speed
             spriteTouchingTile(level, &player, &tileCollision);
+            wasInWater = 0;
 
             // See how quickly the player is falling (based on if in air or water)
             // In water they can slowly float down or press DOWN and swim down more quickly
@@ -378,40 +380,65 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 if (fallSpeed > PLAYER_FALL_SPEED) {
                     fallSpeed = PLAYER_FALL_SPEED;
                 }
-            } else {
-                fallSpeed = JOY_DOWN(joy)
-                    // The player falls in water too, just more slowly
-                    ? PLAYER_WATER_FALL_SPEED_FORCED
-                    : PLAYER_WATER_FALL_SPEED;
-                
-                // If swimming down, animate the player
-                if (fallSpeed == PLAYER_WATER_FALL_SPEED_FORCED) {
+            } else if (tileCollision.type == Water) {
+                wasInWater = 1;
+
+                // Player can slowing swim up or sink down
+                // OR dive down quickly
+                // The player falls in water too, just more slowly
+                if (JOY_UP(joy)) {
+                    fallSpeed = -PLAYER_WATER_FALL_SPEED_FORCED;
                     player.going = 1;
+                } else if (JOY_DOWN(joy)) {
+                    fallSpeed = PLAYER_WATER_FALL_SPEED_FORCED;
+                    player.going = 1;
+                } else {
+                    fallSpeed = PLAYER_WATER_FALL_SPEED;
                 }
+            } else {
+                // Player might be stuck in a solid tile
+                // Move them up
+                fallSpeed = -1;
             }
 
             spriteMoveYL(&player, player.yL + fallSpeed);
-            spriteTouchingTile(level, &player, &tileCollision);
+            if (fallSpeed < 0) {
+                spriteHeadTouchingTile(level, &player, &tileCollision, TILE_PIXEL_HEIGHT_HALF);
+            } else {
+                spriteTouchingTile(level, &player, &tileCollision);
+            }
 
             // If the player is standing on a tile, a few things happen
             if (tileCollision.type != Empty) {
                 fallSpeed = 0;
-                // If a solid tile, move the player to the top of the tile
-                // We do this because as the player falls they may end up wedged a few pixels into the tile
+
+                // Check for solid tile collisions
                 if (tileCollision.type == Ground || tileCollision.type == Ice) {
-                    // This is the last surface the player touched
-                    // We track this to know if they are sliding on ice or on better ground
-                    feetLastTouched = tileCollision;
-                    spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
+                    // Don't let the player swim through solid ground
+                    // Move them back if they hit something
+                    if (wasInWater) {
+                        spriteMoveBackY(&player);
+                    } else {
+                        // On land
+                        // If a solid tile, move the player to the top of the tile
+                        // We do this because as the player falls they may end up wedged a few pixels into the tile
+                
+                        // This is the last surface the player touched
+                        // We track this to know if they are sliding on ice or on better ground
+                        feetLastTouched = tileCollision;
+                        spriteMoveY(&player, ((tileCollision.y * TILE_PIXEL_HEIGHT) - pixelSizes[player.height]) - 1);
+                    }
                 }
 
                 // Since the player is touching something, see if they pressed the jump button
-                if (JOY_BTN_2(joy) || JOY_UP(joy)) {
+                // If in water, only the button will burst up
+                // Pressing up in water is a slow swim up
+                if (JOY_BTN_2(joy) || (!wasInWater && JOY_UP(joy))) {
                     // Only let them jump if they released the jump button since the last jump.
                     // Without this, the player just hops as you hold the button.
                     if (releasedBtnAfterJump) {
-                        jumpFrames = tileCollision.type == Water ? PLAYER_WATER_JUMP_FRAMES : PLAYER_JUMP_FRAMES;
-                        jumpAmount = tileCollision.type == Water
+                        jumpFrames = wasInWater || tileCollision.type == Water ? PLAYER_WATER_JUMP_FRAMES : PLAYER_JUMP_FRAMES;
+                        jumpAmount = wasInWater || tileCollision.type == Water
                             ? hasBoots 
                                 ? PLAYER_WATER_JUMP_SPEED_BOOTS
                                 : PLAYER_WATER_JUMP_SPEED_NORMAL
@@ -445,9 +472,10 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         
             // Don't let the player jump through solid ground
             // Move them back if they hit something
-            spriteTouchingTile(level, &player, &tileCollision);
+            spriteHeadTouchingTile(level, &player, &tileCollision, TILE_PIXEL_HEIGHT_HALF);
             if (tileCollision.type == Ground || tileCollision.type == Ice) {
                 spriteMoveBackY(&player);
+                jumpFrames=0;
             }
 
             // Gravity starts slowing the jump
@@ -657,7 +685,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         // Move back if so.
         // With the current code we may end up checking tiles more than needed
         // but it's an O(1) operation since the tiles are in an array, so it should be fine. 
-        spriteTouchingTile(level, &player, &tileCollision);
+        spriteHeadTouchingTile(level, &player, &tileCollision, TILE_PIXEL_HEIGHT_HALF);
         if (tileCollision.type == Ground || tileCollision.type == Ice) {
             spriteMoveBackX(&player);
         }

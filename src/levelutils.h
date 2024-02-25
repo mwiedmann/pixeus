@@ -19,6 +19,8 @@ Entity *playerTouchingEntity(EntityList *entityList, Sprite *sprite);
 */
 void spriteTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision);
 
+void spriteHeadTouchingTile(LevelOveralLayout *level, Sprite *sprite, TileInfo *tileCollision, unsigned char yAdjust);
+
 /**
  * Return if the player is "near" to a sprite
 */
