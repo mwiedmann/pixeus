@@ -552,15 +552,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 momentum = (-moveBase);
             }
             spriteMoveXL(&player, player.xL+(momentum/10));
-
-            // Player leaving left side of the screen
-            if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(1);
-                spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
-                playerScreenExit.level = level->leftLevel;
-
-                return &playerScreenExit;
-            }
         } else if (JOY_RIGHT(joy)) {
             player.going=1;
             // Maybe flip animation
@@ -574,15 +565,6 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
                 momentum = moveBase;
             }
             spriteMoveXL(&player, player.xL+(momentum/10));
-
-            // Player leaving right side of the screen
-            if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != LEAVE_SCREEN_ENTRACE_ID) {
-                levelExitCleanup(1);
-                spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
-                playerScreenExit.level = level->rightLevel;
-
-                return &playerScreenExit;
-            }
         } else {
             // Player is not trying to move
             // Slow them down if they are still moving
@@ -600,6 +582,23 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             if (momentum != 0) {
                 spriteMoveXL(&player, player.xL+(momentum/10));
             }
+        }
+
+        // Player leaving right side of the screen
+        if (player.x >= LEAVE_LEVEL_X_RIGHT && level->rightLevel != LEAVE_SCREEN_ENTRACE_ID) {
+            levelExitCleanup(1);
+            spriteMove(&player, LEAVE_LEVEL_X_LEFT + 1, player.y);
+            playerScreenExit.level = level->rightLevel;
+
+            return &playerScreenExit;
+        } 
+        // Player leaving left side of the screen
+        else if (player.x <= LEAVE_LEVEL_X_LEFT && level->leftLevel != LEAVE_SCREEN_ENTRACE_ID) {
+            levelExitCleanup(1);
+            spriteMove(&player, LEAVE_LEVEL_X_RIGHT - 1, player.y);
+            playerScreenExit.level = level->leftLevel;
+
+            return &playerScreenExit;
         }
 
         // Change animation if jumping or moving and hit loop count
