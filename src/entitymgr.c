@@ -17,7 +17,7 @@ Sprite entitySprites[16];
  * How many frames an enemy will stay dead. Starts when player leaves the level.
  * 60 frames/sec, so 1 min = 3600
 */
-#define ENEMY_FRAMES_STAY_DEAD 18000 // 18000=5 mins
+#define ENEMY_FRAMES_STAY_DEAD 36000L // 36000=10 mins
 
 /**
  * List of the entityTypes for entities in each level.

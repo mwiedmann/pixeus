@@ -369,9 +369,14 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         // jumpFrames are the number of frames the player moves UP (jumps)
         // At 0, the player is always falling, even if on the ground.
         if (jumpFrames == 0) {
+            wasInWater = 0;
+            spriteHeadTouchingTile(level, &player, &tileCollision, TILE_PIXEL_HEIGHT_HALF);
+            if (tileCollision.type == Water) {
+                wasInWater = 1;
+            }
+
             // See what the player is currently touching to see his fall (or swim-fall) speed
             spriteTouchingTile(level, &player, &tileCollision);
-            wasInWater = 0;
 
             // See how quickly the player is falling (based on if in air or water)
             // In water they can slowly float down or press DOWN and swim down more quickly
@@ -496,7 +501,12 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
         }
 
         // Check the final tile the player is touching to see if the graphics need to change to scuba or back to running
-        spriteTouchingTile(level, &player, &tileCollision);
+        if (wasInWater) {
+            spriteHeadTouchingTile(level, &player, &tileCollision, TILE_PIXEL_HEIGHT_HALF);
+        } else {
+            spriteTouchingTile(level, &player, &tileCollision);
+        }
+
         if ((tileCollision.type == Ground || tileCollision.type == Ice || tileCollision.type == Empty)) {
             // Player dies in the desert after some time...needs water
             if (level->tileList->tilesetId == TILESETID_DESERT) {
@@ -669,7 +679,7 @@ Exit* runLevel(unsigned char nextSpriteIndex, unsigned char *lastTilesetId, unsi
             bullet.active = 1;
             bullet.animationDirection = player.animationDirection;
             // Start the bullet out of the player's grid
-            bullet.startX = player.x; // + (player.animationDirection == 0 ? -24 : 40);
+            bullet.startX = player.x + (player.animationDirection == 0 ? -24 : 40);
             spriteMove(&bullet, player.x, player.y);
             // Show the bullet
             bullet.zDepth = BetweenL0L1;

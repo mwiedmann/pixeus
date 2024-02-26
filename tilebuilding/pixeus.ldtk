@@ -47116,7 +47116,7 @@
 						},
 						{
 							"__identifier": "LevelExit",
-							"__grid": [26,16],
+							"__grid": [30,14],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -47125,13 +47125,13 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [416,256],
+							"px": [480,224],
 							"fieldInstances": [
 								{ "__identifier": "Level", "__type": "Int", "__value": 67, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [67] }] },
 								{ "__identifier": "EntranceId", "__type": "Int", "__value": 0, "__tile": null, "defUid": 27, "realEditorValues": [] }
 							],
-							"__worldX": 416,
-							"__worldY": 2176
+							"__worldX": 480,
+							"__worldY": 2144
 						}
 					]
 				},
